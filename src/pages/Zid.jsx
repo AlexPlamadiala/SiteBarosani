@@ -1,20 +1,46 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
-import { useState } from 'react';
-import barosaniData from '../data/barosani.json';
+
+const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 
 export default function Zid() {
   const [selectedBarosan, setSelectedBarosan] = useState(null);
+  const [barosani, setBarosani] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Încarcă barosanii din API
+  useEffect(() => {
+    async function fetchBarosani() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        if (data.success) {
+          setBarosani(data.barosani);
+        } else {
+          setError('Eroare la încărcarea datelor');
+        }
+      } catch (err) {
+        console.error('Error fetching barosani:', err);
+        setError('Nu se pot încărca datele. Verifică că XAMPP rulează!');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchBarosani();
+  }, []);
 
   // Organizăm barosanii pe tier-uri
   const barosaniByTier = useMemo(() => {
     return {
-      platinum: barosaniData.barosani.filter(b => b.tier === 'platinum'),
-      gold: barosaniData.barosani.filter(b => b.tier === 'gold'),
-      basic: barosaniData.barosani.filter(b => b.tier === 'basic')
+      platinum: barosani.filter(b => b.tier === 'platinum'),
+      gold: barosani.filter(b => b.tier === 'gold'),
+      basic: barosani.filter(b => b.tier === 'basic')
     };
-  }, []);
+  }, [barosani]);
 
   const handleViewCertificate = (barosan) => {
     setSelectedBarosan(barosan);
@@ -36,6 +62,36 @@ export default function Zid() {
       });
     }
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⏳</div>
+          <p className="text-2xl font-bold text-[#1a365d]">Se încarcă barosanii...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="text-6xl mb-4">⚠️</div>
+          <p className="text-2xl font-bold text-red-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Reîncearcă
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">

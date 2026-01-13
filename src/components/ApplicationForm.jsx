@@ -59,29 +59,53 @@ export default function ApplicationForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    // Generate unique code
-    const code = generateApplicationCode();
-    setApplicationCode(code);
+    try {
+      // Trimite la API
+      const response = await fetch('http://localhost/SiteBarosani/api/applications.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nume: formData.nume,
+          email: formData.email,
+          revolutId: formData.revolutId,
+          motto: formData.motto,
+          tier: formData.tier,
+          poza: formData.poza,
+          link: formData.link
+        })
+      });
 
-    // Save to localStorage
-    const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
-    const newApplication = {
-      ...formData,
-      code,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
-    existingApps.push(newApplication);
-    localStorage.setItem('barosaniApplications', JSON.stringify(existingApps));
+      const data = await response.json();
 
-    setSubmitted(true);
+      if (data.success) {
+        setApplicationCode(data.code);
+        setSubmitted(true);
+
+        // Backup în localStorage (opțional)
+        const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
+        existingApps.push({
+          ...formData,
+          code: data.code,
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        });
+        localStorage.setItem('barosaniApplications', JSON.stringify(existingApps));
+      } else {
+        alert('Eroare la trimiterea cererii: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Eroare de conexiune. Verifică că XAMPP rulează și încearcă din nou!');
+    }
   };
 
   const handleChange = (e) => {

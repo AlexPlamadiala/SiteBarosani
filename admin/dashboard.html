@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">🏆 Admin Panel - Zidul Barosanilor</h1>
+            <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600">
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-white shadow">
+        <div class="container mx-auto px-4">
+            <div class="flex space-x-4">
+                <a href="dashboard.html" class="px-4 py-3 border-b-2 border-blue-600 font-semibold text-blue-600">
+                    Dashboard
+                </a>
+                <a href="barosani.html" class="px-4 py-3 hover:border-b-2 hover:border-gray-300 text-gray-600 hover:text-gray-800">
+                    Barosani
+                </a>
+                <a href="applications.html" class="px-4 py-3 hover:border-b-2 hover:border-gray-300 text-gray-600 hover:text-gray-800">
+                    Cereri
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Barosani</p>
+                        <p id="totalBarosani" class="text-3xl font-bold text-gray-800">-</p>
+                    </div>
+                    <div class="text-4xl">👥</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Cereri Pending</p>
+                        <p id="pendingApps" class="text-3xl font-bold text-yellow-600">-</p>
+                    </div>
+                    <div class="text-4xl">⏳</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Venit Luna</p>
+                        <p id="monthlyRevenue" class="text-3xl font-bold text-green-600">-</p>
+                    </div>
+                    <div class="text-4xl">💰</div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Expiră în 7 zile</p>
+                        <p id="expiringSoon" class="text-3xl font-bold text-red-600">-</p>
+                    </div>
+                    <div class="text-4xl">⚠️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tier Breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow p-6">
+                <h3 class="text-lg font-bold mb-2">💎 Platinum</h3>
+                <p id="platinumCount" class="text-4xl font-bold">-</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg shadow p-6">
+                <h3 class="text-lg font-bold mb-2">🏆 Gold</h3>
+                <p id="goldCount" class="text-4xl font-bold">-</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg shadow p-6">
+                <h3 class="text-lg font-bold mb-2">⭐ Basic</h3>
+                <p id="basicCount" class="text-4xl font-bold">-</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Acțiuni Rapide</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="applications.html" class="bg-blue-500 text-white px-6 py-3 rounded-lg text-center hover:bg-blue-600">
+                    Verifică Cereri Noi
+                </a>
+                <a href="barosani.html" class="bg-green-500 text-white px-6 py-3 rounded-lg text-center hover:bg-green-600">
+                    Adaugă Barosan Manual
+                </a>
+                <button onclick="window.open('http://localhost:5173', '_blank')" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600">
+                    Vezi Site Public
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkAuth() {
+            const response = await fetch('http://localhost/SiteBarosani/api/auth.php', {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            if (!data.authenticated) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('http://localhost/SiteBarosani/api/admin/statistics.php', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.statistics;
+                    document.getElementById('totalBarosani').textContent = stats.total_barosani;
+                    document.getElementById('pendingApps').textContent = stats.pending_applications;
+                    document.getElementById('monthlyRevenue').textContent = stats.monthly_revenue + ' RON';
+                    document.getElementById('expiringSoon').textContent = stats.expiring_soon;
+                    document.getElementById('platinumCount').textContent = stats.platinum_count;
+                    document.getElementById('goldCount').textContent = stats.gold_count;
+                    document.getElementById('basicCount').textContent = stats.basic_count;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function logout() {
+            await fetch('http://localhost/SiteBarosani/api/auth.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ action: 'logout' })
+            });
+            window.location.href = 'index.html';
+        }
+
+        checkAuth();
+        loadStats();
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>

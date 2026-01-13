@@ -1,11 +1,33 @@
 import { Link } from 'react-router-dom';
-import barosaniData from '../data/barosani.json';
+import { useState, useEffect } from 'react';
+
+const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 
 export default function Home() {
-  const totalBarosani = barosaniData.barosani.length;
-  const platinumCount = barosaniData.barosani.filter(b => b.tier === 'platinum').length;
-  const goldCount = barosaniData.barosani.filter(b => b.tier === 'gold').length;
-  const basicCount = barosaniData.barosani.filter(b => b.tier === 'basic').length;
+  const [barosani, setBarosani] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBarosani() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        if (data.success) {
+          setBarosani(data.barosani);
+        }
+      } catch (err) {
+        console.error('Error fetching barosani:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBarosani();
+  }, []);
+
+  const totalBarosani = barosani.length;
+  const platinumCount = barosani.filter(b => b.tier === 'platinum').length;
+  const goldCount = barosani.filter(b => b.tier === 'gold').length;
+  const basicCount = barosani.filter(b => b.tier === 'basic').length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
