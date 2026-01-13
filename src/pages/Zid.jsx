@@ -9,28 +9,59 @@ export default function Zid() {
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Încarcă barosanii din API
   useEffect(() => {
-    async function fetchBarosani() {
+    async function fetchBarosani(isInitialLoad = false) {
       try {
+        // Pentru refresh-uri silențioase (nu la primul load)
+        if (!isInitialLoad) {
+          setIsRefreshing(true);
+        }
+
         const response = await fetch(API_URL);
         const data = await response.json();
 
         if (data.success) {
           setBarosani(data.barosani);
+          setError(null);
         } else {
           setError('Eroare la încărcarea datelor');
         }
       } catch (err) {
         console.error('Error fetching barosani:', err);
-        setError('Nu se pot încărca datele. Verifică că XAMPP rulează!');
+        // Nu afișăm eroare la refresh-uri silențioase
+        if (isInitialLoad) {
+          setError('Nu se pot încărca datele. Verifică că XAMPP rulează!');
+        }
       } finally {
         setLoading(false);
+        setIsRefreshing(false);
       }
     }
 
-    fetchBarosani();
+    // Fetch inițial
+    fetchBarosani(true);
+
+    // Polling automat la 30 secunde
+    const pollInterval = setInterval(() => {
+      fetchBarosani(false);
+    }, 30000);
+
+    // Refresh când tab-ul devine vizibil
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchBarosani(false);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      clearInterval(pollInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Organizăm barosanii pe tier-uri
@@ -98,6 +129,14 @@ export default function Zid() {
       {/* Hero Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto text-center">
+          {/* Refresh Indicator */}
+          {isRefreshing && (
+            <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+              <span className="text-sm font-medium">Actualizare...</span>
+            </div>
+          )}
+
           <div className="text-6xl mb-6">🏆</div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
             Zidul Oficial al Barosanilor

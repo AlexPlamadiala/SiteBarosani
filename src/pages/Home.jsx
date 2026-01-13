@@ -21,7 +21,28 @@ export default function Home() {
         setLoading(false);
       }
     }
+
+    // Fetch inițial
     fetchBarosani();
+
+    // Polling automat la 30 secunde
+    const pollInterval = setInterval(() => {
+      fetchBarosani();
+    }, 30000);
+
+    // Refresh când tab-ul devine vizibil
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchBarosani();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      clearInterval(pollInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const totalBarosani = barosani.length;
