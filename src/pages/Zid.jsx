@@ -97,13 +97,12 @@ export default function Zid() {
 
             <div className="flex justify-center">
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[3%] md:gap-[4%] w-full max-w-7xl"
-                style={{ minWidth: 'min(100%, 280px)' }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl"
               >
                 {barosaniByTier.platinum.map((barosan) => (
                   <div
                     key={barosan.id}
-                    className="transform scale-110 min-w-[250px] mx-auto w-full"
+                    className="w-full"
                   >
                     <BarosanCard
                       barosan={barosan}
@@ -134,13 +133,12 @@ export default function Zid() {
 
             <div className="flex justify-center">
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[2.5%] md:gap-[3%] w-full max-w-7xl"
-                style={{ minWidth: 'min(100%, 250px)' }}
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full max-w-7xl"
               >
                 {barosaniByTier.gold.map((barosan) => (
                   <div
                     key={barosan.id}
-                    className="min-w-[220px] mx-auto w-full"
+                    className="w-full"
                   >
                     <BarosanCard
                       barosan={barosan}
@@ -171,13 +169,12 @@ export default function Zid() {
 
             <div className="flex justify-center">
               <div
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[2%] md:gap-[2.5%] w-full max-w-7xl"
-                style={{ minWidth: 'min(100%, 200px)' }}
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 w-full max-w-7xl"
               >
                 {barosaniByTier.basic.map((barosan) => (
                   <div
                     key={barosan.id}
-                    className="transform scale-90 min-w-[180px] mx-auto w-full"
+                    className="w-full"
                   >
                     <BarosanCard
                       barosan={barosan}
