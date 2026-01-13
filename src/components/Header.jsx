@@ -24,6 +24,12 @@ export default function Header() {
               to="/"
               className="text-sm md:text-base hover:text-[#D4AF37] transition-colors"
             >
+              Acasă
+            </Link>
+            <Link
+              to="/zid"
+              className="text-sm md:text-base hover:text-[#D4AF37] transition-colors"
+            >
               Zidul
             </Link>
             <Link
