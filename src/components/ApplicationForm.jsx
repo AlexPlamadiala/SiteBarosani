@@ -220,9 +220,24 @@ export default function ApplicationForm() {
         <h2 className="text-3xl font-bold text-[#1a365d] mb-2 text-center">
           Formular de Înscriere Barosan
         </h2>
-        <p className="text-gray-600 text-center mb-8">
+        <p className="text-gray-600 text-center mb-6">
           Completează datele și primești un cod unic pentru a finaliza procesul
         </p>
+
+        {/* Disclaimer - Satiră */}
+        <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="font-bold text-yellow-900 mb-1">ATENȚIE - Site de Parodie / Satiră</p>
+              <p className="text-sm text-yellow-800">
+                Acest site este creat exclusiv pentru <strong>amuzament și divertisment</strong>.
+                Certificatele și titlurile nu au valoare oficială, juridică sau de certificare reală.
+                Prin continuarea înregistrării, confirmi că înțelegi natura satirică a serviciului.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Nume */}

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="bg-[#1a1a2e] text-gray-300 py-8 mt-16">
@@ -29,15 +31,33 @@ export default function Footer() {
             </a>
           </div>
 
+          {/* Legal Links */}
+          <div className="flex flex-wrap justify-center gap-3 text-xs">
+            <Link to="/termeni" className="hover:text-[#D4AF37] transition-colors">
+              Termeni și Condiții
+            </Link>
+            <span className="text-gray-600">•</span>
+            <Link to="/confidentialitate" className="hover:text-[#D4AF37] transition-colors">
+              Politica de Confidențialitate
+            </Link>
+          </div>
+
           {/* Copyright */}
           <p className="text-sm text-center">
             © 2025 Zidul Barosanilor. Toate drepturile de șmecherie rezervate.
           </p>
 
           {/* Disclaimer */}
-          <p className="text-xs text-gray-400 text-center max-w-2xl">
-            Disclaimer: Acest site este creat pentru amuzament. Nu garantăm că vei deveni efectiv barosan în viața reală.
-          </p>
+          <div className="text-xs text-gray-400 text-center max-w-2xl space-y-2">
+            <p className="font-semibold text-yellow-400">
+              ⚠️ PARODIE / SATIRĂ
+            </p>
+            <p>
+              Acest site este creat exclusiv pentru amuzament și divertisment. Certificatele și titlurile
+              nu au valoare oficială, juridică sau de certificare reală. Nu garantăm că vei deveni efectiv
+              barosan în viața reală.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
