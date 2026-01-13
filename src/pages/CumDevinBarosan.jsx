@@ -1,5 +1,6 @@
 import PricingTiers from '../components/PricingTiers';
 import HowItWorks from '../components/HowItWorks';
+import ApplicationForm from '../components/ApplicationForm';
 
 export default function CumDevinBarosan() {
   return (
@@ -12,11 +13,20 @@ export default function CumDevinBarosan() {
             Cum Devin Barosan Oficial
           </h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
-            Alătură-te elitei barosanilor verificați și primește certificatul oficial
-            care îți garantează statutul de șmecher autentificat.
+            Completează formularul și primește codul tău unic pentru a finaliza procesul
           </p>
         </div>
       </section>
+
+      {/* Application Form Section */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto">
+          <ApplicationForm />
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <HowItWorks />
 
       {/* Pricing Section */}
       <section className="py-16 px-4">

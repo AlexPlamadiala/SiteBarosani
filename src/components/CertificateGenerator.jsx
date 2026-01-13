@@ -124,26 +124,58 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
                     {/* Footer Info */}
                     <div className="w-full flex justify-between items-end px-12">
-                      {/* Left: Certificate Number and Date */}
-                      <div className="text-left">
-                        <p className="text-sm font-semibold">Număr certificat:</p>
-                        <p className="text-lg font-bold text-[#8B0000]">{barosan.certificatId}</p>
-                        <p className="text-sm mt-2">Emis la data de:</p>
-                        <p className="font-semibold">
-                          {new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric'
-                          })}
-                        </p>
+                      {/* Left: Certificate Number and Date + QR */}
+                      <div className="flex items-end space-x-6">
+                        <div className="text-left">
+                          <p className="text-sm font-semibold">Număr certificat:</p>
+                          <p className="text-lg font-bold text-[#8B0000]">{barosan.certificatId}</p>
+                          <p className="text-sm mt-2">Emis la data de:</p>
+                          <p className="font-semibold">
+                            {new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                        <div className="bg-white p-2 rounded border border-gray-300">
+                          <QRCodeSVG
+                            value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
+                            size={70}
+                          />
+                          <p className="text-xs text-center mt-1">Verifică online</p>
+                        </div>
                       </div>
 
-                      {/* Center: Stamp */}
-                      <div className="relative">
-                        <div className="w-32 h-32 rounded-full border-4 border-[#8B0000] flex items-center justify-center bg-red-50 transform -rotate-12">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-[#8B0000]">VERIFICAT</div>
-                            <div className="text-3xl">✓</div>
+                      {/* Center: Stamp - Professional circular stamp */}
+                      <div className="relative flex items-center justify-center">
+                        <div className="relative w-40 h-40">
+                          {/* Stamp circle with double border */}
+                          <div className="absolute inset-0 rounded-full border-[6px] border-[#DC143C] opacity-80 transform -rotate-12"></div>
+                          <div className="absolute inset-[8px] rounded-full border-[3px] border-[#DC143C] opacity-80 transform -rotate-12"></div>
+
+                          {/* Stamp content */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center transform -rotate-12">
+                            {/* Top arc text - REPUBLICA BAROSANILOR */}
+                            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 160 160">
+                              <defs>
+                                <path id="circlePath" d="M 80,80 m -55,0 a 55,55 0 1,1 110,0 a 55,55 0 1,1 -110,0" />
+                              </defs>
+                              <text className="text-[10px] font-bold fill-[#DC143C]" textAnchor="middle">
+                                <textPath href="#circlePath" startOffset="50%">
+                                  REPUBLICA BAROSANILOR
+                                </textPath>
+                              </text>
+                            </svg>
+
+                            {/* Center star/checkmark */}
+                            <div className="text-5xl text-[#DC143C] font-bold mt-12">✓</div>
+
+                            {/* Bottom text */}
+                            <div className="text-center mt-1">
+                              <div className="text-sm font-bold text-[#DC143C]">VERIFICAT</div>
+                              <div className="text-xs text-[#DC143C] font-semibold">OFICIAL</div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -159,15 +191,6 @@ export default function CertificateGenerator({ barosan, onClose }) {
                           <p className="text-xs border-t border-gray-400 pt-1">Director Dept. Bășcălie</p>
                         </div>
                       </div>
-                    </div>
-
-                    {/* QR Code */}
-                    <div className="absolute bottom-4 left-4 bg-white p-2 rounded">
-                      <QRCodeSVG
-                        value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
-                        size={80}
-                      />
-                      <p className="text-xs text-center mt-1">Verifică online</p>
                     </div>
                   </div>
                 </div>
