@@ -4,6 +4,7 @@ export default function ApplicationForm() {
   const [formData, setFormData] = useState({
     nume: '',
     email: '',
+    revolutId: '',
     motto: '',
     tier: 'basic',
     poza: '',
@@ -40,19 +41,19 @@ export default function ApplicationForm() {
       newErrors.email = 'Email-ul nu este valid';
     }
 
+    if (!formData.revolutId.trim()) {
+      newErrors.revolutId = 'ID-ul Revolut este obligatoriu';
+    } else if (formData.revolutId.trim().length < 3) {
+      newErrors.revolutId = 'ID-ul Revolut pare prea scurt';
+    }
+
     if (!formData.motto.trim()) {
       newErrors.motto = 'Motto-ul este obligatoriu';
     } else if (formData.motto.length > 50) {
       newErrors.motto = 'Motto-ul trebuie să aibă maximum 50 de caractere';
     }
 
-    if (!formData.poza.trim()) {
-      newErrors.poza = 'URL-ul pozei este obligatoriu';
-    }
-
-    if (formData.tier === 'platinum' && !formData.link.trim()) {
-      newErrors.link = 'Link-ul este obligatoriu pentru tier-ul Platinum';
-    }
+    // Poza și link-ul sunt opționale
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,6 +100,7 @@ export default function ApplicationForm() {
     setFormData({
       nume: '',
       email: '',
+      revolutId: '',
       motto: '',
       tier: 'basic',
       poza: '',
@@ -138,6 +140,7 @@ export default function ApplicationForm() {
                 <h4 className="font-bold text-blue-900 mb-2">📱 Pasul 1: Plata prin Revolut</h4>
                 <ul className="text-sm space-y-1 ml-4">
                   <li>• Trimite <strong>{tierPrices[formData.tier]}</strong> la: <strong>@username-revolut</strong></li>
+                  <li>• Folosește ID-ul tău Revolut: <strong className="text-blue-700">@{formData.revolutId}</strong></li>
                   <li>• În mesajul plății scrie: <strong className="text-blue-700">{applicationCode}</strong></li>
                 </ul>
               </div>
@@ -166,6 +169,9 @@ export default function ApplicationForm() {
             {/* Summary */}
             <div className="mt-8 p-6 bg-gray-50 rounded-lg">
               <h4 className="font-bold text-gray-900 mb-4">Rezumat Cerere:</h4>
+              <p className="text-sm text-gray-600 mb-4 bg-blue-100 p-3 rounded">
+                <strong>Chei de control:</strong> Cod Cerere ({applicationCode}) + Revolut ID (@{formData.revolutId}) + Email ({formData.email})
+              </p>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-600">Nume:</p>
@@ -174,6 +180,10 @@ export default function ApplicationForm() {
                 <div>
                   <p className="text-gray-600">Email:</p>
                   <p className="font-semibold">{formData.email}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Revolut ID:</p>
+                  <p className="font-semibold">@{formData.revolutId}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Tier:</p>
@@ -251,6 +261,30 @@ export default function ApplicationForm() {
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
+          {/* Revolut ID */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              ID Revolut <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">@</span>
+              <input
+                type="text"
+                name="revolutId"
+                value={formData.revolutId}
+                onChange={handleChange}
+                placeholder="username_revolut"
+                className={`w-full pl-8 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${
+                  errors.revolutId ? 'border-red-500' : 'border-gray-300'
+                }`}
+              />
+            </div>
+            {errors.revolutId && <p className="text-red-500 text-sm mt-1">{errors.revolutId}</p>}
+            <p className="text-xs text-gray-500 mt-1">
+              ID-ul tău Revolut (ex: @ion_barosan). Va fi folosit pentru a identifica plata ta.
+            </p>
+          </div>
+
           {/* Tier */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -310,21 +344,21 @@ export default function ApplicationForm() {
           {/* Poza URL */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              URL Poză <span className="text-red-500">*</span>
+              URL Poză <span className="text-gray-500 text-xs">(opțional)</span>
             </label>
             <input
               type="url"
               name="poza"
               value={formData.poza}
               onChange={handleChange}
-              placeholder="https://exemplu.com/poza-mea.jpg"
+              placeholder="https://exemplu.com/poza-mea.jpg (opțional)"
               className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${
                 errors.poza ? 'border-red-500' : 'border-gray-300'
               }`}
             />
             {errors.poza && <p className="text-red-500 text-sm mt-1">{errors.poza}</p>}
             <p className="text-xs text-gray-500 mt-1">
-              Sau trimite poza pe email după ce primești codul. Min 400x400px, format JPG/PNG.
+              Poți lăsa gol și trimite poza pe email după ce primești codul. Min 400x400px, format JPG/PNG.
             </p>
           </div>
 
@@ -332,19 +366,22 @@ export default function ApplicationForm() {
           {formData.tier === 'platinum' && (
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Link Personal (Instagram/TikTok) <span className="text-red-500">*</span>
+                Link Personal (Instagram/TikTok) <span className="text-gray-500 text-xs">(opțional)</span>
               </label>
               <input
                 type="url"
                 name="link"
                 value={formData.link}
                 onChange={handleChange}
-                placeholder="https://instagram.com/username sau https://tiktok.com/@username"
+                placeholder="https://instagram.com/username (opțional)"
                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${
                   errors.link ? 'border-red-500' : 'border-gray-300'
                 }`}
               />
               {errors.link && <p className="text-red-500 text-sm mt-1">{errors.link}</p>}
+              <p className="text-xs text-gray-500 mt-1">
+                Link-ul tău personal va apărea pe cardul tău de pe Zidul Barosanilor.
+              </p>
             </div>
           )}
 

@@ -14,16 +14,30 @@ export default function CertificateGenerator({ barosan, onClose }) {
   const handleDownload = async () => {
     if (certificateRef.current) {
       try {
+        // Show loading state
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: false
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          width: 1200,
+          height: 800
         });
 
-        const link = document.createElement('a');
-        link.download = `certificat-barosan-${barosan.certificatId}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        // Convert to blob for better compatibility
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `certificat-barosan-${barosan.certificatId}.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
       } catch (error) {
         console.error('Error generating certificate:', error);
         alert('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');

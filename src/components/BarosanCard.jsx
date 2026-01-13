@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function BarosanCard({ barosan, onViewCertificate }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const hoverTimeoutRef = useRef(null);
 
   const tierColors = {
     platinum: {
@@ -36,13 +38,39 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
     year: 'numeric'
   });
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    // Delay showing the button for smooth transition
+    hoverTimeoutRef.current = setTimeout(() => {
+      setShowButton(true);
+    }, 200); // 200ms delay
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setShowButton(false);
+    // Clear timeout if user leaves before button appears
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div
       className={`bg-white rounded-lg overflow-hidden transition-all duration-300 border-2 ${colors.border} ${
         isHovered ? 'scale-105 ' + colors.glow : ''
       }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Tier Badge */}
       <div className={`${colors.badge} ${colors.text} text-center py-2 font-bold text-sm`}>
@@ -86,15 +114,17 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
           </div>
         )}
 
-        {/* Certificate Button (shows on hover) */}
-        {isHovered && (
+        {/* Certificate Button (shows on hover with fade-in) */}
+        <div className={`transition-all duration-300 overflow-hidden ${
+          showButton ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
           <button
             onClick={() => onViewCertificate(barosan)}
             className="w-full mt-3 bg-[#1a365d] text-white py-2 rounded-lg hover:bg-[#2d5986] transition-colors font-semibold text-sm"
           >
             📜 Vezi Certificat
           </button>
-        )}
+        </div>
       </div>
     </div>
   );
