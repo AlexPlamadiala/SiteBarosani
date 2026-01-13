@@ -1,6 +1,5 @@
 <?php
 require_once '../config.php';
-require_once '../helpers/EmailSender.php';
 
 $adminId = checkAdminAuth();
 $conn = getDBConnection();
@@ -73,8 +72,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             logAdminAction($adminId, 'approve_application', "Aprobată cerere: {$app['code']}");
 
-            // Send approval email
+            // Send approval email (disabled until SMTP is configured)
+            // Uncomment when .env MAIL_* settings are configured
+            /*
             try {
+                require_once '../helpers/EmailSender.php';
                 $emailSender = new EmailSender();
                 $barosanData = [
                     'nume' => $app['nume'],
@@ -89,10 +91,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 // Silent fail pentru email - nu blochează procesul
                 error_log("Email error: " . $e->getMessage());
             }
+            */
 
             echo json_encode([
                 'success' => true,
-                'message' => 'Cerere aprobată și barosan adăugat pe zid. Email trimis!',
+                'message' => 'Cerere aprobată și barosan adăugat pe zid!',
                 'certificatId' => $certificatId
             ]);
 
