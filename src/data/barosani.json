@@ -1,0 +1,64 @@
+{
+  "barosani": [
+    {
+      "id": "1",
+      "nume": "Alexandru Mega",
+      "motto": "Viața e prea scurtă ca să nu fii barosan",
+      "tier": "platinum",
+      "poza": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      "link": "https://instagram.com/example",
+      "dataInregistrare": "2025-01-10",
+      "certificatId": "BRS-2025-0001"
+    },
+    {
+      "id": "2",
+      "nume": "Maria Șmechera",
+      "motto": "Cu stil și bășcălie",
+      "tier": "platinum",
+      "poza": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+      "link": "https://tiktok.com/@example",
+      "dataInregistrare": "2025-01-11",
+      "certificatId": "BRS-2025-0002"
+    },
+    {
+      "id": "3",
+      "nume": "Ionuț Barosanu",
+      "motto": "Barosan din 2025",
+      "tier": "gold",
+      "poza": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+      "link": null,
+      "dataInregistrare": "2025-01-12",
+      "certificatId": "BRS-2025-0003"
+    },
+    {
+      "id": "4",
+      "nume": "Elena Smerită",
+      "motto": "Certificată oficial",
+      "tier": "gold",
+      "poza": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+      "link": null,
+      "dataInregistrare": "2025-01-12",
+      "certificatId": "BRS-2025-0004"
+    },
+    {
+      "id": "5",
+      "nume": "Mihai Tare",
+      "motto": "Basic dar barosan",
+      "tier": "basic",
+      "poza": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+      "link": null,
+      "dataInregistrare": "2025-01-13",
+      "certificatId": "BRS-2025-0005"
+    },
+    {
+      "id": "6",
+      "nume": "Ana Verificată",
+      "motto": "Oficial recunoscută",
+      "tier": "basic",
+      "poza": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
+      "link": null,
+      "dataInregistrare": "2025-01-13",
+      "certificatId": "BRS-2025-0006"
+    }
+  ]
+}
