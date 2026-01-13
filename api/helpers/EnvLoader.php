@@ -16,11 +16,15 @@ class EnvLoader {
         }
 
         if ($path === null) {
-            $path = dirname(dirname(__DIR__)) . '/.env';
+            // Find .env in project root (2 levels up from api/helpers/)
+            $path = realpath(dirname(__DIR__) . '/..') . DIRECTORY_SEPARATOR . '.env';
         }
 
         if (!file_exists($path)) {
-            throw new Exception('.env file not found at: ' . $path);
+            // Try alternative: if .env doesn't exist, continue without throwing error
+            // This allows fallback to default values
+            self::$loaded = true;
+            return;
         }
 
         $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
