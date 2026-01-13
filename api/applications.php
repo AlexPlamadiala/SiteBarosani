@@ -3,6 +3,9 @@ require_once 'config.php';
 
 // POST - creează o cerere nouă
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Apply rate limiting
+    applyRateLimit('applications_create');
+
     try {
         $data = json_decode(file_get_contents('php://input'), true);
 

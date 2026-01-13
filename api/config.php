@@ -1,15 +1,27 @@
 <?php
-// Configurare conexiune bază de date
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');  // XAMPP default nu are parolă
-define('DB_NAME', 'zid_barosani');
+// Load environment variables
+require_once __DIR__ . '/helpers/EnvLoader.php';
+EnvLoader::load();
+
+// Load helpers
+require_once __DIR__ . '/helpers/RateLimiter.php';
+
+// Configurare conexiune bază de date din .env
+define('DB_HOST', EnvLoader::get('DB_HOST', 'localhost'));
+define('DB_USER', EnvLoader::get('DB_USER', 'root'));
+define('DB_PASS', EnvLoader::get('DB_PASS', ''));
+define('DB_NAME', EnvLoader::get('DB_NAME', 'zid_barosani'));
+
+// Site URLs
+define('SITE_URL', EnvLoader::get('SITE_URL', 'http://localhost:5173'));
+define('API_URL', EnvLoader::get('API_URL', 'http://localhost/SiteBarosani/api'));
+define('ADMIN_URL', EnvLoader::get('ADMIN_URL', 'http://localhost/SiteBarosani/admin'));
 
 // Timezone
 date_default_timezone_set('Europe/Bucharest');
 
-// CORS headers pentru React
-header('Access-Control-Allow-Origin: http://localhost:5173');
+// CORS headers pentru React (din .env)
+header('Access-Control-Allow-Origin: ' . SITE_URL);
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Access-Control-Allow-Credentials: true');
@@ -77,5 +89,19 @@ function generateCertificatId() {
 // Funcție pentru sanitize input
 function sanitizeInput($data) {
     return htmlspecialchars(strip_tags(trim($data)));
+}
+
+// Funcție pentru aplicare rate limiting
+function applyRateLimit($endpoint = 'global') {
+    $requestsLimit = (int)EnvLoader::get('RATE_LIMIT_REQUESTS', 100);
+    $timeWindow = (int)EnvLoader::get('RATE_LIMIT_WINDOW', 3600);
+
+    $rateLimiter = new RateLimiter($requestsLimit, $timeWindow);
+    $rateLimiter->check($endpoint);
+
+    // Add rate limit headers
+    $remaining = $rateLimiter->getRemaining($endpoint);
+    header('X-RateLimit-Limit: ' . $requestsLimit);
+    header('X-RateLimit-Remaining: ' . $remaining);
 }
 ?>
