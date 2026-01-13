@@ -5,6 +5,7 @@ export default function Home() {
   const totalBarosani = barosaniData.barosani.length;
   const platinumCount = barosaniData.barosani.filter(b => b.tier === 'platinum').length;
   const goldCount = barosaniData.barosani.filter(b => b.tier === 'gold').length;
+  const basicCount = barosaniData.barosani.filter(b => b.tier === 'basic').length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
@@ -39,7 +40,7 @@ export default function Home() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-[#D4AF37]">
               <div className="text-5xl font-bold text-[#D4AF37] mb-2">{totalBarosani}</div>
               <div className="text-gray-700 font-semibold">Barosani Verificați</div>
@@ -51,6 +52,10 @@ export default function Home() {
             <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-[#D4AF37]">
               <div className="text-5xl font-bold text-[#D4AF37] mb-2">{goldCount}</div>
               <div className="text-gray-700 font-semibold">🏆 Gold Members</div>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-300">
+              <div className="text-5xl font-bold text-gray-600 mb-2">{basicCount}</div>
+              <div className="text-gray-700 font-semibold">⭐ Basic Members</div>
             </div>
           </div>
         </div>
