@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 DATE_FORMAT(data_inregistrare, '%Y-%m-%d') as dataInregistrare
             FROM barosani
             WHERE status = 'active'
+            AND data_expirare >= CURDATE()
             ORDER BY
                 FIELD(tier, 'platinum', 'gold', 'basic'),
                 data_inregistrare DESC
