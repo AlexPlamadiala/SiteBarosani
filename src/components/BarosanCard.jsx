@@ -78,13 +78,23 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
       </div>
 
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden">
-        <img
-          src={barosan.poza}
-          alt={barosan.nume}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+      <div className="relative aspect-square overflow-hidden bg-gray-200">
+        {barosan.poza ? (
+          <img
+            src={barosan.poza}
+            alt={barosan.nume}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://via.placeholder.com/400x400/cccccc/666666?text=Fara+Poza';
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+            <span className="text-6xl">👤</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
