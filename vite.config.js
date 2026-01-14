@@ -6,10 +6,5 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['jspdf', 'html2canvas', 'qrcode.react']
-  },
-  resolve: {
-    alias: {
-      'jspdf': 'jspdf/dist/jspdf.es.min.js'
-    }
   }
 })
