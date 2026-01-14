@@ -10,6 +10,10 @@
  * eventSource.addEventListener('barosani-updated', (e) => { ... });
  */
 
+// Prevent PHP timeout for long-running SSE connection
+set_time_limit(0);
+ignore_user_abort(true);
+
 // Setări pentru SSE
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
