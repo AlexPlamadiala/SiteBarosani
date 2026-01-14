@@ -1,9 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { QRCodeSVG } from 'qrcode.react';
+import jsPDF from 'jspdf';
 
 export default function CertificateGenerator({ barosan, onClose }) {
   const certificateRef = useRef(null);
+  const [downloading, setDownloading] = useState(false);
 
   const tierLabels = {
     platinum: 'PLATINUM',
@@ -11,10 +13,10 @@ export default function CertificateGenerator({ barosan, onClose }) {
     basic: 'BASIC'
   };
 
-  const handleDownload = async () => {
+  const handleDownloadPNG = async () => {
     if (certificateRef.current) {
       try {
-        // Show loading state
+        setDownloading(true);
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
@@ -25,12 +27,11 @@ export default function CertificateGenerator({ barosan, onClose }) {
           height: 800
         });
 
-        // Convert to blob for better compatibility
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = `certificat-barosan-${barosan.certificatId}.png`;
+            link.download = `certificat-barosan-${barosan.certificat_id}.png`;
             link.href = url;
             document.body.appendChild(link);
             link.click();
@@ -41,6 +42,49 @@ export default function CertificateGenerator({ barosan, onClose }) {
       } catch (error) {
         console.error('Error generating certificate:', error);
         alert('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
+      } finally {
+        setDownloading(false);
+      }
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    if (certificateRef.current) {
+      try {
+        setDownloading(true);
+        const canvas = await html2canvas(certificateRef.current, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          width: 1200,
+          height: 800
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+
+        // Create PDF in landscape mode (A4)
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        // Calculate dimensions to fit A4 landscape
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        // Add image to PDF (centered)
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+        // Download PDF
+        pdf.save(`certificat-barosan-${barosan.certificat_id}.pdf`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
+      } finally {
+        setDownloading(false);
       }
     }
   };
@@ -66,14 +110,35 @@ export default function CertificateGenerator({ barosan, onClose }) {
                 Certificatul tău de Barosan
               </h2>
 
-              <button
-                onClick={handleDownload}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center space-x-2"
-              >
-                <span>📥</span>
-                <span className="hidden sm:inline">Descarcă PNG</span>
-                <span className="sm:hidden">Descarcă</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={downloading}
+                  className={`px-4 py-2 rounded-lg transition-colors font-semibold flex items-center space-x-2 ${
+                    downloading
+                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                      : 'bg-red-600 text-white hover:bg-red-700'
+                  }`}
+                >
+                  <span>📄</span>
+                  <span className="hidden sm:inline">Descarcă PDF</span>
+                  <span className="sm:hidden">PDF</span>
+                </button>
+
+                <button
+                  onClick={handleDownloadPNG}
+                  disabled={downloading}
+                  className={`px-4 py-2 rounded-lg transition-colors font-semibold flex items-center space-x-2 ${
+                    downloading
+                      ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                      : 'bg-green-600 text-white hover:bg-green-700'
+                  }`}
+                >
+                  <span>🖼️</span>
+                  <span className="hidden sm:inline">Descarcă PNG</span>
+                  <span className="sm:hidden">PNG</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
