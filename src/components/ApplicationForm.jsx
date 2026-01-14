@@ -14,6 +14,9 @@ export default function ApplicationForm() {
   const [submitted, setSubmitted] = useState(false);
   const [applicationCode, setApplicationCode] = useState('');
   const [errors, setErrors] = useState({});
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const tierPrices = {
     basic: '20 RON',
@@ -66,8 +69,32 @@ export default function ApplicationForm() {
       return;
     }
 
+    setUploading(true);
+    let uploadedImageUrl = formData.poza;
+
     try {
-      // Trimite la API
+      // Upload imagine dacă există
+      if (imageFile) {
+        const imageFormData = new FormData();
+        imageFormData.append('image', imageFile);
+
+        const uploadResponse = await fetch('http://localhost/SiteBarosani/api/upload_image.php', {
+          method: 'POST',
+          body: imageFormData
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if (uploadData.success) {
+          uploadedImageUrl = uploadData.url;
+        } else {
+          alert('Eroare la uploadarea imaginii: ' + uploadData.error);
+          setUploading(false);
+          return;
+        }
+      }
+
+      // Trimite cererea la API
       const response = await fetch('http://localhost/SiteBarosani/api/applications.php', {
         method: 'POST',
         headers: {
@@ -79,7 +106,7 @@ export default function ApplicationForm() {
           revolutId: formData.revolutId,
           motto: formData.motto,
           tier: formData.tier,
-          poza: formData.poza,
+          poza: uploadedImageUrl,
           link: formData.link
         })
       });
@@ -94,6 +121,7 @@ export default function ApplicationForm() {
         const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
         existingApps.push({
           ...formData,
+          poza: uploadedImageUrl,
           code: data.code,
           status: 'pending',
           createdAt: new Date().toISOString()
@@ -105,6 +133,8 @@ export default function ApplicationForm() {
     } catch (error) {
       console.error('Error:', error);
       alert('Eroare de conexiune. Verifică că XAMPP rulează și încearcă din nou!');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -118,6 +148,39 @@ export default function ApplicationForm() {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
+        setErrors(prev => ({ ...prev, poza: 'Doar fișiere JPG, PNG sau WEBP sunt permise' }));
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, poza: 'Imaginea este prea mare (max 5MB)' }));
+        return;
+      }
+
+      setImageFile(file);
+      setErrors(prev => ({ ...prev, poza: '' }));
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setFormData(prev => ({ ...prev, poza: '' }));
   };
 
   const handleStartNew = () => {
@@ -380,24 +443,50 @@ export default function ApplicationForm() {
             </div>
           </div>
 
-          {/* Poza URL */}
+          {/* Poză Upload */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              URL Poză <span className="text-gray-500 text-xs">(opțional)</span>
+              Poza Ta <span className="text-gray-500 text-xs">(opțional)</span>
             </label>
-            <input
-              type="url"
-              name="poza"
-              value={formData.poza}
-              onChange={handleChange}
-              placeholder="https://exemplu.com/poza-mea.jpg (opțional)"
-              className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] ${
-                errors.poza ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
+
+            {!imagePreview ? (
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#D4AF37] transition-colors">
+                <input
+                  type="file"
+                  id="imageUpload"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <label htmlFor="imageUpload" className="cursor-pointer">
+                  <div className="text-4xl mb-2">📸</div>
+                  <p className="text-sm text-gray-600 mb-1">Click pentru a uploada o imagine</p>
+                  <p className="text-xs text-gray-500">JPG, PNG sau WEBP (max 5MB)</p>
+                </label>
+              </div>
+            ) : (
+              <div className="relative border-2 border-[#D4AF37] rounded-lg p-4">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-48 object-cover rounded-lg mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                >
+                  ✕
+                </button>
+                <p className="text-xs text-gray-600 text-center">
+                  {imageFile.name} ({(imageFile.size / 1024 / 1024).toFixed(2)} MB)
+                </p>
+              </div>
+            )}
+
             {errors.poza && <p className="text-red-500 text-sm mt-1">{errors.poza}</p>}
             <p className="text-xs text-gray-500 mt-1">
-              Poți lăsa gol și trimite poza pe email după ce primești codul. Min 400x400px, format JPG/PNG.
+              Imaginea va fi redimensionată automat la 800x800px. Sau poți lăsa gol și trimite pe email după.
             </p>
           </div>
 
@@ -427,9 +516,24 @@ export default function ApplicationForm() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#D4AF37] to-[#c19b2e] text-[#1a365d] py-4 rounded-lg font-bold text-lg hover:shadow-lg transition-all"
+            disabled={uploading}
+            className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
+              uploading
+                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                : 'bg-gradient-to-r from-[#D4AF37] to-[#c19b2e] text-[#1a365d] hover:shadow-lg'
+            }`}
           >
-            Generează Cod de Cerere 🎯
+            {uploading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Uploading imagine...
+              </span>
+            ) : (
+              'Generează Cod de Cerere 🎯'
+            )}
           </button>
 
           <p className="text-xs text-gray-500 text-center">
