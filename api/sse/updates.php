@@ -20,9 +20,17 @@ header('Cache-Control: no-cache');
 header('Connection: keep-alive');
 header('X-Accel-Buffering: no'); // Disable nginx buffering
 
-// CORS pentru development
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Access-Control-Allow-Credentials: true');
+// CORS pentru development - permite localhost (admin) și localhost:5173 (React)
+$allowedOrigins = ['http://localhost:5173', 'http://localhost'];
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    // Fallback pentru development
+    header('Access-Control-Allow-Origin: *');
+}
 
 // Disable PHP output buffering
 if (function_exists('apache_setenv')) {

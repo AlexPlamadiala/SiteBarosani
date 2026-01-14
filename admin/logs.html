@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">🏆 Admin Panel - Zidul Barosanilor</h1>
+            <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600">Logout</button>
+        </div>
+    </nav>
+
+    <div class="bg-white shadow">
+        <div class="container mx-auto px-4">
+            <div class="flex space-x-4">
+                <a href="dashboard.html" class="px-4 py-3 text-gray-600 hover:text-gray-800">Dashboard</a>
+                <a href="barosani.html" class="px-4 py-3 text-gray-600 hover:text-gray-800">Barosani</a>
+                <a href="applications.html" class="px-4 py-3 text-gray-600 hover:text-gray-800">Cereri</a>
+                <a href="logs.html" class="px-4 py-3 border-b-2 border-blue-600 font-semibold text-blue-600">Logs</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6 border-b flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold">System Logs</h2>
+                    <p class="text-sm text-gray-500 mt-1">Monitorizare activitate și erori</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="loadLogs()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center gap-2">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                    <button onclick="clearFilters()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="p-6 border-b bg-gray-50">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Nivel Log</label>
+                        <select id="levelFilter" onchange="filterLogs()" class="w-full px-3 py-2 border rounded">
+                            <option value="all">Toate</option>
+                            <option value="ERROR">❌ ERROR</option>
+                            <option value="WARNING">⚠️ WARNING</option>
+                            <option value="INFO">ℹ️ INFO</option>
+                            <option value="DEBUG">🔍 DEBUG</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Căutare</label>
+                        <input
+                            type="text"
+                            id="searchFilter"
+                            oninput="filterLogs()"
+                            placeholder="Caută în mesaje..."
+                            class="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Număr Linii</label>
+                        <select id="linesFilter" onchange="loadLogs()" class="w-full px-3 py-2 border rounded">
+                            <option value="50">50 linii</option>
+                            <option value="100" selected>100 linii</option>
+                            <option value="200">200 linii</option>
+                            <option value="500">500 linii</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Info</label>
+                        <div class="text-sm text-gray-600">
+                            <p id="logCount">-</p>
+                            <p id="lastUpdate" class="text-xs text-gray-500">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs Display -->
+            <div class="p-6">
+                <div id="logsContainer" class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-xs overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
+                    <div class="text-center text-gray-500 py-8">Se încarcă logs...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allLogs = [];
+
+        async function checkAuth() {
+            const response = await fetch('http://localhost/SiteBarosani/api/auth.php', {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            if (!data.authenticated) window.location.href = 'index.html';
+        }
+
+        async function loadLogs() {
+            try {
+                const lines = document.getElementById('linesFilter').value;
+                const response = await fetch(`http://localhost/SiteBarosani/api/admin/logs.php?lines=${lines}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    allLogs = data.logs;
+                    filterLogs();
+                    document.getElementById('lastUpdate').textContent = `Actualizat: ${new Date().toLocaleTimeString('ro-RO')}`;
+                } else {
+                    document.getElementById('logsContainer').innerHTML = `
+                        <div class="text-center text-red-500 py-8">
+                            Eroare: ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+                document.getElementById('logsContainer').innerHTML = `
+                    <div class="text-center text-red-500 py-8">
+                        Eroare la încărcarea logs. Verifică că XAMPP rulează!
+                    </div>
+                `;
+            }
+        }
+
+        function filterLogs() {
+            const levelFilter = document.getElementById('levelFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+
+            let filtered = allLogs;
+
+            // Filter by level
+            if (levelFilter !== 'all') {
+                filtered = filtered.filter(log => log.level === levelFilter);
+            }
+
+            // Filter by search term
+            if (searchFilter) {
+                filtered = filtered.filter(log =>
+                    log.message.toLowerCase().includes(searchFilter) ||
+                    log.ip?.toLowerCase().includes(searchFilter) ||
+                    log.endpoint?.toLowerCase().includes(searchFilter)
+                );
+            }
+
+            displayLogs(filtered);
+        }
+
+        function displayLogs(logs) {
+            const container = document.getElementById('logsContainer');
+
+            if (logs.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">Niciun log găsit</div>';
+                document.getElementById('logCount').textContent = '0 logs';
+                return;
+            }
+
+            document.getElementById('logCount').textContent = `${logs.length} logs`;
+
+            const levelColors = {
+                'ERROR': 'text-red-500',
+                'WARNING': 'text-yellow-500',
+                'INFO': 'text-blue-400',
+                'DEBUG': 'text-gray-400'
+            };
+
+            const levelIcons = {
+                'ERROR': '❌',
+                'WARNING': '⚠️',
+                'INFO': 'ℹ️',
+                'DEBUG': '🔍'
+            };
+
+            const html = logs.map(log => {
+                const color = levelColors[log.level] || 'text-green-400';
+                const icon = levelIcons[log.level] || '';
+
+                return `
+                    <div class="mb-2 p-2 hover:bg-gray-800 rounded">
+                        <span class="text-gray-500">[${log.timestamp}]</span>
+                        <span class="${color} font-bold">${icon} [${log.level}]</span>
+                        <span class="text-cyan-400">[${log.ip}]</span>
+                        <span class="text-purple-400">${log.method} ${log.endpoint}</span>
+                        -
+                        <span class="text-green-400">${log.message}</span>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+
+            // Auto-scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearFilters() {
+            document.getElementById('levelFilter').value = 'all';
+            document.getElementById('searchFilter').value = '';
+            filterLogs();
+        }
+
+        async function logout() {
+            await fetch('http://localhost/SiteBarosani/api/auth.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ action: 'logout' })
+            });
+            window.location.href = 'index.html';
+        }
+
+        checkAuth();
+        loadLogs();
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadLogs, 10000);
+    </script>
+</body>
+</html>
