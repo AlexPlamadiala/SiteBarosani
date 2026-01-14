@@ -2,10 +2,12 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
+const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
 
 export default function Home() {
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sseConnected, setSseConnected] = useState(false);
 
   useEffect(() => {
     async function fetchBarosani() {
@@ -25,9 +27,39 @@ export default function Home() {
     // Fetch inițial
     fetchBarosani();
 
-    // Polling automat la 30 secunde
+    // SSE pentru real-time updates
+    let eventSource;
+    try {
+      eventSource = new EventSource(SSE_URL);
+
+      eventSource.addEventListener('connected', (e) => {
+        console.log('SSE Connected:', e.data);
+        setSseConnected(true);
+      });
+
+      eventSource.addEventListener('barosani-updated', (e) => {
+        console.log('Barosani updated:', e.data);
+        fetchBarosani(); // Refresh instant când se modifică barosanii
+      });
+
+      eventSource.addEventListener('heartbeat', (e) => {
+        // Keep-alive heartbeat, no action needed
+      });
+
+      eventSource.onerror = (err) => {
+        console.error('SSE Error:', err);
+        setSseConnected(false);
+        // SSE va încerca automat să reconecteze
+      };
+    } catch (err) {
+      console.error('Failed to establish SSE connection:', err);
+    }
+
+    // Fallback: Polling la 30 secunde (backup dacă SSE nu funcționează)
     const pollInterval = setInterval(() => {
-      fetchBarosani();
+      if (!sseConnected) {
+        fetchBarosani();
+      }
     }, 30000);
 
     // Refresh când tab-ul devine vizibil
@@ -40,6 +72,9 @@ export default function Home() {
 
     // Cleanup
     return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
       clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

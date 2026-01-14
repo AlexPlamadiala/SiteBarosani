@@ -1,6 +1,8 @@
 <?php
 require_once '../config.php';
+require_once '../helpers/ChangeTracker.php';
 
+$tracker = new ChangeTracker();
 $adminId = checkAdminAuth();
 $conn = getDBConnection();
 
@@ -54,6 +56,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         logAdminAction($adminId, 'add_barosan', "Adăugat barosan: {$data['nume']}");
 
+        // Notifică SSE că s-a creat un barosan nou
+        $tracker->notifyChange('barosani', 'created');
+
         echo json_encode(['success' => true, 'message' => 'Barosan adăugat cu succes']);
     } catch(PDOException $e) {
         http_response_code(500);
@@ -88,6 +93,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
         logAdminAction($adminId, 'update_barosan', "Actualizat barosan ID: {$data['id']}");
 
+        // Notifică SSE că s-a actualizat barosanul
+        $tracker->notifyChange('barosani', 'updated');
+
         echo json_encode(['success' => true, 'message' => 'Barosan actualizat cu succes']);
     } catch(PDOException $e) {
         http_response_code(500);
@@ -107,6 +115,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $stmt->execute([$id]);
 
         logAdminAction($adminId, 'delete_barosan', "Șters barosan ID: {$id}");
+
+        // Notifică SSE că s-a șters barosanul - ACESTA E CAZUL TĂU!
+        $tracker->notifyChange('barosani', 'deleted');
 
         echo json_encode(['success' => true, 'message' => 'Barosan șters cu succes']);
     } catch(Exception $e) {

@@ -3,6 +3,7 @@ import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
+const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
 
 export default function Zid() {
   const [selectedBarosan, setSelectedBarosan] = useState(null);
@@ -10,6 +11,7 @@ export default function Zid() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [sseConnected, setSseConnected] = useState(false);
 
   // Încarcă barosanii din API
   useEffect(() => {
@@ -44,9 +46,39 @@ export default function Zid() {
     // Fetch inițial
     fetchBarosani(true);
 
-    // Polling automat la 30 secunde
+    // SSE pentru real-time updates
+    let eventSource;
+    try {
+      eventSource = new EventSource(SSE_URL);
+
+      eventSource.addEventListener('connected', (e) => {
+        console.log('SSE Connected:', e.data);
+        setSseConnected(true);
+      });
+
+      eventSource.addEventListener('barosani-updated', (e) => {
+        console.log('Barosani updated:', e.data);
+        fetchBarosani(false); // Refresh instant când se modifică barosanii
+      });
+
+      eventSource.addEventListener('heartbeat', (e) => {
+        // Keep-alive heartbeat, no action needed
+      });
+
+      eventSource.onerror = (err) => {
+        console.error('SSE Error:', err);
+        setSseConnected(false);
+        // SSE va încerca automat să reconecteze
+      };
+    } catch (err) {
+      console.error('Failed to establish SSE connection:', err);
+    }
+
+    // Fallback: Polling la 30 secunde (backup dacă SSE nu funcționează)
     const pollInterval = setInterval(() => {
-      fetchBarosani(false);
+      if (!sseConnected) {
+        fetchBarosani(false);
+      }
     }, 30000);
 
     // Refresh când tab-ul devine vizibil
@@ -59,6 +91,9 @@ export default function Zid() {
 
     // Cleanup
     return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
       clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
@@ -129,13 +164,24 @@ export default function Zid() {
       {/* Hero Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto text-center">
-          {/* Refresh Indicator */}
-          {isRefreshing && (
-            <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-pulse">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <span className="text-sm font-medium">Actualizare...</span>
-            </div>
-          )}
+          {/* SSE Status & Refresh Indicator */}
+          <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+            {/* SSE Connection Status */}
+            {sseConnected && (
+              <div className="bg-blue-500 text-white px-3 py-1 rounded-lg shadow-lg flex items-center gap-2 text-xs">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <span>Live Updates</span>
+              </div>
+            )}
+
+            {/* Refresh Indicator */}
+            {isRefreshing && (
+              <div className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 animate-pulse">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <span className="text-sm font-medium">Actualizare...</span>
+              </div>
+            )}
+          </div>
 
           <div className="text-6xl mb-6">🏆</div>
           <h1 className="text-4xl md:text-6xl font-bold mb-4">

@@ -1,6 +1,8 @@
 <?php
 require_once '../config.php';
+require_once '../helpers/ChangeTracker.php';
 
+$tracker = new ChangeTracker();
 $adminId = checkAdminAuth();
 $conn = getDBConnection();
 
@@ -72,6 +74,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             logAdminAction($adminId, 'approve_application', "Aprobată cerere: {$app['code']}");
 
+            // Notifică SSE că s-a creat un barosan nou ȘI s-a modificat cererea
+            $tracker->notifyChange('barosani', 'created');
+            $tracker->notifyChange('applications', 'approved');
+
             // Send approval email (disabled until SMTP is configured)
             // Uncomment when .env MAIL_* settings are configured
             /*
@@ -109,6 +115,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             logAdminAction($adminId, 'reject_application', "Respinsă cerere ID: {$data['id']}");
 
+            // Notifică SSE că s-a modificat cererea
+            $tracker->notifyChange('applications', 'rejected');
+
             echo json_encode(['success' => true, 'message' => 'Cerere respinsă']);
 
         } elseif ($data['action'] === 'payment_confirmed') {
@@ -139,6 +148,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $stmt->execute([$id]);
 
         logAdminAction($adminId, 'delete_application', "Ștearsă cerere ID: {$id}");
+
+        // Notifică SSE că s-a șters cererea
+        $tracker->notifyChange('applications', 'deleted');
 
         echo json_encode(['success' => true, 'message' => 'Cerere ștearsă']);
     } catch(Exception $e) {

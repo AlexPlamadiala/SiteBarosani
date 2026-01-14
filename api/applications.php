@@ -1,5 +1,8 @@
 <?php
 require_once 'config.php';
+require_once 'helpers/ChangeTracker.php';
+
+$tracker = new ChangeTracker();
 
 // POST - creează o cerere nouă
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -50,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([
             $code, $nume, $email, $revolutId, $motto, $tier, $poza, $link, $suma
         ]);
+
+        // Notifică SSE că s-a creat o cerere nouă
+        $tracker->notifyChange('applications', 'created');
 
         echo json_encode([
             'success' => true,
