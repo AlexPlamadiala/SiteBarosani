@@ -200,77 +200,77 @@ export default function ApplicationForm() {
 
   if (submitted) {
     return (
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
           {/* Success Header */}
-          <div className="bg-gradient-to-r from-green-500 to-green-600 p-8 text-white text-center">
-            <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-3xl font-bold mb-2">Cerere Înregistrată!</h2>
-            <p className="text-lg opacity-90">Codul tău de cerere a fost generat</p>
+          <div className="bg-gradient-to-r from-green-500 to-green-600 p-6 md:p-8 text-white text-center">
+            <div className="text-5xl md:text-6xl mb-3 md:mb-4">✅</div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">Cerere Înregistrată!</h2>
+            <p className="text-base md:text-lg opacity-90">Codul tău de cerere a fost generat</p>
           </div>
 
           {/* Application Code Display */}
-          <div className="p-8">
-            <div className="bg-[#D4AF37] bg-opacity-20 border-4 border-[#D4AF37] rounded-lg p-8 mb-8 text-center">
-              <p className="text-sm font-semibold text-gray-700 mb-2">CODUL TĂU DE CERERE</p>
-              <div className="text-5xl font-bold text-[#1a365d] mb-4 tracking-wider">
+          <div className="p-4 sm:p-6 md:p-8">
+            <div className="bg-[#D4AF37] bg-opacity-20 border-4 border-[#D4AF37] rounded-lg p-4 sm:p-6 md:p-8 mb-6 md:mb-8 text-center">
+              <p className="text-xs sm:text-sm font-semibold text-gray-700 mb-2">CODUL TĂU DE CERERE</p>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a365d] mb-3 md:mb-4 tracking-wider break-all">
                 {applicationCode}
               </div>
-              <p className="text-sm text-gray-600">Salvează acest cod! Vei avea nevoie de el pentru plată și email.</p>
+              <p className="text-xs sm:text-sm text-gray-600">Salvează acest cod! Vei avea nevoie de el pentru plată și email.</p>
             </div>
 
             {/* Instructions */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-[#1a365d]">Pașii Următori:</h3>
+            <div className="space-y-4 md:space-y-6">
+              <h3 className="text-xl md:text-2xl font-bold text-[#1a365d]">Pașii Următori:</h3>
 
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-4">
-                <h4 className="font-bold text-blue-900 mb-2">📱 Pasul 1: Plata prin Revolut</h4>
-                <ul className="text-sm space-y-1 ml-4">
-                  <li>• Trimite <strong>{tierPrices[formData.tier]}</strong> la: <strong>@username-revolut</strong></li>
-                  <li>• Folosește ID-ul tău Revolut: <strong className="text-blue-700">@{formData.revolutId}</strong></li>
-                  <li>• În mesajul plății scrie: <strong className="text-blue-700">{applicationCode}</strong></li>
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-3 md:p-4">
+                <h4 className="font-bold text-blue-900 mb-2 text-sm md:text-base">📱 Pasul 1: Plata prin Revolut</h4>
+                <ul className="text-xs md:text-sm space-y-1 ml-4">
+                  <li className="break-words">• Trimite <strong>{tierPrices[formData.tier]}</strong> la: <strong>@username-revolut</strong></li>
+                  <li className="break-words">• Folosește ID-ul tău Revolut: <strong className="text-blue-700">@{formData.revolutId}</strong></li>
+                  <li className="break-words">• În mesajul plății scrie: <strong className="text-blue-700">{applicationCode}</strong></li>
                 </ul>
               </div>
 
-              <div className="bg-purple-50 border-l-4 border-purple-500 p-4">
-                <h4 className="font-bold text-purple-900 mb-2">📧 Pasul 2: Trimite Email-ul</h4>
-                <ul className="text-sm space-y-1 ml-4">
-                  <li>• Email: <strong>contact@zidulbarosanilor.ro</strong></li>
-                  <li>• Subiect: <strong className="text-purple-700">Cerere Barosan - {applicationCode}</strong></li>
+              <div className="bg-purple-50 border-l-4 border-purple-500 p-3 md:p-4">
+                <h4 className="font-bold text-purple-900 mb-2 text-sm md:text-base">📧 Pasul 2: Trimite Email-ul</h4>
+                <ul className="text-xs md:text-sm space-y-1 ml-4">
+                  <li className="break-words">• Email: <strong>contact@zidulbarosanilor.ro</strong></li>
+                  <li className="break-words">• Subiect: <strong className="text-purple-700">Cerere Barosan - {applicationCode}</strong></li>
                   <li>• Atașează poza ta (JPG/PNG, min 400x400px)</li>
-                  <li>• Menționează codul <strong className="text-purple-700">{applicationCode}</strong> în email</li>
+                  <li className="break-words">• Menționează codul <strong className="text-purple-700">{applicationCode}</strong> în email</li>
                 </ul>
               </div>
 
-              <div className="bg-green-50 border-l-4 border-green-500 p-4">
-                <h4 className="font-bold text-green-900 mb-2">⏱️ Pasul 3: Așteaptă Confirmarea</h4>
-                <p className="text-sm">În maxim <strong>24 de ore</strong> de la confirmarea plății și primirea email-ului, vei apărea pe Zidul Barosanilor și vei primi certificatul pe email!</p>
+              <div className="bg-green-50 border-l-4 border-green-500 p-3 md:p-4">
+                <h4 className="font-bold text-green-900 mb-2 text-sm md:text-base">⏱️ Pasul 3: Așteaptă Confirmarea</h4>
+                <p className="text-xs md:text-sm">În maxim <strong>24 de ore</strong> de la confirmarea plății și primirea email-ului, vei apărea pe Zidul Barosanilor și vei primi certificatul pe email!</p>
               </div>
 
-              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4">
-                <h4 className="font-bold text-yellow-900 mb-2">⚠️ IMPORTANT</h4>
-                <p className="text-sm">Codul <strong>{applicationCode}</strong> ajută administratorul să asocieze plata ta cu cererea și email-ul. <strong>Nu uita să-l incluzi în ambele locuri!</strong></p>
+              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-3 md:p-4">
+                <h4 className="font-bold text-yellow-900 mb-2 text-sm md:text-base">⚠️ IMPORTANT</h4>
+                <p className="text-xs md:text-sm break-words">Codul <strong>{applicationCode}</strong> ajută administratorul să asocieze plata ta cu cererea și email-ul. <strong>Nu uita să-l incluzi în ambele locuri!</strong></p>
               </div>
             </div>
 
             {/* Summary */}
-            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-              <h4 className="font-bold text-gray-900 mb-4">Rezumat Cerere:</h4>
-              <p className="text-sm text-gray-600 mb-4 bg-blue-100 p-3 rounded">
+            <div className="mt-6 md:mt-8 p-4 md:p-6 bg-gray-50 rounded-lg">
+              <h4 className="font-bold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">Rezumat Cerere:</h4>
+              <p className="text-xs md:text-sm text-gray-600 mb-3 md:mb-4 bg-blue-100 p-2 md:p-3 rounded break-words">
                 <strong>Chei de control:</strong> Cod Cerere ({applicationCode}) + Revolut ID (@{formData.revolutId}) + Email ({formData.email})
               </p>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm">
                 <div>
                   <p className="text-gray-600">Nume:</p>
-                  <p className="font-semibold">{formData.nume}</p>
+                  <p className="font-semibold break-words">{formData.nume}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Email:</p>
-                  <p className="font-semibold">{formData.email}</p>
+                  <p className="font-semibold break-words">{formData.email}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Revolut ID:</p>
-                  <p className="font-semibold">@{formData.revolutId}</p>
+                  <p className="font-semibold break-words">@{formData.revolutId}</p>
                 </div>
                 <div>
                   <p className="text-gray-600">Tier:</p>
@@ -280,9 +280,9 @@ export default function ApplicationForm() {
                   <p className="text-gray-600">Sumă:</p>
                   <p className="font-semibold">{tierPrices[formData.tier]}</p>
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <p className="text-gray-600">Motto:</p>
-                  <p className="font-semibold italic">"{formData.motto}"</p>
+                  <p className="font-semibold italic break-words">"{formData.motto}"</p>
                 </div>
               </div>
             </div>
@@ -302,22 +302,22 @@ export default function ApplicationForm() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-xl shadow-xl p-8">
-        <h2 className="text-3xl font-bold text-[#1a365d] mb-2 text-center">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-[#1a365d] mb-2 text-center">
           Formular de Înscriere Barosan
         </h2>
-        <p className="text-gray-600 text-center mb-6">
+        <p className="text-sm md:text-base text-gray-600 text-center mb-4 md:mb-6">
           Completează datele și primești un cod unic pentru a finaliza procesul
         </p>
 
         {/* Disclaimer - Satiră */}
-        <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">⚠️</span>
+        <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-3 md:p-4 mb-4 md:mb-6">
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl flex-shrink-0">⚠️</span>
             <div>
-              <p className="font-bold text-yellow-900 mb-1">ATENȚIE - Site de Parodie / Satiră</p>
-              <p className="text-sm text-yellow-800">
+              <p className="font-bold text-yellow-900 mb-1 text-sm md:text-base">ATENȚIE - Site de Parodie / Satiră</p>
+              <p className="text-xs md:text-sm text-yellow-800">
                 Acest site este creat exclusiv pentru <strong>amuzament și divertisment</strong>.
                 Certificatele și titlurile nu au valoare oficială, juridică sau de certificare reală.
                 Prin continuarea înregistrării, confirmi că înțelegi natura satirică a serviciului.
@@ -392,11 +392,11 @@ export default function ApplicationForm() {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Alege Tier-ul <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
               {['basic', 'gold', 'platinum'].map((tier) => (
                 <label
                   key={tier}
-                  className={`relative flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  className={`relative flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-all touch-manipulation active:scale-95 ${
                     formData.tier === tier
                       ? 'border-[#D4AF37] bg-[#D4AF37] bg-opacity-10'
                       : 'border-gray-300 hover:border-[#D4AF37]'
@@ -410,10 +410,10 @@ export default function ApplicationForm() {
                     onChange={handleChange}
                     className="sr-only"
                   />
-                  <span className="text-2xl mb-2">
+                  <span className="text-3xl md:text-2xl mb-2">
                     {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : '💎'}
                   </span>
-                  <span className="font-bold uppercase text-sm">{tier}</span>
+                  <span className="font-bold uppercase text-sm md:text-sm">{tier}</span>
                   <span className="text-xs text-gray-600 mt-1">{tierPrices[tier]}</span>
                 </label>
               ))}
@@ -517,10 +517,10 @@ export default function ApplicationForm() {
           <button
             type="submit"
             disabled={uploading}
-            className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
+            className={`w-full py-3 md:py-4 rounded-lg font-bold text-base md:text-lg transition-all touch-manipulation min-h-[44px] ${
               uploading
                 ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#D4AF37] to-[#c19b2e] text-[#1a365d] hover:shadow-lg'
+                : 'bg-gradient-to-r from-[#D4AF37] to-[#c19b2e] text-[#1a365d] hover:shadow-lg active:scale-95'
             }`}
           >
             {uploading ? (
@@ -536,7 +536,7 @@ export default function ApplicationForm() {
             )}
           </button>
 
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs md:text-sm text-gray-500 text-center">
             După trimiterea formularului vei primi un cod unic pe care trebuie să-l folosești pentru plată și email.
           </p>
         </form>
