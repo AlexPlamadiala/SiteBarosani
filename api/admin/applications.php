@@ -78,9 +78,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $tracker->notifyChange('barosani', 'created');
             $tracker->notifyChange('applications', 'approved');
 
-            // Send approval email (disabled until SMTP is configured)
-            // Uncomment when .env MAIL_* settings are configured
-            /*
+            // Send approval email
+            // Email will be sent via SMTP if configured in .env, or fallback to mail()
             try {
                 require_once '../helpers/EmailSender.php';
                 $emailSender = new EmailSender();
@@ -97,7 +96,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 // Silent fail pentru email - nu blochează procesul
                 error_log("Email error: " . $e->getMessage());
             }
-            */
 
             echo json_encode([
                 'success' => true,

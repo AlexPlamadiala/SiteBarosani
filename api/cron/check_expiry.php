@@ -92,11 +92,7 @@ try {
                 $emailError = null;
 
                 try {
-                    // Email sending va fi activat după configurarea SMTP
-                    // Deocamdată doar pregătim infrastructura
-
-                    // Uncomment după configurarea SMTP:
-                    /*
+                    // Email sending - activated
                     $emailSender = new EmailSender();
                     $emailSent = $emailSender->sendExpiryNotification(
                         $barosan['email'],
@@ -105,13 +101,6 @@ try {
                         $days,
                         $barosan['certificat_id']
                     );
-                    */
-
-                    // Pentru development: simulează email trimis cu succes
-                    if (isset($_GET['simulate_email']) && $_GET['simulate_email'] === '1') {
-                        $emailSent = true;
-                        $logger->info("Email simulated for {$barosan['email']}");
-                    }
 
                 } catch (Exception $emailEx) {
                     $emailError = $emailEx->getMessage();

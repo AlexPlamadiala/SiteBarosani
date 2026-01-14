@@ -4,6 +4,10 @@
  * Sends emails via SMTP
  */
 require_once __DIR__ . '/EnvLoader.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class EmailSender {
     private $fromEmail;
@@ -12,6 +16,7 @@ class EmailSender {
     private $port;
     private $username;
     private $password;
+    private $useSMTP;
 
     public function __construct() {
         $this->host = EnvLoader::get('MAIL_HOST', 'smtp.gmail.com');
@@ -20,18 +25,70 @@ class EmailSender {
         $this->password = EnvLoader::get('MAIL_PASSWORD');
         $this->fromEmail = EnvLoader::get('MAIL_FROM_EMAIL', 'noreply@zidulbarosanilor.ro');
         $this->fromName = EnvLoader::get('MAIL_FROM_NAME', 'Zidul Barosanilor');
+
+        // Use SMTP only if credentials are configured
+        $this->useSMTP = !empty($this->username) && !empty($this->password);
     }
 
     /**
-     * Send email using mail() function (simple, no SMTP)
+     * Send email using PHPMailer (SMTP or fallback to mail())
+     *
+     * @param string $to Recipient email
+     * @param string $subject Email subject
+     * @param string $htmlBody HTML email body
+     * @return bool Success status
+     * @throws Exception
+     */
+    public function send($to, $subject, $htmlBody) {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            if ($this->useSMTP) {
+                $mail->isSMTP();
+                $mail->Host = $this->host;
+                $mail->SMTPAuth = true;
+                $mail->Username = $this->username;
+                $mail->Password = $this->password;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = $this->port;
+            } else {
+                // Fallback to PHP mail() function
+                $mail->isMail();
+            }
+
+            // Recipients
+            $mail->setFrom($this->fromEmail, $this->fromName);
+            $mail->addAddress($to);
+            $mail->addReplyTo($this->fromEmail, $this->fromName);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = $subject;
+            $mail->Body = $htmlBody;
+            $mail->AltBody = strip_tags($htmlBody); // Plain text alternative
+
+            $mail->send();
+            return true;
+
+        } catch (Exception $e) {
+            error_log("Email sending failed: {$mail->ErrorInfo}");
+            throw new Exception("Email sending failed: {$mail->ErrorInfo}");
+        }
+    }
+
+    /**
+     * Send email using mail() function (simple, no SMTP) - DEPRECATED
+     * Use send() instead
      */
     public function sendSimple($to, $subject, $htmlBody) {
-        $headers = "MIME-Version: 1.0\r\n";
-        $headers .= "Content-type: text/html; charset=utf-8\r\n";
-        $headers .= "From: {$this->fromName} <{$this->fromEmail}>\r\n";
-        $headers .= "Reply-To: {$this->fromEmail}\r\n";
-
-        return mail($to, $subject, $htmlBody, $headers);
+        // Redirect to main send method for consistency
+        try {
+            return $this->send($to, $subject, $htmlBody);
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**
