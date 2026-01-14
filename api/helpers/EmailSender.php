@@ -68,6 +68,29 @@ class EmailSender {
     }
 
     /**
+     * Send expiry notification (wrapper for cron job)
+     *
+     * @param string $email Email address
+     * @param string $nume Name
+     * @param string $dataExpirare Expiry date
+     * @param int $days Days until expiry
+     * @param string $certificatId Certificate ID
+     * @return bool Success status
+     */
+    public function sendExpiryNotification($email, $nume, $dataExpirare, $days, $certificatId) {
+        // Build barosan array for template
+        $barosan = [
+            'email' => $email,
+            'nume' => $nume,
+            'data_expirare' => $dataExpirare,
+            'certificat_id' => $certificatId,
+            'tier' => 'basic' // Default, can be enhanced later
+        ];
+
+        return $this->sendExpirationWarningEmail($barosan, $days);
+    }
+
+    /**
      * Get approval email HTML template
      */
     private function getApprovalEmailTemplate($barosan) {

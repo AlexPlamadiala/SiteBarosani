@@ -112,6 +112,20 @@
             </div>
         </div>
 
+        <!-- Expiring Barosani Warning -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-red-600">⚠️ Barosani care expiră în 30 zile</h2>
+                <button onclick="runExpiryCheck()" id="runExpiryBtn" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 text-sm">
+                    🔄 Run Expiry Check
+                </button>
+            </div>
+
+            <div id="expiringList" class="overflow-x-auto">
+                <p class="text-gray-500 text-center py-4">Se încarcă...</p>
+            </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-bold mb-4">Acțiuni Rapide</h2>
@@ -214,6 +228,108 @@
             }
         }
 
+        async function loadExpiringBarosani() {
+            try {
+                const response = await fetch('http://localhost/SiteBarosani/api/admin/expiring.php?days=30', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                const container = document.getElementById('expiringList');
+
+                if (!data.success || data.expiring.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">Niciun barosan nu expiră în următoarele 30 zile 🎉</p>';
+                    return;
+                }
+
+                // Tabel cu barosani care expiră
+                container.innerHTML = `
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nume</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tier</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Certificat</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Data Expirare</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Zile Rămase</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Notificări</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            ${data.expiring.map(b => {
+                                const daysLeft = parseInt(b.days_left);
+                                const urgencyColor = daysLeft <= 1 ? 'text-red-700 font-bold' :
+                                                     daysLeft <= 7 ? 'text-orange-600 font-semibold' :
+                                                     'text-yellow-600';
+
+                                return `
+                                    <tr class="${daysLeft <= 7 ? 'bg-red-50' : ''}">
+                                        <td class="px-4 py-3 text-sm font-medium">${b.nume}</td>
+                                        <td class="px-4 py-3 text-sm">${b.email}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded uppercase ${
+                                                b.tier === 'platinum' ? 'bg-gray-200' :
+                                                b.tier === 'gold' ? 'bg-yellow-200' : 'bg-blue-200'
+                                            }">
+                                                ${b.tier}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm font-mono">${b.certificat_id}</td>
+                                        <td class="px-4 py-3 text-sm">${new Date(b.data_expirare).toLocaleDateString('ro-RO')}</td>
+                                        <td class="px-4 py-3 text-sm ${urgencyColor}">
+                                            ${daysLeft} ${daysLeft === 1 ? 'zi' : 'zile'}
+                                            ${daysLeft <= 1 ? '🚨' : daysLeft <= 7 ? '⚠️' : ''}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-center">${b.notifications_sent}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                console.error('Error loading expiring barosani:', error);
+                document.getElementById('expiringList').innerHTML = '<p class="text-red-500 text-center py-4">Eroare la încărcare</p>';
+            }
+        }
+
+        async function runExpiryCheck() {
+            const btn = document.getElementById('runExpiryBtn');
+            const originalText = btn.innerHTML;
+
+            if (confirm('Rulezi manual expiry check? Aceasta va verifica toți barosanii și va trimite notificări dacă este cazul.')) {
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '⏳ Se procesează...';
+
+                    const response = await fetch('http://localhost/SiteBarosani/api/admin/expiring.php', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Expiry check executat cu succes!\n\n' +
+                              'Notificări trimise: ' + (data.results?.notifications_sent || 0) + '\n' +
+                              'Status actualizat (expired): ' + (data.results?.expired_updated || 0));
+
+                        // Reload data
+                        loadStats(false);
+                        loadExpiringBarosani();
+                    } else {
+                        alert('Eroare: ' + data.error);
+                    }
+                } catch (error) {
+                    alert('Eroare de conexiune: ' + error.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
         async function logout() {
             await fetch('http://localhost/SiteBarosani/api/auth.php', {
                 method: 'POST',
@@ -227,6 +343,7 @@
         // Initialize
         checkAuth();
         loadStats(false); // Initial load fără indicator
+        loadExpiringBarosani(); // Load expiring barosani
 
         // Setup SSE pentru real-time updates
         setupSSE();
