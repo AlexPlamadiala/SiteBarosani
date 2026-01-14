@@ -12,6 +12,8 @@ export default function Zid() {
   const [error, setError] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sseConnected, setSseConnected] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTierFilter, setSelectedTierFilter] = useState('all');
 
   // Încarcă barosanii din API
   useEffect(() => {
@@ -99,14 +101,36 @@ export default function Zid() {
     };
   }, []);
 
-  // Organizăm barosanii pe tier-uri
+  // Filtrare și căutare
+  const filteredBarosani = useMemo(() => {
+    let filtered = barosani;
+
+    // Apply search term
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(b =>
+        b.nume.toLowerCase().includes(search) ||
+        b.motto?.toLowerCase().includes(search) ||
+        b.certificat_id?.toLowerCase().includes(search)
+      );
+    }
+
+    // Apply tier filter
+    if (selectedTierFilter !== 'all') {
+      filtered = filtered.filter(b => b.tier === selectedTierFilter);
+    }
+
+    return filtered;
+  }, [barosani, searchTerm, selectedTierFilter]);
+
+  // Organizăm barosanii filtrați pe tier-uri
   const barosaniByTier = useMemo(() => {
     return {
-      platinum: barosani.filter(b => b.tier === 'platinum'),
-      gold: barosani.filter(b => b.tier === 'gold'),
-      basic: barosani.filter(b => b.tier === 'basic')
+      platinum: filteredBarosani.filter(b => b.tier === 'platinum'),
+      gold: filteredBarosani.filter(b => b.tier === 'gold'),
+      basic: filteredBarosani.filter(b => b.tier === 'basic')
     };
-  }, [barosani]);
+  }, [filteredBarosani]);
 
   const handleViewCertificate = (barosan) => {
     setSelectedBarosan(barosan);
@@ -190,6 +214,60 @@ export default function Zid() {
           <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 mb-8">
             Toți barosanii verificați și certificați oficial, organizați după tier-ul lor de elită
           </p>
+
+          {/* Search and Filter */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Search Bar */}
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  placeholder="Caută după nume, motto sau certificat..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-4 py-3 pl-12 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+                />
+                <svg
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Tier Filter */}
+              <select
+                value={selectedTierFilter}
+                onChange={(e) => setSelectedTierFilter(e.target.value)}
+                className="px-6 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer"
+              >
+                <option value="all">Toate Tier-urile</option>
+                <option value="platinum">💎 Doar Platinum</option>
+                <option value="gold">🏆 Doar Gold</option>
+                <option value="basic">⭐ Doar Basic</option>
+              </select>
+            </div>
+
+            {/* Results Count */}
+            {(searchTerm || selectedTierFilter !== 'all') && (
+              <div className="mt-4 text-center">
+                <p className="text-sm opacity-90">
+                  {filteredBarosani.length} {filteredBarosani.length === 1 ? 'rezultat găsit' : 'rezultate găsite'}
+                  {searchTerm && ` pentru "${searchTerm}"`}
+                </p>
+              </div>
+            )}
+          </div>
 
           {/* Quick Links */}
           <div className="flex flex-wrap gap-4 justify-center">
