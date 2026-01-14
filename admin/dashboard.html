@@ -11,9 +11,21 @@
     <nav class="bg-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold">🏆 Admin Panel - Zidul Barosanilor</h1>
-            <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600">
-                Logout
-            </button>
+            <div class="flex items-center gap-4">
+                <!-- SSE Status Badge -->
+                <div id="sseStatus" class="hidden bg-green-500 px-3 py-1 rounded-lg shadow-lg flex items-center gap-2 text-xs">
+                    <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    <span>Live Updates</span>
+                </div>
+                <!-- Refresh Indicator -->
+                <div id="refreshIndicator" class="hidden bg-yellow-500 px-3 py-1 rounded-lg shadow-lg flex items-center gap-2 text-xs animate-pulse">
+                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                    <span>Actualizare...</span>
+                </div>
+                <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600">
+                    Logout
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -115,6 +127,10 @@
     </div>
 
     <script>
+        // SSE State
+        let sseConnected = false;
+        let eventSource = null;
+
         async function checkAuth() {
             const response = await fetch('http://localhost/SiteBarosani/api/auth.php', {
                 credentials: 'include'
@@ -125,7 +141,16 @@
             }
         }
 
-        async function loadStats() {
+        function showRefreshIndicator() {
+            document.getElementById('refreshIndicator').classList.remove('hidden');
+        }
+
+        function hideRefreshIndicator() {
+            document.getElementById('refreshIndicator').classList.add('hidden');
+        }
+
+        async function loadStats(showIndicator = true) {
+            if (showIndicator) showRefreshIndicator();
             try {
                 const response = await fetch('http://localhost/SiteBarosani/api/admin/statistics.php', {
                     credentials: 'include'
@@ -144,6 +169,45 @@
                 }
             } catch (error) {
                 console.error('Error loading stats:', error);
+            } finally {
+                hideRefreshIndicator();
+            }
+        }
+
+        function setupSSE() {
+            try {
+                eventSource = new EventSource('http://localhost/SiteBarosani/api/sse/updates.php');
+
+                eventSource.addEventListener('connected', (e) => {
+                    console.log('SSE Connected:', e.data);
+                    sseConnected = true;
+                    document.getElementById('sseStatus').classList.remove('hidden');
+                });
+
+                // Refresh când se modifică barosani (adaugă, șterge, update, aprobare)
+                eventSource.addEventListener('barosani-updated', (e) => {
+                    console.log('Barosani updated:', e.data);
+                    loadStats(true); // Refresh instant statistici
+                });
+
+                // Refresh când se modifică cereri (creare, aprobare, respingere, ștergere)
+                eventSource.addEventListener('applications-updated', (e) => {
+                    console.log('Applications updated:', e.data);
+                    loadStats(true); // Refresh instant statistici
+                });
+
+                eventSource.addEventListener('heartbeat', (e) => {
+                    // Keep-alive heartbeat
+                });
+
+                eventSource.onerror = (err) => {
+                    console.error('SSE Error:', err);
+                    sseConnected = false;
+                    document.getElementById('sseStatus').classList.add('hidden');
+                    // SSE va încerca automat să reconecteze
+                };
+            } catch (err) {
+                console.error('Failed to establish SSE connection:', err);
             }
         }
 
@@ -157,9 +221,26 @@
             window.location.href = 'index.html';
         }
 
+        // Initialize
         checkAuth();
-        loadStats();
-        setInterval(loadStats, 30000);
+        loadStats(false); // Initial load fără indicator
+
+        // Setup SSE pentru real-time updates
+        setupSSE();
+
+        // Fallback polling la 30 secunde (doar dacă SSE nu funcționează)
+        setInterval(() => {
+            if (!sseConnected) {
+                loadStats(false);
+            }
+        }, 30000);
+
+        // Cleanup SSE când se închide pagina
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+        });
     </script>
 </body>
 </html>
