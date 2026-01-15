@@ -1,13 +1,59 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
+import confetti from 'canvas-confetti';
 import { useToast } from '../contexts/ToastContext';
 
 export default function CertificateGenerator({ barosan, onClose }) {
   const certificateRef = useRef(null);
   const [downloading, setDownloading] = useState(false);
   const toast = useToast();
+
+  // Confetti effect when certificate opens
+  useEffect(() => {
+    // Gold confetti for platinum/gold tiers, regular for basic
+    const colors = barosan.tier === 'platinum'
+      ? ['#E5E4E2', '#BCC6CC', '#D4AF37', '#FFD700']
+      : barosan.tier === 'gold'
+      ? ['#D4AF37', '#FFD700', '#FFA500']
+      : ['#4169E1', '#FFD700', '#00CED1'];
+
+    // Fire confetti burst
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+
+    frame();
+
+    // Big burst on mount
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: colors
+    });
+  }, [barosan.tier]);
 
   const tierLabels = {
     platinum: 'PLATINUM',
@@ -42,9 +88,94 @@ export default function CertificateGenerator({ barosan, onClose }) {
           }
         }, 'image/png');
         toast.success('Certificat PNG descărcat cu succes!');
+
+        // Confetti on successful download
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
       } catch (error) {
         console.error('Error generating certificate:', error);
         toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
+      } finally {
+        setDownloading(false);
+      }
+    }
+  };
+
+  const handleShareWhatsApp = () => {
+    const text = `🏆 Tocmai am devenit Barosan ${tierLabels[barosan.tier]}! 🎉\nCertificat ID: ${barosan.certificat_id}\nVerifică Registrul Oficial: ${window.location.origin}/zid`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+    toast.success('Se deschide WhatsApp...');
+  };
+
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/zid`;
+    navigator.clipboard.writeText(link).then(() => {
+      toast.success('Link copiat în clipboard! 🔗');
+      confetti({
+        particleCount: 30,
+        spread: 50,
+        origin: { y: 0.6 }
+      });
+    });
+  };
+
+  const handleDownloadForStory = async () => {
+    if (certificateRef.current) {
+      try {
+        setDownloading(true);
+        const canvas = await html2canvas(certificateRef.current, {
+          scale: 3,
+          backgroundColor: '#ffffff',
+          logging: false,
+          useCORS: true,
+          allowTaint: true
+        });
+
+        // Create story canvas (1080x1920)
+        const storyCanvas = document.createElement('canvas');
+        storyCanvas.width = 1080;
+        storyCanvas.height = 1920;
+        const ctx = storyCanvas.getContext('2d');
+
+        // Fill background gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
+        gradient.addColorStop(0, '#1a365d');
+        gradient.addColorStop(1, '#2d5986');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1080, 1920);
+
+        // Center certificate
+        const scale = Math.min(1080 / canvas.width, 1200 / canvas.height);
+        const x = (1080 - canvas.width * scale) / 2;
+        const y = (1920 - canvas.height * scale) / 2;
+        ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
+
+        storyCanvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `barosan-story-${barosan.certificat_id}.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+
+        toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('Eroare la generare story format');
       } finally {
         setDownloading(false);
       }
@@ -84,6 +215,13 @@ export default function CertificateGenerator({ barosan, onClose }) {
         // Download PDF
         pdf.save(`certificat-barosan-${barosan.certificat_id}.pdf`);
         toast.success('Certificat PDF descărcat cu succes!');
+
+        // Confetti on successful PDF download
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
       } catch (error) {
         console.error('Error generating PDF:', error);
         toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
@@ -304,15 +442,46 @@ export default function CertificateGenerator({ barosan, onClose }) {
           </div>
         </div>
 
-        {/* Instructions Footer */}
+        {/* Share & Download Footer */}
         <div className="bg-white border-t">
-          <div className="container mx-auto px-3 md:px-4 py-4 md:py-6 text-center">
-            <p className="text-sm md:text-base text-gray-700 mb-2">
-              Apasă butonul <span className="font-semibold text-green-600">"Descarcă PNG"</span> pentru a salva certificatul tău oficial de barosan.
-            </p>
-            <p className="text-xs md:text-sm text-gray-500">
-              Distribuie-l pe social media și arată-le tuturor că ești barosan verificat! 🏆
-            </p>
+          <div className="container mx-auto px-3 md:px-4 py-4 md:py-6">
+            {/* Share Buttons */}
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-gray-700 text-center mb-3">
+                📱 Distribuie pe Social Media
+              </h3>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button
+                  onClick={handleDownloadForStory}
+                  disabled={downloading}
+                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  📸 Story Format
+                </button>
+                <button
+                  onClick={handleShareWhatsApp}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:scale-105 transition-transform text-sm"
+                >
+                  💬 WhatsApp
+                </button>
+                <button
+                  onClick={handleCopyLink}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:scale-105 transition-transform text-sm"
+                >
+                  🔗 Copiază Link
+                </button>
+              </div>
+            </div>
+
+            {/* Instructions */}
+            <div className="text-center border-t pt-4">
+              <p className="text-sm text-gray-700 mb-2">
+                Descarcă certificatul în format <span className="font-semibold text-green-600">PNG</span> sau <span className="font-semibold text-red-600">PDF</span>
+              </p>
+              <p className="text-xs text-gray-500">
+                Distribuie-l și arată-le tuturor că ești barosan verificat! 🏆
+              </p>
+            </div>
           </div>
         </div>
       </div>

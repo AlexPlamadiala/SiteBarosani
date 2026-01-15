@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useCountUp } from '../hooks/useCountUp';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -75,6 +76,12 @@ export default function Home() {
   const platinumCount = barosani.filter(b => b.tier === 'platinum').length;
   const goldCount = barosani.filter(b => b.tier === 'gold').length;
   const basicCount = barosani.filter(b => b.tier === 'basic').length;
+
+  // Animated counters
+  const animatedTotal = useCountUp(totalBarosani, 2000);
+  const animatedPlatinum = useCountUp(platinumCount, 2000);
+  const animatedGold = useCountUp(goldCount, 2000);
+  const animatedBasic = useCountUp(basicCount, 2000);
 
   // Loading state
   if (loading) {
@@ -159,22 +166,22 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Stats Cards - Compact */}
+          {/* Stats Cards - Compact with Animation */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37]">
-              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">{totalBarosani}</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedTotal}</div>
               <div className="text-gray-700 font-semibold text-sm">Barosani Verificați</div>
             </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2]">
-              <div className="text-4xl font-extrabold text-[#1a365d]">{platinumCount}</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold text-[#1a365d] tabular-nums">{animatedPlatinum}</div>
               <div className="text-gray-700 font-semibold text-sm">💎 Platinum</div>
             </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37]">
-              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent">{goldCount}</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedGold}</div>
               <div className="text-gray-700 font-semibold text-sm">🏆 Gold</div>
             </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300">
-              <div className="text-4xl font-extrabold text-gray-600">{basicCount}</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold text-gray-600 tabular-nums">{animatedBasic}</div>
               <div className="text-gray-700 font-semibold text-sm">⭐ Basic</div>
             </div>
           </div>
@@ -231,7 +238,7 @@ export default function Home() {
             Gata Să Devii Barosan Oficial?
           </h2>
           <p className="text-base md:text-lg mb-8 max-w-xl mx-auto opacity-90">
-            Alătură-te celor <span className="font-bold text-[#D4AF37]">{totalBarosani}</span> barosani verificați
+            Alătură-te celor <span className="font-bold text-[#D4AF37] tabular-nums">{animatedTotal}</span> barosani verificați
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
