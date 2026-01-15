@@ -76,6 +76,56 @@ export default function Home() {
   const goldCount = barosani.filter(b => b.tier === 'gold').length;
   const basicCount = barosani.filter(b => b.tier === 'basic').length;
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
+        {/* Hero Section Skeleton */}
+        <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-[#1a365d] to-[#2d5986] text-white">
+          <div className="container mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-5 animate-pulse">
+              <span className="text-5xl opacity-50">🏆</span>
+            </div>
+            <div className="h-12 bg-white/20 rounded-lg w-3/4 max-w-2xl mx-auto mb-4 animate-pulse"></div>
+            <div className="h-6 bg-white/20 rounded w-1/2 mx-auto mb-2 animate-pulse"></div>
+            <div className="h-5 bg-white/20 rounded w-1/3 mx-auto mb-8 animate-pulse"></div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+              <div className="h-12 bg-white/20 rounded-xl w-40 animate-pulse"></div>
+              <div className="h-12 bg-white/20 rounded-xl w-40 animate-pulse"></div>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-white/20 rounded-xl p-4 animate-pulse">
+                  <div className="h-10 bg-white/30 rounded mb-2"></div>
+                  <div className="h-4 bg-white/30 rounded w-2/3 mx-auto"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features Skeleton */}
+        <section className="py-12 md:py-16 px-4 bg-white">
+          <div className="container mx-auto">
+            <div className="h-10 bg-gray-200 rounded w-1/3 mx-auto mb-10 animate-pulse"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="bg-gray-100 rounded-xl p-6 animate-pulse">
+                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                  <div className="h-6 bg-gray-200 rounded w-2/3 mx-auto mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
       {/* Hero Section - Compact */}
