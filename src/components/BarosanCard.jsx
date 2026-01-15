@@ -4,6 +4,8 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const hoverTimeoutRef = useRef(null);
 
   // Detect touch device on mount
@@ -92,17 +94,29 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
 
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-gray-200">
-        {barosan.poza ? (
-          <img
-            src={barosan.poza}
-            alt={barosan.nume}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'https://via.placeholder.com/400x400/cccccc/666666?text=Fara+Poza';
-            }}
-          />
+        {barosan.poza && !imageError ? (
+          <>
+            {/* Loading placeholder */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse">
+                <div className="text-4xl opacity-50">📸</div>
+              </div>
+            )}
+            {/* Actual image */}
+            <img
+              src={barosan.poza}
+              alt={barosan.nume}
+              className={`w-full h-full object-cover transition-opacity duration-300 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
+              onError={() => {
+                setImageError(true);
+                setImageLoaded(false);
+              }}
+            />
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
             <span className="text-6xl">👤</span>
