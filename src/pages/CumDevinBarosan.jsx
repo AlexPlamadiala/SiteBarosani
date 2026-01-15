@@ -39,9 +39,6 @@ export default function CumDevinBarosan() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <HowItWorks />
-
       {/* Application Form Section */}
       <section className="py-12 px-4 bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
         <div className="container mx-auto">
@@ -56,6 +53,9 @@ export default function CumDevinBarosan() {
           <ApplicationForm />
         </div>
       </section>
+
+      {/* How It Works Section */}
+      <HowItWorks />
     </div>
   );
 }
