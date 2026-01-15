@@ -371,6 +371,7 @@ export default function ApplicationForm() {
                 </div>
               </div>
             </div>
+            </div>
 
             <div className="mt-8 text-center">
               <button
