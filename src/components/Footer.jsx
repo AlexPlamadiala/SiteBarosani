@@ -50,7 +50,7 @@ export default function Footer() {
           {/* Disclaimer */}
           <div className="text-xs text-gray-400 text-center max-w-2xl space-y-2">
             <p className="font-semibold text-yellow-400">
-              ⚠️ PARODIE / SATIRĂ
+              ⚠️ PARODIE / UMOR
             </p>
             <p>
               Acest site este creat exclusiv pentru amuzament și divertisment. Certificatele și titlurile

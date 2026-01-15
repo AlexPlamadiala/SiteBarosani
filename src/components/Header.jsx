@@ -14,13 +14,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white shadow-lg">
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-2 md:py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 md:space-x-3" onClick={closeMobileMenu}>
+          <Link to="/" className="flex items-center space-x-2" onClick={closeMobileMenu}>
             <div className="text-xl md:text-2xl">👑</div>
             <div>
-              <h1 className="text-lg md:text-2xl font-bold tracking-wide">
+              <h1 className="text-base md:text-xl font-bold tracking-wide">
                 ZIDUL BAROSANILOR
               </h1>
               <p className="text-xs text-gray-300 hidden md:block">

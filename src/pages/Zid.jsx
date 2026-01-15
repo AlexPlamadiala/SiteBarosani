@@ -260,7 +260,7 @@ export default function Zid() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
       {/* Hero Section */}
-      <section className="py-8 md:py-10 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <section className="py-4 md:py-6 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto text-center">
           {/* SSE Status & Refresh Indicator */}
           <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
@@ -281,17 +281,17 @@ export default function Zid() {
             )}
           </div>
 
-          <div className="text-5xl md:text-6xl mb-4">🏆</div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-3">
+          <div className="text-4xl md:text-5xl mb-2">🏆</div>
+          <h1 className="text-2xl md:text-4xl font-bold mb-2">
             Zidul Oficial al Barosanilor
           </h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-6">
+          <p className="text-base md:text-lg max-w-3xl mx-auto opacity-90 mb-3">
             Toți barosanii verificați și certificați oficial, organizați după tier-ul lor de elită
           </p>
 
           {/* Search, Filter and Sort */}
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="flex flex-col gap-4">
+          <div className="max-w-4xl mx-auto mb-4">
+            <div className="flex flex-col gap-3">
               {/* Search Bar - Full width on top */}
               <div className="relative">
                 <input
@@ -299,7 +299,7 @@ export default function Zid() {
                   placeholder="Caută după nume, motto sau certificat..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 rounded-lg text-gray-900 font-medium border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors placeholder:text-gray-500"
+                  className="w-full px-3 py-2 pl-10 rounded-lg text-gray-900 font-medium border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors placeholder:text-gray-500 text-sm md:text-base"
                 />
                 <svg
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
@@ -320,12 +320,12 @@ export default function Zid() {
               </div>
 
               {/* Filters Row - Tier and Sort side by side */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 {/* Tier Filter */}
                 <select
                   value={selectedTierFilter}
                   onChange={(e) => setSelectedTierFilter(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium"
+                  className="flex-1 px-3 py-2 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium text-sm md:text-base"
                 >
                   <option value="all">🎯 Toate Tier-urile</option>
                   <option value="platinum">💎 Doar Platinum</option>
@@ -337,7 +337,7 @@ export default function Zid() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium"
+                  className="flex-1 px-3 py-2 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium text-sm md:text-base"
                 >
                   <option value="tier">🏅 Sortează după Tier</option>
                   <option value="date-desc">📅 Cei mai noi</option>

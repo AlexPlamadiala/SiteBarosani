@@ -332,16 +332,16 @@ export default function ApplicationForm() {
           Completează datele și primești un cod unic pentru a finaliza procesul
         </p>
 
-        {/* Disclaimer - Satiră */}
+        {/* Disclaimer - Umor */}
         <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-3 md:p-4 mb-4 md:mb-6">
           <div className="flex items-start gap-2 md:gap-3">
             <span className="text-xl md:text-2xl flex-shrink-0">⚠️</span>
             <div>
-              <p className="font-bold text-yellow-900 mb-1 text-sm md:text-base">ATENȚIE - Site de Parodie / Satiră</p>
+              <p className="font-bold text-yellow-900 mb-1 text-sm md:text-base">ATENȚIE - Site de Parodie / Umor</p>
               <p className="text-xs md:text-sm text-yellow-800">
                 Acest site este creat exclusiv pentru <strong>amuzament și divertisment</strong>.
                 Certificatele și titlurile nu au valoare oficială, juridică sau de certificare reală.
-                Prin continuarea înregistrării, confirmi că înțelegi natura satirică a serviciului.
+                Prin continuarea înregistrării, confirmi că înțelegi natura umoristică a serviciului.
               </p>
             </div>
           </div>
