@@ -17,9 +17,33 @@ export default function Zid() {
   const [sseConnected, setSseConnected] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTierFilter, setSelectedTierFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('tier'); // 'tier', 'date-desc', 'date-asc', 'name-asc', 'name-desc'
 
   // Debounce search term to avoid filtering on every keystroke
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Load preferences from localStorage
+  useEffect(() => {
+    const savedPreferences = localStorage.getItem('zidPreferences');
+    if (savedPreferences) {
+      try {
+        const prefs = JSON.parse(savedPreferences);
+        if (prefs.sortBy) setSortBy(prefs.sortBy);
+        if (prefs.tierFilter) setSelectedTierFilter(prefs.tierFilter);
+      } catch (e) {
+        console.error('Failed to load preferences:', e);
+      }
+    }
+  }, []);
+
+  // Save preferences to localStorage
+  useEffect(() => {
+    const preferences = {
+      sortBy,
+      tierFilter: selectedTierFilter
+    };
+    localStorage.setItem('zidPreferences', JSON.stringify(preferences));
+  }, [sortBy, selectedTierFilter]);
 
   // Încarcă barosanii din API
   useEffect(() => {
@@ -106,9 +130,9 @@ export default function Zid() {
     };
   }, []);
 
-  // Filtrare și căutare
+  // Filtrare și sortare
   const filteredBarosani = useMemo(() => {
-    let filtered = barosani;
+    let filtered = [...barosani];
 
     // Apply search term (debounced)
     if (debouncedSearchTerm.trim()) {
@@ -125,8 +149,37 @@ export default function Zid() {
       filtered = filtered.filter(b => b.tier === selectedTierFilter);
     }
 
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'tier':
+          // Platinum > Gold > Basic
+          const tierOrder = { platinum: 1, gold: 2, basic: 3 };
+          return tierOrder[a.tier] - tierOrder[b.tier];
+
+        case 'date-desc':
+          // Newest first
+          return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
+
+        case 'date-asc':
+          // Oldest first
+          return new Date(a.dataInregistrare) - new Date(b.dataInregistrare);
+
+        case 'name-asc':
+          // A-Z
+          return a.nume.localeCompare(b.nume, 'ro');
+
+        case 'name-desc':
+          // Z-A
+          return b.nume.localeCompare(a.nume, 'ro');
+
+        default:
+          return 0;
+      }
+    });
+
     return filtered;
-  }, [barosani, debouncedSearchTerm, selectedTierFilter]);
+  }, [barosani, debouncedSearchTerm, selectedTierFilter, sortBy]);
 
   // Organizăm barosanii filtrați pe tier-uri
   const barosaniByTier = useMemo(() => {
@@ -236,11 +289,11 @@ export default function Zid() {
             Toți barosanii verificați și certificați oficial, organizați după tier-ul lor de elită
           </p>
 
-          {/* Search and Filter */}
+          {/* Search, Filter and Sort */}
           <div className="max-w-4xl mx-auto mb-8">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search Bar */}
-              <div className="flex-1 relative">
+            <div className="flex flex-col gap-4">
+              {/* Search Bar - Full width on top */}
+              <div className="relative">
                 <input
                   type="text"
                   placeholder="Caută după nume, motto sau certificat..."
@@ -259,24 +312,40 @@ export default function Zid() {
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 font-bold text-lg"
                   >
                     ✕
                   </button>
                 )}
               </div>
 
-              {/* Tier Filter */}
-              <select
-                value={selectedTierFilter}
-                onChange={(e) => setSelectedTierFilter(e.target.value)}
-                className="px-6 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer"
-              >
-                <option value="all">Toate Tier-urile</option>
-                <option value="platinum">💎 Doar Platinum</option>
-                <option value="gold">🏆 Doar Gold</option>
-                <option value="basic">⭐ Doar Basic</option>
-              </select>
+              {/* Filters Row - Tier and Sort side by side */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Tier Filter */}
+                <select
+                  value={selectedTierFilter}
+                  onChange={(e) => setSelectedTierFilter(e.target.value)}
+                  className="flex-1 px-4 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium"
+                >
+                  <option value="all">🎯 Toate Tier-urile</option>
+                  <option value="platinum">💎 Doar Platinum</option>
+                  <option value="gold">🏆 Doar Gold</option>
+                  <option value="basic">⭐ Doar Basic</option>
+                </select>
+
+                {/* Sort */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="flex-1 px-4 py-3 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors cursor-pointer font-medium"
+                >
+                  <option value="tier">🏅 Sortează după Tier</option>
+                  <option value="date-desc">📅 Cei mai noi</option>
+                  <option value="date-asc">📅 Cei mai vechi</option>
+                  <option value="name-asc">🔤 Nume A-Z</option>
+                  <option value="name-desc">🔤 Nume Z-A</option>
+                </select>
+              </div>
             </div>
 
             {/* Results Count */}
