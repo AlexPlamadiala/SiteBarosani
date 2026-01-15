@@ -655,7 +655,7 @@ export default function ApplicationForm() {
             După trimiterea formularului vei primi un cod unic pe care trebuie să-l folosești pentru plată și email.
           </p>
         </form>
-        </div>
+      </div>
       </div>
     </div>
   );
