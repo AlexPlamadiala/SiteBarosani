@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCountUp } from '../hooks/useCountUp';
+import RecentActivity from '../components/RecentActivity';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -183,6 +184,33 @@ export default function Home() {
             <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform">
               <div className="text-4xl font-extrabold text-gray-600 tabular-nums">{animatedBasic}</div>
               <div className="text-gray-700 font-semibold text-sm">⭐ Basic</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recent Activity Section */}
+      <section className="py-8 px-4 bg-gradient-to-b from-white to-[#F5E6D3]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 flex flex-col justify-center">
+              <div className="text-center lg:text-left mb-4 lg:mb-0">
+                <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-3">
+                  Comunitatea Crește! 🚀
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  Barosani noi se înscriu în fiecare zi. Nu rămâne în urmă!
+                </p>
+                <Link
+                  to="/cum-devin-barosan"
+                  className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
+                >
+                  Înscrie-te Acum 🔥
+                </Link>
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <RecentActivity barosani={barosani} />
             </div>
           </div>
         </div>

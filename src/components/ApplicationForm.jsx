@@ -217,6 +217,24 @@ export default function ApplicationForm() {
     setErrors({});
   };
 
+  // Calculate form progress
+  const calculateProgress = () => {
+    const fields = {
+      nume: formData.nume.trim(),
+      email: formData.email.trim(),
+      revolutId: formData.revolutId.trim(),
+      motto: formData.motto.trim(),
+      tierSelected: formData.tier !== 'basic', // bonus for selecting premium tier
+      poza: imagePreview || formData.poza
+    };
+
+    const completedFields = Object.values(fields).filter(Boolean).length;
+    const totalFields = Object.keys(fields).length;
+    return Math.round((completedFields / totalFields) * 100);
+  };
+
+  const progress = calculateProgress();
+
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
@@ -315,6 +333,26 @@ export default function ApplicationForm() {
             <p className="text-sm text-gray-600">
               Completează datele și primești codul tău
             </p>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-gray-600">Progres formular</span>
+              <span className="text-xs font-bold text-[#D4AF37]">{progress}%</span>
+            </div>
+            <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] transition-all duration-500 ease-out rounded-full"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+              </div>
+            </div>
+            <div className="flex justify-between mt-1">
+              <span className="text-xs text-gray-500">Start</span>
+              <span className="text-xs text-gray-500">{progress < 100 ? 'În desfășurare...' : 'Complet! 🎉'}</span>
+            </div>
           </div>
 
         {/* Disclaimer Compact */}
