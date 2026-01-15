@@ -1,4 +1,9 @@
 <?php
+// Set JSON header și disable error display
+header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+
 require_once 'config.php';
 require_once 'helpers/ChangeTracker.php';
 
@@ -69,6 +74,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'success' => false,
             'error' => 'Eroare la salvarea cererii: ' . $e->getMessage()
         ]);
+    } catch(Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Eroare generală: ' . $e->getMessage()
+        ]);
     }
+} else {
+    http_response_code(405);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Metodă HTTP nepermisă'
+    ]);
 }
 ?>
