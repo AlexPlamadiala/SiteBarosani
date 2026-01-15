@@ -280,7 +280,7 @@ export default function Zid() {
             <span className="text-4xl">🏆</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold mb-3 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent drop-shadow-lg">
-            Zidul Oficial al Barosanilor
+            Registrul Oficial al Barosanilor
           </h1>
           <p className="text-sm md:text-lg max-w-2xl mx-auto opacity-95 mb-6 leading-relaxed">
             Descoperă barosanii verificați și certificați oficial, organizați după nivelul lor de elită
@@ -532,11 +532,11 @@ export default function Zid() {
             <span className="text-3xl">👑</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-            Vrei să Apari Pe Zid?
+            Vrei să Apari În Registru?
           </h2>
           <p className="text-base md:text-xl mb-10 max-w-2xl mx-auto opacity-95 leading-relaxed">
             Alege tier-ul tău și fă parte din comunitatea oficială de barosani verificați.
-            Certificare instant, vizibilitate garantată!
+            Certificare instant, vizibilitate garantată în Registrul Oficial!
           </p>
           <a
             href="/cum-devin-barosan"

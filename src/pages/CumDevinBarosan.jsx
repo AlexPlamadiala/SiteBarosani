@@ -48,7 +48,7 @@ export default function CumDevinBarosan() {
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
               Fiecare tier vine cu beneficii exclusive. Cu cât investești mai mult,
-              cu atât arăți mai tare pe Zidul Barosanilor.
+              cu atât arăți mai tare în Registrul Oficial al Barosanilor.
             </p>
           </div>
 
@@ -94,7 +94,7 @@ export default function CumDevinBarosan() {
                   Vizibilitate Publică
                 </h3>
                 <p className="text-gray-600 text-sm md:text-base">
-                  Apari pe Zidul public unde toată lumea poate vedea că ești barosan autentic
+                  Apari în Registrul Oficial unde toată lumea poate vedea că ești barosan autentic
                 </p>
               </div>
             </div>

@@ -100,11 +100,11 @@ export default function Home() {
             <span className="text-6xl">🏆</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
-            ZIDUL BAROSANILOR
+            REGISTRUL OFICIAL AL BAROSANILOR
           </h1>
           <p className="text-lg md:text-2xl mb-3 max-w-4xl mx-auto leading-relaxed opacity-95">
             Bine ai venit la singura instituție acreditată internațional pentru verificarea
-            și certificarea barosanilor.
+            și certificarea oficială a barosanilor.
           </p>
           <p className="text-base md:text-xl mb-10 max-w-3xl mx-auto italic opacity-90">
             "Unde șmecheria devine oficială"
@@ -117,7 +117,7 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-white rounded-2xl blur-lg group-hover:blur-xl transition-all opacity-30"></div>
               <span className="relative block bg-gradient-to-r from-white to-gray-100 text-[#1a365d] px-8 md:px-10 py-4 md:py-5 rounded-2xl font-extrabold text-lg md:text-xl hover:scale-105 transition-transform shadow-2xl">
-                Vezi Zidul Oficial 👑
+                Vezi Registrul Oficial 👑
               </span>
             </Link>
             <Link
@@ -217,12 +217,12 @@ export default function Home() {
             <span className="text-3xl">ℹ️</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-6">
-            Ce Este Zidul Barosanilor?
+            Ce Este Registrul Oficial al Barosanilor?
           </h2>
           <p className="text-base md:text-lg text-gray-700 mb-6 leading-relaxed">
             De la fondarea noastră în 2025, am certificat <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#FFD700]">{totalBarosani} barosani</span> din
             toate colțurile României. Prin puterea conferită de Consiliul Suprem al Șmecheriei,
-            certificăm că fiecare barosan de pe Zid a demonstrat calități remarcabile de barosănie
+            certificăm că fiecare barosan din Registrul nostru a demonstrat calități remarcabile de barosănie
             și este autorizat să se dea mare în orice context social.
           </p>
           <div className="relative group">
@@ -241,7 +241,7 @@ export default function Home() {
       <section className="py-16 md:py-20 px-4 bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
         <div className="container mx-auto">
           <h2 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-center mb-12 md:mb-16">
-            De Ce Să Fii Pe Zid?
+            De Ce Să Fii În Registru?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Feature 1 */}
@@ -267,7 +267,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-[#1a365d] mb-3">Vizibilitate Publică</h3>
                 <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                  Apari pe Zidul oficial unde toată lumea poate vedea că ești barosan autentic verificat
+                  Apari în Registrul Oficial unde toată lumea poate vedea că ești barosan autentic verificat
                 </p>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-white rounded-2xl blur-lg group-hover:blur-xl transition-all opacity-30"></div>
               <span className="relative block bg-gradient-to-r from-white to-gray-100 text-[#1a365d] px-8 md:px-10 py-3 md:py-4 rounded-2xl font-extrabold text-base md:text-lg hover:scale-105 transition-transform shadow-2xl">
-                Explorează Zidul 🔍
+                Explorează Registrul 🔍
               </span>
             </Link>
             <Link
