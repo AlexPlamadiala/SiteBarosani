@@ -2,10 +2,12 @@ import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
+import { useToast } from '../contexts/ToastContext';
 
 export default function CertificateGenerator({ barosan, onClose }) {
   const certificateRef = useRef(null);
   const [downloading, setDownloading] = useState(false);
+  const toast = useToast();
 
   const tierLabels = {
     platinum: 'PLATINUM',
@@ -39,9 +41,10 @@ export default function CertificateGenerator({ barosan, onClose }) {
             URL.revokeObjectURL(url);
           }
         }, 'image/png');
+        toast.success('Certificat PNG descărcat cu succes!');
       } catch (error) {
         console.error('Error generating certificate:', error);
-        alert('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
+        toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
       } finally {
         setDownloading(false);
       }
@@ -80,9 +83,10 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
         // Download PDF
         pdf.save(`certificat-barosan-${barosan.certificat_id}.pdf`);
+        toast.success('Certificat PDF descărcat cu succes!');
       } catch (error) {
         console.error('Error generating PDF:', error);
-        alert('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
+        toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
       } finally {
         setDownloading(false);
       }

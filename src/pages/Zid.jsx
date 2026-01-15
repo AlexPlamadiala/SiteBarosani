@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
+import SkeletonCard from '../components/SkeletonCard';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -153,14 +154,30 @@ export default function Zid() {
     }
   };
 
-  // Loading state
+  // Loading state with skeleton cards
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⏳</div>
-          <p className="text-2xl font-bold text-[#1a365d]">Se încarcă barosanii...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
+        {/* Hero Section Skeleton */}
+        <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+          <div className="container mx-auto text-center">
+            <div className="text-6xl mb-6 animate-pulse">🏆</div>
+            <div className="h-12 bg-white/20 rounded w-96 mx-auto mb-4 animate-pulse"></div>
+            <div className="h-6 bg-white/20 rounded w-2/3 mx-auto mb-8 animate-pulse"></div>
+            <div className="h-12 bg-white/20 rounded w-full max-w-4xl mx-auto animate-pulse"></div>
+          </div>
+        </section>
+
+        {/* Skeleton Cards Grid */}
+        <section className="py-16 px-4">
+          <div className="container mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {[...Array(12)].map((_, index) => (
+                <SkeletonCard key={index} />
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     );
   }

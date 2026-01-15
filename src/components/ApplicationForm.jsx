@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useToast } from '../contexts/ToastContext';
 
 export default function ApplicationForm() {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     nume: '',
     email: '',
@@ -87,8 +89,9 @@ export default function ApplicationForm() {
 
         if (uploadData.success) {
           uploadedImageUrl = uploadData.url;
+          toast.success('Imagine uploadată cu succes!');
         } else {
-          alert('Eroare la uploadarea imaginii: ' + uploadData.error);
+          toast.error('Eroare la uploadarea imaginii: ' + uploadData.error);
           setUploading(false);
           return;
         }
@@ -116,6 +119,7 @@ export default function ApplicationForm() {
       if (data.success) {
         setApplicationCode(data.code);
         setSubmitted(true);
+        toast.success('Cerere trimisă cu succes! Codul tău: ' + data.code);
 
         // Backup în localStorage (opțional)
         const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
@@ -128,11 +132,11 @@ export default function ApplicationForm() {
         });
         localStorage.setItem('barosaniApplications', JSON.stringify(existingApps));
       } else {
-        alert('Eroare la trimiterea cererii: ' + data.error);
+        toast.error('Eroare la trimiterea cererii: ' + data.error);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Eroare de conexiune. Verifică că XAMPP rulează și încearcă din nou!');
+      toast.error('Eroare de conexiune. Verifică că XAMPP rulează și încearcă din nou!');
     } finally {
       setUploading(false);
     }
