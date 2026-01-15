@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useToast } from '../contexts/ToastContext';
+import { fetchWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
 
 export default function ApplicationForm() {
   const toast = useToast();
@@ -80,10 +81,18 @@ export default function ApplicationForm() {
         const imageFormData = new FormData();
         imageFormData.append('image', imageFile);
 
-        const uploadResponse = await fetch('http://localhost/SiteBarosani/api/upload_image.php', {
-          method: 'POST',
-          body: imageFormData
-        });
+        const uploadResponse = await fetchWithRetry(
+          'http://localhost/SiteBarosani/api/upload_image.php',
+          {
+            method: 'POST',
+            body: imageFormData
+          },
+          3,
+          1000,
+          (attempt, maxRetries) => {
+            toast.info(`Reîncerc uploadarea imaginii... (${attempt}/${maxRetries})`, 2000);
+          }
+        );
 
         const uploadData = await uploadResponse.json();
 
@@ -98,21 +107,29 @@ export default function ApplicationForm() {
       }
 
       // Trimite cererea la API
-      const response = await fetch('http://localhost/SiteBarosani/api/applications.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await fetchWithRetry(
+        'http://localhost/SiteBarosani/api/applications.php',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nume: formData.nume,
+            email: formData.email,
+            revolutId: formData.revolutId,
+            motto: formData.motto,
+            tier: formData.tier,
+            poza: uploadedImageUrl,
+            link: formData.link
+          })
         },
-        body: JSON.stringify({
-          nume: formData.nume,
-          email: formData.email,
-          revolutId: formData.revolutId,
-          motto: formData.motto,
-          tier: formData.tier,
-          poza: uploadedImageUrl,
-          link: formData.link
-        })
-      });
+        3,
+        1000,
+        (attempt, maxRetries) => {
+          toast.info(`Reîncerc trimiterea cererii... (${attempt}/${maxRetries})`, 2000);
+        }
+      );
 
       const data = await response.json();
 
@@ -136,7 +153,7 @@ export default function ApplicationForm() {
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Eroare de conexiune. Verifică că XAMPP rulează și încearcă din nou!');
+      toast.error(getErrorMessage(error));
     } finally {
       setUploading(false);
     }

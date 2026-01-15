@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
+import { fetchJSONWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
+import { useDebounce } from '../utils/useDebounce';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -16,6 +18,9 @@ export default function Zid() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTierFilter, setSelectedTierFilter] = useState('all');
 
+  // Debounce search term to avoid filtering on every keystroke
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
   // Încarcă barosanii din API
   useEffect(() => {
     async function fetchBarosani(isInitialLoad = false) {
@@ -25,8 +30,7 @@ export default function Zid() {
           setIsRefreshing(true);
         }
 
-        const response = await fetch(API_URL);
-        const data = await response.json();
+        const data = await fetchJSONWithRetry(API_URL, {}, 3);
 
         if (data.success) {
           setBarosani(data.barosani);
@@ -38,7 +42,7 @@ export default function Zid() {
         console.error('Error fetching barosani:', err);
         // Nu afișăm eroare la refresh-uri silențioase
         if (isInitialLoad) {
-          setError('Nu se pot încărca datele. Verifică că XAMPP rulează!');
+          setError(getErrorMessage(err));
         }
       } finally {
         setLoading(false);
@@ -106,9 +110,9 @@ export default function Zid() {
   const filteredBarosani = useMemo(() => {
     let filtered = barosani;
 
-    // Apply search term
-    if (searchTerm.trim()) {
-      const search = searchTerm.toLowerCase();
+    // Apply search term (debounced)
+    if (debouncedSearchTerm.trim()) {
+      const search = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(b =>
         b.nume.toLowerCase().includes(search) ||
         b.motto?.toLowerCase().includes(search) ||
@@ -122,7 +126,7 @@ export default function Zid() {
     }
 
     return filtered;
-  }, [barosani, searchTerm, selectedTierFilter]);
+  }, [barosani, debouncedSearchTerm, selectedTierFilter]);
 
   // Organizăm barosanii filtrați pe tier-uri
   const barosaniByTier = useMemo(() => {
