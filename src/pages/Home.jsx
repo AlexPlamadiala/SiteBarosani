@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCountUp } from '../hooks/useCountUp';
 import RecentActivity from '../components/RecentActivity';
+import Leaderboard from '../components/Leaderboard';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -252,6 +253,23 @@ export default function Home() {
                 Comunitate selectă cu șmecherie certificată
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leaderboard Section */}
+      <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-white to-[#F5E6D3]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-3">
+              Ierarhia Elitei 🏆
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Cei mai dedicați și influenți barosani. Alătură-te lor și câștigă puncte!
+            </p>
+          </div>
+          <div className="max-w-2xl mx-auto">
+            <Leaderboard barosani={barosani} />
           </div>
         </div>
       </section>

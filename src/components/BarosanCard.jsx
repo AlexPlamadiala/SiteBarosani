@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import BadgeDisplay from './BadgeDisplay';
 
-export default function BarosanCard({ barosan, onViewCertificate }) {
+export default function BarosanCard({ barosan, onViewCertificate, totalBarosani = 0 }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showButton, setShowButton] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -152,6 +153,12 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
         <h3 className="font-extrabold text-xl text-center text-[#1a365d] leading-tight">
           {barosan.nume}
         </h3>
+
+        {/* Badges */}
+        <div className="flex justify-center">
+          <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
+        </div>
+
         <p className="text-sm text-gray-600 text-center italic leading-relaxed min-h-[40px] flex items-center justify-center">
           "{barosan.motto}"
         </p>
