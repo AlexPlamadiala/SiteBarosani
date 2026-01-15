@@ -22,22 +22,28 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
 
   const tierColors = {
     platinum: {
-      border: 'border-[#D4AF37]',
+      border: 'border-[#BCC6CC]',
       badge: 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC]',
-      glow: 'shadow-[0_0_15px_rgba(212,175,55,0.5)]',
-      text: 'text-[#1a365d]'
+      badgeText: 'text-[#1a365d]',
+      glow: 'shadow-[0_0_20px_rgba(188,198,204,0.6)]',
+      cardGradient: 'from-[#E5E4E2]/10 to-[#BCC6CC]/10',
+      blurColor: 'bg-[#BCC6CC]'
     },
     gold: {
       border: 'border-[#D4AF37]',
-      badge: 'bg-[#D4AF37]',
-      glow: '',
-      text: 'text-[#1a365d]'
+      badge: 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700]',
+      badgeText: 'text-[#1a365d]',
+      glow: 'shadow-[0_0_20px_rgba(212,175,55,0.5)]',
+      cardGradient: 'from-[#D4AF37]/10 to-[#FFD700]/10',
+      blurColor: 'bg-[#D4AF37]'
     },
     basic: {
       border: 'border-gray-300',
-      badge: 'bg-gray-400',
+      badge: 'bg-gradient-to-r from-gray-400 to-gray-500',
+      badgeText: 'text-white',
       glow: '',
-      text: 'text-white'
+      cardGradient: 'from-gray-100 to-gray-200',
+      blurColor: 'bg-gray-400'
     }
   };
 
@@ -80,34 +86,48 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
   }, []);
 
   return (
-    <div
-      className={`bg-white rounded-lg overflow-hidden transition-all duration-300 border-2 ${colors.border} ${
-        isHovered && !isTouchDevice ? 'scale-105 ' + colors.glow : ''
-      }`}
-      onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
-      onMouseLeave={!isTouchDevice ? handleMouseLeave : undefined}
-    >
-      {/* Tier Badge */}
-      <div className={`${colors.badge} ${colors.text} text-center py-2 font-bold text-sm`}>
-        {tierLabels[barosan.tier]}
-      </div>
+    <div className="group relative">
+      {/* Glow Effect - Always visible for platinum/gold */}
+      {(barosan.tier === 'platinum' || barosan.tier === 'gold') && (
+        <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
+      )}
 
-      {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-200">
+      <div
+        className={`relative bg-white rounded-2xl overflow-hidden transition-all duration-300 border-2 ${colors.border} shadow-lg ${
+          isHovered && !isTouchDevice ? 'scale-105 ' + colors.glow : 'hover:shadow-xl'
+        }`}
+        onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
+        onMouseLeave={!isTouchDevice ? handleMouseLeave : undefined}
+      >
+        {/* Tier Badge - Enhanced */}
+        <div className={`relative ${colors.badge} text-center py-2.5 font-extrabold text-sm tracking-wide overflow-hidden`}>
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white rounded-full blur-2xl"></div>
+          </div>
+          <span className={`relative ${colors.badgeText} drop-shadow-sm`}>
+            {tierLabels[barosan.tier]}
+          </span>
+        </div>
+
+      {/* Image - Enhanced */}
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {barosan.poza && !imageError ? (
           <>
             {/* Loading placeholder */}
             {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse">
-                <div className="text-4xl opacity-50">📸</div>
+              <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${colors.cardGradient} animate-pulse`}>
+                <div className="relative">
+                  <div className={`absolute inset-0 ${colors.blurColor} rounded-full blur-xl opacity-30`}></div>
+                  <div className="relative text-5xl opacity-50">📸</div>
+                </div>
               </div>
             )}
             {/* Actual image */}
             <img
               src={barosan.poza}
               alt={barosan.nume}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
+              className={`w-full h-full object-cover transition-all duration-500 ${
+                imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
               loading="lazy"
               onLoad={() => setImageLoaded(true)}
@@ -118,50 +138,60 @@ export default function BarosanCard({ barosan, onViewCertificate }) {
             />
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-            <span className="text-6xl">👤</span>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gray-300 rounded-full blur-2xl opacity-50"></div>
+              <span className="relative text-7xl opacity-75">👤</span>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-4 space-y-2">
-        <h3 className="font-bold text-lg text-center text-[#1a365d]">
+      {/* Content - Enhanced */}
+      <div className="p-5 space-y-3">
+        <h3 className="font-extrabold text-xl text-center text-[#1a365d] leading-tight">
           {barosan.nume}
         </h3>
-        <p className="text-sm text-gray-600 text-center italic">
+        <p className="text-sm text-gray-600 text-center italic leading-relaxed min-h-[40px] flex items-center justify-center">
           "{barosan.motto}"
         </p>
 
-        <div className="flex items-center justify-center text-xs text-gray-500 pt-2">
-          <span>🏆 Barosan din {formattedDate}</span>
+        <div className="flex items-center justify-center text-xs font-semibold text-gray-500 pt-1">
+          <div className="bg-gray-100 px-3 py-1.5 rounded-full">
+            <span>🏆 Barosan din {formattedDate}</span>
+          </div>
         </div>
 
-        {/* Link for Platinum */}
+        {/* Link for Platinum - Enhanced */}
         {barosan.tier === 'platinum' && barosan.link && (
           <div className="pt-2 text-center">
             <a
               href={barosan.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#D4AF37] hover:underline text-sm font-semibold"
+              className="inline-flex items-center gap-1.5 text-[#BCC6CC] hover:text-[#E5E4E2] transition-colors text-sm font-bold bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 px-4 py-2 rounded-lg shadow-sm"
             >
-              🔗 Link Personal
+              <span>🔗</span>
+              <span>Link Personal</span>
             </a>
           </div>
         )}
 
-        {/* Certificate Button (always visible on mobile, shows on hover on desktop) */}
+        {/* Certificate Button - Enhanced */}
         <div className={`transition-all duration-300 overflow-hidden ${
-          showButton ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
+          showButton ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
         }`}>
-          <button
-            onClick={() => onViewCertificate(barosan)}
-            className="w-full mt-3 bg-[#1a365d] text-white py-2 md:py-2 rounded-lg hover:bg-[#2d5986] active:bg-[#2d5986] transition-colors font-semibold text-sm touch-manipulation"
-          >
-            📜 Vezi Certificat
-          </button>
+          <div className="relative group/btn mt-3">
+            <div className={`absolute inset-0 ${colors.blurColor} rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity`}></div>
+            <button
+              onClick={() => onViewCertificate(barosan)}
+              className="relative w-full bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all font-extrabold text-sm touch-manipulation shadow-lg"
+            >
+              📜 Vezi Certificat
+            </button>
+          </div>
         </div>
+      </div>
       </div>
     </div>
   );
