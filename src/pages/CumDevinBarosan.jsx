@@ -6,33 +6,33 @@ export default function CumDevinBarosan() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
       {/* Hero Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <section className="py-8 md:py-12 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto text-center">
-          <div className="text-6xl mb-6">👑</div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-5xl md:text-6xl mb-4">👑</div>
+          <h1 className="text-3xl md:text-5xl font-bold mb-3">
             Cum Devin Barosan Oficial
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90">
             Completează formularul și primește codul tău unic pentru a finaliza procesul
           </p>
-        </div>
-      </section>
-
-      {/* Application Form Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <ApplicationForm />
         </div>
       </section>
 
       {/* How It Works Section */}
       <HowItWorks />
 
+      {/* Application Form Section */}
+      <section className="py-12 px-4">
+        <div className="container mx-auto">
+          <ApplicationForm />
+        </div>
+      </section>
+
       {/* Pricing Section */}
-      <section className="py-16 px-4">
+      <section className="py-12 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-[#1a365d] mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a365d] mb-4">
               Alege Tier-ul Tău
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto">
@@ -44,9 +44,6 @@ export default function CumDevinBarosan() {
           <PricingTiers />
         </div>
       </section>
-
-      {/* How It Works Section */}
-      <HowItWorks />
 
       {/* Benefits Section */}
       <section className="py-16 px-4 bg-white">

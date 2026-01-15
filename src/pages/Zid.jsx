@@ -260,7 +260,7 @@ export default function Zid() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
       {/* Hero Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <section className="py-8 md:py-10 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto text-center">
           {/* SSE Status & Refresh Indicator */}
           <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
@@ -281,11 +281,11 @@ export default function Zid() {
             )}
           </div>
 
-          <div className="text-6xl mb-6">🏆</div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <div className="text-5xl md:text-6xl mb-4">🏆</div>
+          <h1 className="text-3xl md:text-5xl font-bold mb-3">
             Zidul Oficial al Barosanilor
           </h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto opacity-90 mb-8">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-6">
             Toți barosanii verificați și certificați oficial, organizați după tier-ul lor de elită
           </p>
 
@@ -299,7 +299,7 @@ export default function Zid() {
                   placeholder="Caută după nume, motto sau certificat..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-3 pl-12 rounded-lg text-gray-800 border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors"
+                  className="w-full px-4 py-3 pl-12 rounded-lg text-gray-900 font-medium border-2 border-white focus:outline-none focus:border-[#D4AF37] transition-colors placeholder:text-gray-500"
                 />
                 <svg
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
@@ -391,7 +391,7 @@ export default function Zid() {
 
       {/* Platinum Zone - Most Prominent */}
       {barosaniByTier.platinum.length > 0 && (
-        <section id="platinum-zone" className="py-16 px-4 scroll-mt-24">
+        <section id="platinum-zone" className="py-8 md:py-12 px-4 scroll-mt-24">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <div className="inline-block bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] px-8 py-3 rounded-full mb-4">
@@ -427,7 +427,7 @@ export default function Zid() {
 
       {/* Gold Zone - Medium Prominence */}
       {barosaniByTier.gold.length > 0 && (
-        <section id="gold-zone" className="py-16 px-4 bg-white/50 scroll-mt-24">
+        <section id="gold-zone" className="py-8 md:py-12 px-4 bg-white/50 scroll-mt-24">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <div className="inline-block bg-[#D4AF37] px-8 py-3 rounded-full mb-4">
@@ -463,7 +463,7 @@ export default function Zid() {
 
       {/* Basic Zone - Standard Size */}
       {barosaniByTier.basic.length > 0 && (
-        <section id="basic-zone" className="py-16 px-4 scroll-mt-24">
+        <section id="basic-zone" className="py-8 md:py-12 px-4 scroll-mt-24">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <div className="inline-block bg-gray-400 px-8 py-3 rounded-full mb-4">
@@ -498,7 +498,7 @@ export default function Zid() {
       )}
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <section className="py-12 md:py-16 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Vrei să Apari Pe Zid?
