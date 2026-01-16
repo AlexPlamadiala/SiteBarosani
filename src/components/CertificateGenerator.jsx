@@ -73,10 +73,51 @@ export default function CertificateGenerator({ barosan, onClose }) {
           allowTaint: true,
           onclone: (clonedDoc) => {
             // Fix oklch colors that html2canvas doesn't support
-            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
-            if (clonedElement) {
-              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-            }
+            // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
+
+            // Map of common Tailwind colors to RGB equivalents
+            const colorMap = {
+              'gray-700': 'rgb(55, 65, 81)',
+              'gray-400': 'rgb(156, 163, 175)',
+              'gray-300': 'rgb(209, 213, 219)',
+              'white': 'rgb(255, 255, 255)',
+            };
+
+            const allElements = clonedDoc.querySelectorAll('*');
+            allElements.forEach(el => {
+              // Fix gradient background
+              if (el.classList.contains('bg-gradient-to-br')) {
+                el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+              }
+
+              // Fix common Tailwind utility classes
+              el.classList.forEach(className => {
+                if (className.includes('text-gray-700')) {
+                  el.style.color = colorMap['gray-700'];
+                }
+                if (className.includes('bg-white')) {
+                  el.style.backgroundColor = colorMap['white'];
+                }
+                if (className.includes('border-gray-300')) {
+                  el.style.borderColor = colorMap['gray-300'];
+                }
+                if (className.includes('border-gray-400')) {
+                  el.style.borderColor = colorMap['gray-400'];
+                }
+              });
+
+              // As a fallback, replace any remaining oklch() in inline styles
+              const computedStyle = window.getComputedStyle(el);
+              ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
+                const value = computedStyle[prop];
+                if (value && typeof value === 'string' && value.includes('oklch')) {
+                  // Force to a neutral gray/white as fallback
+                  if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
+                  else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
+                  else el.style[prop] = 'rgb(209, 213, 219)';
+                }
+              });
+            });
           }
         });
 
@@ -150,10 +191,51 @@ export default function CertificateGenerator({ barosan, onClose }) {
           allowTaint: true,
           onclone: (clonedDoc) => {
             // Fix oklch colors that html2canvas doesn't support
-            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
-            if (clonedElement) {
-              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-            }
+            // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
+
+            // Map of common Tailwind colors to RGB equivalents
+            const colorMap = {
+              'gray-700': 'rgb(55, 65, 81)',
+              'gray-400': 'rgb(156, 163, 175)',
+              'gray-300': 'rgb(209, 213, 219)',
+              'white': 'rgb(255, 255, 255)',
+            };
+
+            const allElements = clonedDoc.querySelectorAll('*');
+            allElements.forEach(el => {
+              // Fix gradient background
+              if (el.classList.contains('bg-gradient-to-br')) {
+                el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+              }
+
+              // Fix common Tailwind utility classes
+              el.classList.forEach(className => {
+                if (className.includes('text-gray-700')) {
+                  el.style.color = colorMap['gray-700'];
+                }
+                if (className.includes('bg-white')) {
+                  el.style.backgroundColor = colorMap['white'];
+                }
+                if (className.includes('border-gray-300')) {
+                  el.style.borderColor = colorMap['gray-300'];
+                }
+                if (className.includes('border-gray-400')) {
+                  el.style.borderColor = colorMap['gray-400'];
+                }
+              });
+
+              // As a fallback, replace any remaining oklch() in inline styles
+              const computedStyle = window.getComputedStyle(el);
+              ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
+                const value = computedStyle[prop];
+                if (value && typeof value === 'string' && value.includes('oklch')) {
+                  // Force to a neutral gray/white as fallback
+                  if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
+                  else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
+                  else el.style[prop] = 'rgb(209, 213, 219)';
+                }
+              });
+            });
           }
         });
 
@@ -231,10 +313,51 @@ export default function CertificateGenerator({ barosan, onClose }) {
         imageTimeout: 0, // No timeout for images
         onclone: (clonedDoc) => {
           // Fix oklch colors that html2canvas doesn't support
-          const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
-          if (clonedElement) {
-            clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-          }
+          // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
+
+          // Map of common Tailwind colors to RGB equivalents
+          const colorMap = {
+            'gray-700': 'rgb(55, 65, 81)',
+            'gray-400': 'rgb(156, 163, 175)',
+            'gray-300': 'rgb(209, 213, 219)',
+            'white': 'rgb(255, 255, 255)',
+          };
+
+          const allElements = clonedDoc.querySelectorAll('*');
+          allElements.forEach(el => {
+            // Fix gradient background
+            if (el.classList.contains('bg-gradient-to-br')) {
+              el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+            }
+
+            // Fix common Tailwind utility classes
+            el.classList.forEach(className => {
+              if (className.includes('text-gray-700')) {
+                el.style.color = colorMap['gray-700'];
+              }
+              if (className.includes('bg-white')) {
+                el.style.backgroundColor = colorMap['white'];
+              }
+              if (className.includes('border-gray-300')) {
+                el.style.borderColor = colorMap['gray-300'];
+              }
+              if (className.includes('border-gray-400')) {
+                el.style.borderColor = colorMap['gray-400'];
+              }
+            });
+
+            // As a fallback, replace any remaining oklch() in inline styles
+            const computedStyle = window.getComputedStyle(el);
+            ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
+              const value = computedStyle[prop];
+              if (value && typeof value === 'string' && value.includes('oklch')) {
+                // Force to a neutral gray/white as fallback
+                if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
+                else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
+                else el.style[prop] = 'rgb(209, 213, 219)';
+              }
+            });
+          });
         }
       });
 
