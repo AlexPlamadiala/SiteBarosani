@@ -65,106 +65,216 @@ export default function CertificateGenerator({ barosan, onClose }) {
   const generateCertificateCanvas = async () => {
     const canvas = document.createElement('canvas');
     canvas.width = 1200;
-    canvas.height = 800;
+    canvas.height = 850;
     const ctx = canvas.getContext('2d');
 
-    // Background gradient
-    const gradient = ctx.createLinearGradient(0, 0, 1200, 800);
-    gradient.addColorStop(0, '#F5E6D3');
-    gradient.addColorStop(1, '#E8D5B7');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1200, 800);
+    // Tier-based colors
+    const tierColors = {
+      platinum: { primary: '#E5E4E2', secondary: '#BCC6CC', accent: '#C0C0C0', glow: '#FFFFFF' },
+      gold: { primary: '#FFD700', secondary: '#DAA520', accent: '#B8860B', glow: '#FFF8DC' },
+      basic: { primary: '#4169E1', secondary: '#1E90FF', accent: '#00CED1', glow: '#E6F3FF' }
+    };
+    const colors = tierColors[barosan.tier] || tierColors.basic;
 
-    // Decorative borders
-    ctx.strokeStyle = '#8B0000';
-    ctx.lineWidth = 16;
-    ctx.strokeRect(32, 32, 1136, 736);
+    // Luxurious background gradient
+    const bgGradient = ctx.createRadialGradient(600, 425, 0, 600, 425, 700);
+    bgGradient.addColorStop(0, '#FFF8E7');
+    bgGradient.addColorStop(0.5, '#F5E6D3');
+    bgGradient.addColorStop(1, '#E8D5B7');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1200, 850);
 
-    ctx.strokeStyle = '#D4AF37';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(48, 48, 1104, 704);
+    // Shimmering corner decorations
+    const drawCornerStar = (x, y, size) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = colors.primary;
+      ctx.globalAlpha = 0.3;
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 4);
+        ctx.fillRect(-size/2, -2, size, 4);
+      }
+      ctx.restore();
+    };
+    drawCornerStar(80, 80, 40);
+    drawCornerStar(1120, 80, 40);
+    drawCornerStar(80, 770, 40);
+    drawCornerStar(1120, 770, 40);
 
-    // Watermark crown
-    ctx.font = '200px serif';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    // Outer golden border with shadow effect
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+    ctx.shadowBlur = 15;
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 20;
+    ctx.strokeRect(25, 25, 1150, 800);
+    ctx.shadowBlur = 0;
+
+    // Inner golden border
+    const goldGradient = ctx.createLinearGradient(0, 0, 1200, 850);
+    goldGradient.addColorStop(0, '#FFD700');
+    goldGradient.addColorStop(0.5, '#FFA500');
+    goldGradient.addColorStop(1, '#FFD700');
+    ctx.strokeStyle = goldGradient;
+    ctx.lineWidth = 8;
+    ctx.strokeRect(45, 45, 1110, 760);
+
+    // Decorative inner line
+    ctx.strokeStyle = colors.primary;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 5]);
+    ctx.strokeRect(60, 60, 1080, 730);
+    ctx.setLineDash([]);
+
+    // Watermark - multiple crowns pattern
+    ctx.globalAlpha = 0.04;
+    ctx.font = '120px serif';
+    ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
-    ctx.fillText('👑', 600, 450);
+    ctx.fillText('👑', 300, 350);
+    ctx.fillText('👑', 900, 350);
+    ctx.fillText('👑', 600, 550);
+    ctx.globalAlpha = 1;
 
-    // Header crown
-    ctx.font = '80px serif';
-    ctx.fillText('👑', 600, 140);
+    // Header crown with glow
+    ctx.shadowColor = colors.primary;
+    ctx.shadowBlur = 20;
+    ctx.font = '70px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('👑', 600, 115);
+    ctx.shadowBlur = 0;
 
-    // Title
-    ctx.font = 'bold 32px serif';
+    // Stars around crown
+    ctx.font = '24px serif';
+    ctx.fillStyle = colors.primary;
+    ctx.fillText('★', 520, 95);
+    ctx.fillText('★', 680, 95);
+    ctx.fillText('✦', 480, 115);
+    ctx.fillText('✦', 720, 115);
+
+    // Main title with shadow
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetY = 2;
+    ctx.font = 'bold 28px Georgia, serif';
     ctx.fillStyle = '#8B0000';
-    ctx.fillText('REPUBLICA BAROSANILOR', 600, 190);
+    ctx.fillText('REPUBLICA BAROSANILOR', 600, 160);
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
 
-    // Gold line
-    ctx.fillStyle = '#D4AF37';
-    ctx.fillRect(480, 200, 240, 4);
+    // Decorative gold lines
+    ctx.fillStyle = '#DAA520';
+    ctx.fillRect(350, 175, 500, 3);
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(400, 182, 400, 2);
 
-    // Certificate title
-    ctx.font = 'bold 56px serif';
+    // Certificate title - big and bold
+    ctx.shadowColor = colors.primary;
+    ctx.shadowBlur = 10;
+    ctx.font = 'bold 52px Georgia, serif';
     ctx.fillStyle = '#1a365d';
-    ctx.fillText('CERTIFICAT DE BAROSAN', 600, 280);
+    ctx.fillText('CERTIFICAT DE BAROSAN', 600, 240);
+    ctx.shadowBlur = 0;
 
-    // Tier badge
-    ctx.font = 'bold 36px serif';
-    ctx.fillStyle = '#D4AF37';
-    ctx.fillText(tierLabels[barosan.tier], 600, 330);
+    // Tier badge with special styling
+    const tierEmojis = {
+      platinum: '💎',
+      gold: '🏆',
+      basic: '⭐'
+    };
+    const tierBadgeText = `${tierEmojis[barosan.tier]} ${tierLabels[barosan.tier]} ${tierEmojis[barosan.tier]}`;
 
-    // Body text
-    ctx.font = '20px serif';
-    ctx.fillStyle = '#000000';
-    ctx.fillText('Se certifică prin prezenta că', 600, 380);
+    // Badge background
+    ctx.fillStyle = colors.primary;
+    ctx.globalAlpha = 0.2;
+    const badgeWidth = ctx.measureText(tierBadgeText).width + 60;
+    ctx.beginPath();
+    ctx.roundRect(600 - badgeWidth/2, 258, badgeWidth, 45, 10);
+    ctx.fill();
+    ctx.globalAlpha = 1;
 
-    // Name (large)
-    ctx.font = 'bold 48px serif';
+    ctx.font = 'bold 32px Georgia, serif';
+    ctx.fillStyle = colors.accent;
+    ctx.fillText(tierBadgeText, 600, 292);
+
+    // Decorative separator
+    ctx.fillStyle = '#DAA520';
+    ctx.fillRect(450, 315, 300, 2);
+
+    // Body intro text
+    ctx.font = '20px Georgia, serif';
+    ctx.fillStyle = '#333333';
+    ctx.fillText('Se certifică prin prezenta că distinsul/a', 600, 360);
+
+    // Name with glow effect - truncate if too long
+    ctx.shadowColor = colors.primary;
+    ctx.shadowBlur = 8;
+    ctx.font = 'bold 44px Georgia, serif';
     ctx.fillStyle = '#1a365d';
-    ctx.fillText(barosan.nume, 600, 440);
+    let displayName = barosan.nume;
+    if (ctx.measureText(displayName).width > 900) {
+      while (ctx.measureText(displayName + '...').width > 900 && displayName.length > 0) {
+        displayName = displayName.slice(0, -1);
+      }
+      displayName += '...';
+    }
+    ctx.fillText(displayName, 600, 415);
+    ctx.shadowBlur = 0;
 
-    // Description
-    ctx.font = '18px serif';
-    ctx.fillStyle = '#000000';
-    const descText = 'a fost verificat și confirmat ca BAROSAN AUTENTIC conform standardelor';
-    const descText2 = 'internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.';
-    ctx.fillText(descText, 600, 480);
-    ctx.fillText(descText2, 600, 505);
+    // Description - properly spaced
+    ctx.font = '17px Georgia, serif';
+    ctx.fillStyle = '#333333';
+    ctx.fillText('a fost verificat(ă) și confirmat(ă) ca BAROSAN AUTENTIC', 600, 460);
+    ctx.fillText('conform standardelor internaționale de șmecherie și bășcălie', 600, 485);
+    ctx.fillText('și a fost admis(ă) în registrul oficial al Zidului Barosanilor.', 600, 510);
 
-    // Motto
-    ctx.font = 'italic 22px serif';
-    ctx.fillStyle = '#4a4a4a';
-    ctx.fillText(`"${barosan.motto}"`, 600, 550);
+    // Motto with decorative quotes - truncate if too long
+    ctx.font = 'italic 20px Georgia, serif';
+    ctx.fillStyle = '#555555';
+    let motto = barosan.motto;
+    if (ctx.measureText(`"${motto}"`).width > 800) {
+      while (ctx.measureText(`"${motto}..."`).width > 800 && motto.length > 0) {
+        motto = motto.slice(0, -1);
+      }
+      motto += '...';
+    }
+    ctx.fillText(`"${motto}"`, 600, 560);
 
-    // Footer - Certificate ID
+    // Funny disclaimer
+    ctx.font = 'italic 11px Georgia, serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('* Acest certificat conferă drepturi nelimitate de lăudăroșenie și flexare pe social media', 600, 590);
+
+    // Footer section background
+    ctx.fillStyle = 'rgba(139, 69, 19, 0.05)';
+    ctx.fillRect(70, 620, 1060, 160);
+
+    // Footer - Certificate ID (left)
     ctx.textAlign = 'left';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.fillText('Număr certificat:', 100, 680);
-    ctx.font = 'bold 20px sans-serif';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#666666';
+    ctx.fillText('NUMĂR CERTIFICAT:', 100, 660);
+    ctx.font = 'bold 18px Arial, sans-serif';
     ctx.fillStyle = '#8B0000';
-    ctx.fillText(barosan.certificatId, 100, 705);
+    ctx.fillText(barosan.certificatId, 100, 685);
 
-    ctx.font = '14px sans-serif';
-    ctx.fillStyle = '#000000';
-    ctx.fillText('Emis la data de:', 100, 730);
-    ctx.font = 'bold 16px sans-serif';
+    ctx.font = '12px Arial, sans-serif';
+    ctx.fillStyle = '#666666';
+    ctx.fillText('DATA EMITERII:', 100, 715);
+    ctx.font = 'bold 14px Arial, sans-serif';
+    ctx.fillStyle = '#333333';
     const dateStr = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     });
-    ctx.fillText(dateStr, 100, 750);
+    ctx.fillText(dateStr, 100, 735);
 
     // QR Code
     try {
       const qrDataUrl = await QRCode.toDataURL(`https://zidulbarosanilor.ro/barosan/${barosan.id}`, {
         width: 80,
         margin: 1,
-        color: {
-          dark: '#000000',
-          light: '#ffffff'
-        }
+        color: { dark: '#1a365d', light: '#ffffff' }
       });
       const qrImage = new Image();
       await new Promise((resolve, reject) => {
@@ -173,92 +283,122 @@ export default function CertificateGenerator({ barosan, onClose }) {
         qrImage.src = qrDataUrl;
       });
 
-      // Draw QR background
+      // QR background with border
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(280, 660, 90, 90);
-      ctx.strokeStyle = '#cccccc';
+      ctx.strokeStyle = colors.primary;
       ctx.lineWidth = 2;
-      ctx.strokeRect(280, 660, 90, 90);
+      ctx.beginPath();
+      ctx.roundRect(290, 645, 90, 90, 5);
+      ctx.fill();
+      ctx.stroke();
 
-      ctx.drawImage(qrImage, 285, 665, 80, 80);
-      ctx.font = '10px sans-serif';
+      ctx.drawImage(qrImage, 295, 650, 80, 80);
+      ctx.font = '9px Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#000000';
-      ctx.fillText('Verifică online', 325, 760);
+      ctx.fillStyle = '#666666';
+      ctx.fillText('Scanează pentru', 335, 745);
+      ctx.fillText('verificare online', 335, 757);
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
 
-    // Official Stamp (center)
+    // Official Stamp (center) - more elaborate
     ctx.save();
-    ctx.translate(600, 680);
-    ctx.rotate(-0.2);
+    ctx.translate(580, 700);
+    ctx.rotate(-0.15);
+
+    // Stamp outer glow
+    ctx.shadowColor = '#DC143C';
+    ctx.shadowBlur = 10;
 
     // Outer circle
     ctx.strokeStyle = '#DC143C';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(0, 0, 70, 0, Math.PI * 2);
+    ctx.arc(0, 0, 55, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Inner circle
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, 60, 0, Math.PI * 2);
+    ctx.arc(0, 0, 45, 0, Math.PI * 2);
     ctx.stroke();
 
     // Checkmark
-    ctx.font = 'bold 50px sans-serif';
+    ctx.font = 'bold 40px sans-serif';
     ctx.fillStyle = '#DC143C';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('✓', 0, -10);
+    ctx.fillText('✓', 0, -5);
 
     // Text
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillText('VERIFICAT', 0, 30);
-    ctx.font = 'bold 10px sans-serif';
-    ctx.fillText('OFICIAL', 0, 45);
+    ctx.font = 'bold 11px Arial, sans-serif';
+    ctx.fillText('VERIFICAT', 0, 25);
+    ctx.font = 'bold 8px Arial, sans-serif';
+    ctx.fillText('OFICIAL', 0, 38);
 
-    // Arc text (top)
-    ctx.font = 'bold 10px sans-serif';
-    const text = 'REPUBLICA BAROSANILOR';
-    const angleStep = (Math.PI * 1.2) / text.length;
-    const startAngle = -Math.PI * 0.6 - Math.PI / 2;
+    // Arc text
+    ctx.font = 'bold 8px Arial, sans-serif';
+    const stampText = 'REPUBLICA BAROSANILOR';
+    const angleStep = (Math.PI * 1.1) / stampText.length;
+    const startAngle = -Math.PI * 0.55 - Math.PI / 2;
 
-    for (let i = 0; i < text.length; i++) {
+    for (let i = 0; i < stampText.length; i++) {
       ctx.save();
       const angle = startAngle + i * angleStep;
       ctx.rotate(angle);
       ctx.textAlign = 'center';
-      ctx.fillText(text[i], 0, -50);
+      ctx.fillText(stampText[i], 0, -40);
       ctx.restore();
     }
 
     ctx.restore();
 
-    // Signatures (right side)
+    // Signatures (right side) - more fancy
     ctx.textAlign = 'right';
-    ctx.font = '24px cursive';
-    ctx.fillStyle = '#000000';
-    ctx.fillText('Ion Barosan', 1100, 680);
-    ctx.font = '10px sans-serif';
-    ctx.strokeStyle = '#888888';
+
+    // First signature
+    ctx.font = 'italic 22px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
+    ctx.fillText('Ion Barosan', 1100, 665);
+    ctx.strokeStyle = '#999999';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(980, 685);
-    ctx.lineTo(1100, 685);
+    ctx.moveTo(970, 672);
+    ctx.lineTo(1100, 672);
     ctx.stroke();
-    ctx.fillText('Mare Barosan Șef', 1100, 698);
+    ctx.font = '10px Arial, sans-serif';
+    ctx.fillStyle = '#666666';
+    ctx.fillText('Mare Barosan Șef', 1100, 685);
+    ctx.font = '8px Arial, sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('& Expert în Bășcălie', 1100, 697);
 
-    ctx.font = '24px cursive';
-    ctx.fillText('Maria Șmechera', 1100, 730);
+    // Second signature
+    ctx.font = 'italic 22px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
+    ctx.fillText('Maria Șmechera', 1100, 725);
     ctx.beginPath();
-    ctx.moveTo(980, 735);
-    ctx.lineTo(1100, 735);
+    ctx.moveTo(970, 732);
+    ctx.lineTo(1100, 732);
     ctx.stroke();
-    ctx.font = '10px sans-serif';
-    ctx.fillText('Director Dept. Bășcălie', 1100, 748);
+    ctx.font = '10px Arial, sans-serif';
+    ctx.fillStyle = '#666666';
+    ctx.fillText('Director Dept. Bășcălie', 1100, 745);
+    ctx.font = '8px Arial, sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('& Ministru al Flexării', 1100, 757);
+
+    // Bottom decorative line
+    ctx.fillStyle = '#DAA520';
+    ctx.fillRect(100, 790, 1000, 2);
+
+    // Final funny footer
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 10px Arial, sans-serif';
+    ctx.fillStyle = '#8B4513';
+    ctx.fillText('🏆 CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII 🏆', 600, 815);
 
     return canvas;
   };
@@ -490,125 +630,183 @@ export default function CertificateGenerator({ barosan, onClose }) {
                 `}</style>
                 <div
                   ref={certificateRef}
-                  className="bg-gradient-to-br from-[#F5E6D3] to-[#E8D5B7] p-12 relative shadow-2xl"
-                  style={{ width: '1200px', height: '800px' }}
+                  className="relative shadow-2xl overflow-hidden"
+                  style={{
+                    width: '1200px',
+                    height: '850px',
+                    background: 'radial-gradient(ellipse at center, #FFF8E7 0%, #F5E6D3 50%, #E8D5B7 100%)'
+                  }}
                 >
-                  {/* Decorative Border */}
-                  <div className="absolute inset-4 border-8 border-[#8B0000] border-double"></div>
-                  <div className="absolute inset-6 border-2 border-[#D4AF37]"></div>
+                  {/* Corner decorations */}
+                  <div className="absolute top-16 left-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
+                  <div className="absolute top-16 right-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
+                  <div className="absolute bottom-16 left-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
+                  <div className="absolute bottom-16 right-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
 
-                  {/* Watermark */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                    <div className="text-9xl">👑</div>
+                  {/* Outer golden border with shadow */}
+                  <div className="absolute inset-[25px] border-[20px] border-[#8B4513] shadow-lg"></div>
+
+                  {/* Inner golden gradient border */}
+                  <div className="absolute inset-[45px] border-8" style={{ borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1' }}></div>
+
+                  {/* Decorative dashed border */}
+                  <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
+
+                  {/* Watermarks */}
+                  <div className="absolute inset-0 flex items-center justify-around opacity-[0.04] pointer-events-none">
+                    <div className="text-[100px]">👑</div>
+                    <div className="text-[100px]">👑</div>
+                    <div className="text-[100px]">👑</div>
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 h-full flex flex-col items-center justify-between py-8">
-                    {/* Header */}
-                    <div className="text-center">
-                      <div className="text-6xl mb-4">👑</div>
-                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: 'serif' }}>
+                  <div className="relative z-10 h-full flex flex-col items-center pt-12 pb-6 px-16">
+                    {/* Header with crown and stars */}
+                    <div className="text-center mb-2">
+                      <div className="flex items-center justify-center gap-4 mb-2">
+                        <span className="text-2xl text-yellow-500">★</span>
+                        <span className="text-xl text-yellow-400">✦</span>
+                        <div className="text-5xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))' }}>👑</div>
+                        <span className="text-xl text-yellow-400">✦</span>
+                        <span className="text-2xl text-yellow-500">★</span>
+                      </div>
+                      <h1 className="text-2xl font-bold text-[#8B0000] tracking-wide drop-shadow" style={{ fontFamily: 'Georgia, serif' }}>
                         REPUBLICA BAROSANILOR
                       </h1>
-                      <div className="w-48 h-1 bg-[#D4AF37] mx-auto"></div>
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <div className="w-32 h-[3px] bg-gradient-to-r from-transparent via-[#DAA520] to-[#FFD700]"></div>
+                        <div className="w-24 h-[2px] bg-[#FFD700]"></div>
+                        <div className="w-32 h-[3px] bg-gradient-to-l from-transparent via-[#DAA520] to-[#FFD700]"></div>
+                      </div>
                     </div>
 
-                    {/* Title */}
-                    <div className="text-center">
-                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: 'serif' }}>
+                    {/* Title with glow */}
+                    <div className="text-center mb-2">
+                      <h2 className="text-4xl font-bold text-[#1a365d] drop-shadow-lg" style={{ fontFamily: 'Georgia, serif', textShadow: barosan.tier === 'gold' ? '0 0 20px rgba(255, 215, 0, 0.3)' : 'none' }}>
                         CERTIFICAT DE BAROSAN
                       </h2>
-                      <h3 className="text-3xl font-bold text-[#D4AF37]">
-                        {tierLabels[barosan.tier]}
-                      </h3>
                     </div>
+
+                    {/* Tier Badge */}
+                    <div className="mb-3">
+                      <div className={`px-6 py-2 rounded-lg ${
+                        barosan.tier === 'platinum' ? 'bg-gradient-to-r from-gray-300 via-white to-gray-300' :
+                        barosan.tier === 'gold' ? 'bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400' :
+                        'bg-gradient-to-r from-blue-400 via-blue-200 to-blue-400'
+                      } bg-opacity-30`}>
+                        <span className="text-2xl font-bold" style={{ fontFamily: 'Georgia, serif', color: barosan.tier === 'platinum' ? '#666' : barosan.tier === 'gold' ? '#B8860B' : '#1E90FF' }}>
+                          {barosan.tier === 'platinum' ? '💎' : barosan.tier === 'gold' ? '🏆' : '⭐'} {tierLabels[barosan.tier]} {barosan.tier === 'platinum' ? '💎' : barosan.tier === 'gold' ? '🏆' : '⭐'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Separator */}
+                    <div className="w-64 h-[2px] bg-[#DAA520] mb-3"></div>
 
                     {/* Body Text */}
-                    <div className="max-w-3xl text-center space-y-4">
-                      <p className="text-lg leading-relaxed">
-                        Se certifică prin prezenta că
+                    <div className="max-w-3xl text-center space-y-2 flex-grow flex flex-col justify-center">
+                      <p className="text-lg text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>
+                        Se certifică prin prezenta că distinsul/a
                       </p>
-                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: 'serif' }}>
+                      <p className="text-3xl font-bold text-[#1a365d] py-2" style={{ fontFamily: 'Georgia, serif', textShadow: '0 0 15px rgba(255, 215, 0, 0.2)' }}>
                         {barosan.nume}
                       </p>
-                      <p className="text-base leading-relaxed px-8">
-                        a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor
-                        internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
+                      <p className="text-base text-gray-700 leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+                        a fost verificat(ă) și confirmat(ă) ca <strong className="text-[#1a365d]">BAROSAN AUTENTIC</strong>
                       </p>
-                      <p className="text-lg italic text-gray-700">
+                      <p className="text-base text-gray-700 leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+                        conform standardelor internaționale de șmecherie și bășcălie
+                      </p>
+                      <p className="text-base text-gray-700 leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+                        și a fost admis(ă) în registrul oficial al Zidului Barosanilor.
+                      </p>
+                      <p className="text-lg italic text-gray-600 pt-2" style={{ fontFamily: 'Georgia, serif' }}>
                         "{barosan.motto}"
+                      </p>
+                      <p className="text-xs italic text-gray-400 pt-1">
+                        * Acest certificat conferă drepturi nelimitate de lăudăroșenie și flexare pe social media
                       </p>
                     </div>
 
-                    {/* Footer Info */}
-                    <div className="w-full flex justify-between items-end px-12">
-                      {/* Left: Certificate Number and Date + QR */}
-                      <div className="flex items-end space-x-6">
-                        <div className="text-left">
-                          <p className="text-sm font-semibold">Număr certificat:</p>
-                          <p className="text-lg font-bold text-[#8B0000]">{barosan.certificatId}</p>
-                          <p className="text-sm mt-2">Emis la data de:</p>
-                          <p className="font-semibold">
-                            {new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric'
-                            })}
-                          </p>
+                    {/* Footer section */}
+                    <div className="w-full bg-[#8B4513] bg-opacity-5 rounded-lg p-4 mt-2">
+                      <div className="flex justify-between items-end">
+                        {/* Left: Certificate Number and Date + QR */}
+                        <div className="flex items-end space-x-4">
+                          <div className="text-left">
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Număr certificat:</p>
+                            <p className="text-lg font-bold text-[#8B0000]">{barosan.certificatId}</p>
+                            <p className="text-xs text-gray-500 uppercase tracking-wide mt-2">Data emiterii:</p>
+                            <p className="font-semibold text-sm text-gray-700">
+                              {new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                              })}
+                            </p>
+                          </div>
+                          <div className="bg-white p-2 rounded-lg border-2" style={{ borderColor: barosan.tier === 'gold' ? '#FFD700' : barosan.tier === 'platinum' ? '#C0C0C0' : '#4169E1' }}>
+                            <QRCodeSVG
+                              value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
+                              size={60}
+                              fgColor="#1a365d"
+                            />
+                            <p className="text-[8px] text-center mt-1 text-gray-500">Scanează pentru</p>
+                            <p className="text-[8px] text-center text-gray-500">verificare online</p>
+                          </div>
                         </div>
-                        <div className="bg-white p-2 rounded border border-gray-300">
-                          <QRCodeSVG
-                            value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
-                            size={70}
-                          />
-                          <p className="text-xs text-center mt-1">Verifică online</p>
+
+                        {/* Center: Stamp */}
+                        <div className="relative flex items-center justify-center">
+                          <div className="relative w-28 h-28 transform -rotate-12">
+                            <div className="absolute inset-0 rounded-full border-[5px] border-[#DC143C] opacity-80" style={{ boxShadow: '0 0 10px rgba(220, 20, 60, 0.3)' }}></div>
+                            <div className="absolute inset-[6px] rounded-full border-[2px] border-[#DC143C] opacity-80"></div>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 112 112">
+                                <defs>
+                                  <path id="circlePathPreview" d="M 56,56 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
+                                </defs>
+                                <text className="text-[7px] font-bold fill-[#DC143C]" textAnchor="middle">
+                                  <textPath href="#circlePathPreview" startOffset="50%">
+                                    REPUBLICA BAROSANILOR
+                                  </textPath>
+                                </text>
+                              </svg>
+                              <div className="text-3xl text-[#DC143C] font-bold mt-1">✓</div>
+                              <div className="text-center -mt-1">
+                                <div className="text-[10px] font-bold text-[#DC143C]">VERIFICAT</div>
+                                <div className="text-[7px] text-[#DC143C] font-semibold">OFICIAL</div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Center: Stamp - Professional circular stamp */}
-                      <div className="relative flex items-center justify-center">
-                        <div className="relative w-40 h-40">
-                          {/* Stamp circle with double border */}
-                          <div className="absolute inset-0 rounded-full border-[6px] border-[#DC143C] opacity-80 transform -rotate-12"></div>
-                          <div className="absolute inset-[8px] rounded-full border-[3px] border-[#DC143C] opacity-80 transform -rotate-12"></div>
-
-                          {/* Stamp content */}
-                          <div className="absolute inset-0 flex flex-col items-center justify-center transform -rotate-12">
-                            {/* Top arc text - REPUBLICA BAROSANILOR */}
-                            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 160 160">
-                              <defs>
-                                <path id="circlePath" d="M 80,80 m -55,0 a 55,55 0 1,1 110,0 a 55,55 0 1,1 -110,0" />
-                              </defs>
-                              <text className="text-[10px] font-bold fill-[#DC143C]" textAnchor="middle">
-                                <textPath href="#circlePath" startOffset="50%">
-                                  REPUBLICA BAROSANILOR
-                                </textPath>
-                              </text>
-                            </svg>
-
-                            {/* Center star/checkmark */}
-                            <div className="text-5xl text-[#DC143C] font-bold mt-12">✓</div>
-
-                            {/* Bottom text */}
-                            <div className="text-center mt-1">
-                              <div className="text-sm font-bold text-[#DC143C]">VERIFICAT</div>
-                              <div className="text-xs text-[#DC143C] font-semibold">OFICIAL</div>
+                        {/* Right: Signatures */}
+                        <div className="text-right">
+                          <div className="mb-3">
+                            <p className="text-xl text-[#1a365d] italic" style={{ fontFamily: 'Georgia, serif' }}>Ion Barosan</p>
+                            <div className="border-t border-gray-400 mt-1 pt-1">
+                              <p className="text-[10px] text-gray-600">Mare Barosan Șef</p>
+                              <p className="text-[8px] text-gray-400">& Expert în Bășcălie</p>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xl text-[#1a365d] italic" style={{ fontFamily: 'Georgia, serif' }}>Maria Șmechera</p>
+                            <div className="border-t border-gray-400 mt-1 pt-1">
+                              <p className="text-[10px] text-gray-600">Director Dept. Bășcălie</p>
+                              <p className="text-[8px] text-gray-400">& Ministru al Flexării</p>
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Right: Signatures */}
-                      <div className="text-right">
-                        <div className="mb-6">
-                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Ion Barosan</p>
-                          <p className="text-xs border-t border-gray-400 pt-1">Mare Barosan Șef</p>
-                        </div>
-                        <div>
-                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Maria Șmechera</p>
-                          <p className="text-xs border-t border-gray-400 pt-1">Director Dept. Bășcălie</p>
-                        </div>
-                      </div>
+                    {/* Bottom decorative line and footer */}
+                    <div className="w-full mt-2">
+                      <div className="w-full h-[2px] bg-[#DAA520] mb-2"></div>
+                      <p className="text-center text-[10px] font-bold text-[#8B4513]">
+                        🏆 CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII 🏆
+                      </p>
                     </div>
                   </div>
                 </div>
