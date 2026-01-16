@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
-import html2canvas from 'html2canvas';
 import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import confetti from 'canvas-confetti';
 import { useToast } from '../contexts/ToastContext';
+import QRCode from 'qrcode';
 
 export default function CertificateGenerator({ barosan, onClose }) {
   const certificateRef = useRef(null);
@@ -61,46 +61,239 @@ export default function CertificateGenerator({ barosan, onClose }) {
     basic: 'BASIC'
   };
 
+  // Generate certificate as Canvas (template-based approach)
+  const generateCertificateCanvas = async () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 800);
+    gradient.addColorStop(0, '#F5E6D3');
+    gradient.addColorStop(1, '#E8D5B7');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1200, 800);
+
+    // Decorative borders
+    ctx.strokeStyle = '#8B0000';
+    ctx.lineWidth = 16;
+    ctx.strokeRect(32, 32, 1136, 736);
+
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(48, 48, 1104, 704);
+
+    // Watermark crown
+    ctx.font = '200px serif';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.textAlign = 'center';
+    ctx.fillText('👑', 600, 450);
+
+    // Header crown
+    ctx.font = '80px serif';
+    ctx.fillText('👑', 600, 140);
+
+    // Title
+    ctx.font = 'bold 32px serif';
+    ctx.fillStyle = '#8B0000';
+    ctx.fillText('REPUBLICA BAROSANILOR', 600, 190);
+
+    // Gold line
+    ctx.fillStyle = '#D4AF37';
+    ctx.fillRect(480, 200, 240, 4);
+
+    // Certificate title
+    ctx.font = 'bold 56px serif';
+    ctx.fillStyle = '#1a365d';
+    ctx.fillText('CERTIFICAT DE BAROSAN', 600, 280);
+
+    // Tier badge
+    ctx.font = 'bold 36px serif';
+    ctx.fillStyle = '#D4AF37';
+    ctx.fillText(tierLabels[barosan.tier], 600, 330);
+
+    // Body text
+    ctx.font = '20px serif';
+    ctx.fillStyle = '#000000';
+    ctx.fillText('Se certifică prin prezenta că', 600, 380);
+
+    // Name (large)
+    ctx.font = 'bold 48px serif';
+    ctx.fillStyle = '#1a365d';
+    ctx.fillText(barosan.nume, 600, 440);
+
+    // Description
+    ctx.font = '18px serif';
+    ctx.fillStyle = '#000000';
+    const descText = 'a fost verificat și confirmat ca BAROSAN AUTENTIC conform standardelor';
+    const descText2 = 'internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.';
+    ctx.fillText(descText, 600, 480);
+    ctx.fillText(descText2, 600, 505);
+
+    // Motto
+    ctx.font = 'italic 22px serif';
+    ctx.fillStyle = '#4a4a4a';
+    ctx.fillText(`"${barosan.motto}"`, 600, 550);
+
+    // Footer - Certificate ID
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillStyle = '#000000';
+    ctx.fillText('Număr certificat:', 100, 680);
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillStyle = '#8B0000';
+    ctx.fillText(barosan.certificatId, 100, 705);
+
+    ctx.font = '14px sans-serif';
+    ctx.fillStyle = '#000000';
+    ctx.fillText('Emis la data de:', 100, 730);
+    ctx.font = 'bold 16px sans-serif';
+    const dateStr = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    ctx.fillText(dateStr, 100, 750);
+
+    // QR Code
+    try {
+      const qrDataUrl = await QRCode.toDataURL(`https://zidulbarosanilor.ro/barosan/${barosan.id}`, {
+        width: 80,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      });
+      const qrImage = new Image();
+      await new Promise((resolve, reject) => {
+        qrImage.onload = resolve;
+        qrImage.onerror = reject;
+        qrImage.src = qrDataUrl;
+      });
+
+      // Draw QR background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(280, 660, 90, 90);
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(280, 660, 90, 90);
+
+      ctx.drawImage(qrImage, 285, 665, 80, 80);
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000000';
+      ctx.fillText('Verifică online', 325, 760);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+
+    // Official Stamp (center)
+    ctx.save();
+    ctx.translate(600, 680);
+    ctx.rotate(-0.2);
+
+    // Outer circle
+    ctx.strokeStyle = '#DC143C';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(0, 0, 70, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Inner circle
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 60, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Checkmark
+    ctx.font = 'bold 50px sans-serif';
+    ctx.fillStyle = '#DC143C';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('✓', 0, -10);
+
+    // Text
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('VERIFICAT', 0, 30);
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillText('OFICIAL', 0, 45);
+
+    // Arc text (top)
+    ctx.font = 'bold 10px sans-serif';
+    const text = 'REPUBLICA BAROSANILOR';
+    const angleStep = (Math.PI * 1.2) / text.length;
+    const startAngle = -Math.PI * 0.6 - Math.PI / 2;
+
+    for (let i = 0; i < text.length; i++) {
+      ctx.save();
+      const angle = startAngle + i * angleStep;
+      ctx.rotate(angle);
+      ctx.textAlign = 'center';
+      ctx.fillText(text[i], 0, -50);
+      ctx.restore();
+    }
+
+    ctx.restore();
+
+    // Signatures (right side)
+    ctx.textAlign = 'right';
+    ctx.font = '24px cursive';
+    ctx.fillStyle = '#000000';
+    ctx.fillText('Ion Barosan', 1100, 680);
+    ctx.font = '10px sans-serif';
+    ctx.strokeStyle = '#888888';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(980, 685);
+    ctx.lineTo(1100, 685);
+    ctx.stroke();
+    ctx.fillText('Mare Barosan Șef', 1100, 698);
+
+    ctx.font = '24px cursive';
+    ctx.fillText('Maria Șmechera', 1100, 730);
+    ctx.beginPath();
+    ctx.moveTo(980, 735);
+    ctx.lineTo(1100, 735);
+    ctx.stroke();
+    ctx.font = '10px sans-serif';
+    ctx.fillText('Director Dept. Bășcălie', 1100, 748);
+
+    return canvas;
+  };
+
   const handleDownloadPNG = async () => {
-    if (certificateRef.current) {
-      try {
-        setDownloading(true);
-        const canvas = await html2canvas(certificateRef.current, {
-          scale: 2,
-          backgroundColor: '#ffffff',
-          logging: false,
-          useCORS: true,
-          allowTaint: true,
-          width: 1200,
-          height: 800
-        });
+    try {
+      setDownloading(true);
+      const canvas = await generateCertificateCanvas();
 
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `certificat-barosan-${barosan.certificatId}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-          }
-        }, 'image/png');
-        toast.success('Certificat PNG descărcat cu succes!');
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `certificat-barosan-${barosan.certificatId}.png`;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
 
-        // Confetti on successful download
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
-      } catch (error) {
-        console.error('Error generating certificate:', error);
-        toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
-      } finally {
-        setDownloading(false);
-      }
+          toast.success('Certificat PNG descărcat cu succes!');
+
+          // Confetti on successful download
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.7 }
+          });
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error generating certificate:', error);
+      toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -125,110 +318,91 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   const handleDownloadForStory = async () => {
-    if (certificateRef.current) {
-      try {
-        setDownloading(true);
-        const canvas = await html2canvas(certificateRef.current, {
-          scale: 3,
-          backgroundColor: '#ffffff',
-          logging: false,
-          useCORS: true,
-          allowTaint: true
-        });
+    try {
+      setDownloading(true);
+      const canvas = await generateCertificateCanvas();
 
-        // Create story canvas (1080x1920)
-        const storyCanvas = document.createElement('canvas');
-        storyCanvas.width = 1080;
-        storyCanvas.height = 1920;
-        const ctx = storyCanvas.getContext('2d');
+      // Create story canvas (1080x1920)
+      const storyCanvas = document.createElement('canvas');
+      storyCanvas.width = 1080;
+      storyCanvas.height = 1920;
+      const ctx = storyCanvas.getContext('2d');
 
-        // Fill background gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
-        gradient.addColorStop(0, '#1a365d');
-        gradient.addColorStop(1, '#2d5986');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 1080, 1920);
+      // Fill background gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, 1920);
+      gradient.addColorStop(0, '#1a365d');
+      gradient.addColorStop(1, '#2d5986');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1080, 1920);
 
-        // Center certificate
-        const scale = Math.min(1080 / canvas.width, 1200 / canvas.height);
-        const x = (1080 - canvas.width * scale) / 2;
-        const y = (1920 - canvas.height * scale) / 2;
-        ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
+      // Center certificate
+      const scale = Math.min(1080 / canvas.width, 1200 / canvas.height);
+      const x = (1080 - canvas.width * scale) / 2;
+      const y = (1920 - canvas.height * scale) / 2;
+      ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
 
-        storyCanvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `barosan-story-${barosan.certificatId}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-          }
-        }, 'image/png');
+      storyCanvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `barosan-story-${barosan.certificatId}.png`;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
 
-        toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
-      } catch (error) {
-        console.error('Error:', error);
-        toast.error('Eroare la generare story format');
-      } finally {
-        setDownloading(false);
-      }
+          toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
+          confetti({
+            particleCount: 50,
+            spread: 60,
+            origin: { y: 0.7 }
+          });
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Eroare la generare story format');
+    } finally {
+      setDownloading(false);
     }
   };
 
   const handleDownloadPDF = async () => {
-    if (certificateRef.current) {
-      try {
-        setDownloading(true);
-        const canvas = await html2canvas(certificateRef.current, {
-          scale: 2,
-          backgroundColor: '#ffffff',
-          logging: false,
-          useCORS: true,
-          allowTaint: true,
-          width: 1200,
-          height: 800
-        });
+    try {
+      setDownloading(true);
+      const canvas = await generateCertificateCanvas();
+      const imgData = canvas.toDataURL('image/png');
 
-        const imgData = canvas.toDataURL('image/png');
+      // Create PDF in landscape mode (A4)
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
 
-        // Create PDF in landscape mode (A4)
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-          unit: 'mm',
-          format: 'a4'
-        });
+      // Calculate dimensions to fit A4 landscape
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        // Calculate dimensions to fit A4 landscape
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+      // Add image to PDF (centered)
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
-        // Add image to PDF (centered)
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Download PDF
+      pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
+      toast.success('Certificat PDF descărcat cu succes!');
 
-        // Download PDF
-        pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
-        toast.success('Certificat PDF descărcat cu succes!');
-
-        // Confetti on successful PDF download
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-        toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
-      } finally {
-        setDownloading(false);
-      }
+      // Confetti on successful PDF download
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 }
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
+    } finally {
+      setDownloading(false);
     }
   };
 
