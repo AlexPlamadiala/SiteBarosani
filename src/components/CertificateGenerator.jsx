@@ -68,37 +68,44 @@ export default function CertificateGenerator({ barosan, onClose }) {
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: false,
+          logging: true,
           useCORS: true,
-          allowTaint: true,
-          width: 1200,
-          height: 800
+          allowTaint: true
         });
 
         canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `certificat-barosan-${barosan.certificatId}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+          try {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.download = `certificat-barosan-${barosan.certificatId}.png`;
+              link.href = url;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+
+              toast.success('Certificat PNG descărcat cu succes!');
+
+              // Confetti on successful download
+              confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.7 }
+              });
+            } else {
+              toast.error('Eroare la crearea fișierului PNG');
+            }
+          } catch (err) {
+            console.error('Error in toBlob:', err);
+            toast.error('Eroare la descărcarea PNG');
+          } finally {
+            setDownloading(false);
           }
         }, 'image/png');
-        toast.success('Certificat PNG descărcat cu succes!');
-
-        // Confetti on successful download
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
       } catch (error) {
         console.error('Error generating certificate:', error);
         toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
-      } finally {
         setDownloading(false);
       }
     }
@@ -129,9 +136,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
       try {
         setDownloading(true);
         const canvas = await html2canvas(certificateRef.current, {
-          scale: 3,
+          scale: 2,
           backgroundColor: '#ffffff',
-          logging: false,
+          logging: true,
           useCORS: true,
           allowTaint: true
         });
@@ -156,28 +163,36 @@ export default function CertificateGenerator({ barosan, onClose }) {
         ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
 
         storyCanvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.download = `barosan-story-${barosan.certificatId}.png`;
-            link.href = url;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+          try {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.download = `barosan-story-${barosan.certificatId}.png`;
+              link.href = url;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+
+              toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
+              confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.7 }
+              });
+            } else {
+              toast.error('Eroare la crearea story format');
+            }
+          } catch (err) {
+            console.error('Error in story toBlob:', err);
+            toast.error('Eroare la descărcarea story');
+          } finally {
+            setDownloading(false);
           }
         }, 'image/png');
-
-        toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
       } catch (error) {
         console.error('Error:', error);
         toast.error('Eroare la generare story format');
-      } finally {
         setDownloading(false);
       }
     }
@@ -190,11 +205,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: false,
+          logging: true,
           useCORS: true,
-          allowTaint: true,
-          width: 1200,
-          height: 800
+          allowTaint: true
         });
 
         const imgData = canvas.toDataURL('image/png');
@@ -215,6 +228,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
         // Download PDF
         pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
+
         toast.success('Certificat PDF descărcat cu succes!');
 
         // Confetti on successful PDF download
@@ -233,7 +247,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-90 z-[100] overflow-y-auto">
       <div className="min-h-screen flex flex-col">
         {/* Fixed Header with Navigation */}
         <div className="sticky top-0 bg-white shadow-lg z-10">
@@ -288,29 +302,31 @@ export default function CertificateGenerator({ barosan, onClose }) {
         </div>
 
         {/* Certificate Container */}
-        <div className="flex-grow flex items-center justify-center p-2 md:p-8">
+        <div className="flex-grow flex items-center justify-center p-2 md:p-8 overflow-hidden">
           <div className="w-full max-w-7xl">
             {/* Certificate Wrapper - Scaled for viewing */}
-            <div className="flex justify-center overflow-x-auto">
+            <div className="flex justify-center items-center">
               <div
                 className="certificate-wrapper"
                 style={{
                   transform: 'scale(0.3)',
-                  transformOrigin: 'top center',
-                  marginBottom: '-450px'
+                  transformOrigin: 'center center'
                 }}
               >
                 <style>{`
                   @media (min-width: 640px) {
                     .certificate-wrapper {
                       transform: scale(0.5) !important;
-                      margin-bottom: -300px !important;
                     }
                   }
                   @media (min-width: 1024px) {
                     .certificate-wrapper {
-                      transform: scale(0.75) !important;
-                      margin-bottom: -200px !important;
+                      transform: scale(0.7) !important;
+                    }
+                  }
+                  @media (min-width: 1280px) {
+                    .certificate-wrapper {
+                      transform: scale(0.85) !important;
                     }
                   }
                 `}</style>

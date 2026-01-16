@@ -32,7 +32,7 @@ export default function BackToTop() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] text-[#1a365d] p-4 rounded-full shadow-2xl hover:scale-110 transition-all focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/50 group"
+          className="fixed bottom-8 right-8 z-40 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] text-[#1a365d] p-4 rounded-full shadow-2xl hover:scale-110 transition-all focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/50 group"
           aria-label="Înapoi sus"
           title="Înapoi sus"
         >
