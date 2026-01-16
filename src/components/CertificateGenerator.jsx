@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import confetti from 'canvas-confetti';
 import { useToast } from '../contexts/ToastContext';
@@ -213,57 +213,73 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   const handleDownloadPDF = async () => {
-    if (certificateRef.current) {
-      try {
-        setDownloading(true);
-        const canvas = await html2canvas(certificateRef.current, {
-          scale: 2,
-          backgroundColor: '#ffffff',
-          logging: false,
-          useCORS: true,
-          allowTaint: true,
-          onclone: (clonedDoc) => {
-            // Fix oklch colors that html2canvas doesn't support
-            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
-            if (clonedElement) {
-              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-            }
+    if (!certificateRef.current) {
+      toast.error('Certificatul nu este încă încărcat');
+      return;
+    }
+
+    try {
+      setDownloading(true);
+
+      // Generate canvas from certificate (QR Code is now canvas-based, no SVG issues)
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        imageTimeout: 0, // No timeout for images
+        onclone: (clonedDoc) => {
+          // Fix oklch colors that html2canvas doesn't support
+          const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
+          if (clonedElement) {
+            clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
           }
-        });
+        }
+      });
 
-        const imgData = canvas.toDataURL('image/png');
-
-        // Create PDF in landscape mode (A4)
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-          unit: 'mm',
-          format: 'a4'
-        });
-
-        // Calculate dimensions to fit A4 landscape
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        // Add image to PDF (centered)
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-        // Download PDF
-        pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
-
-        toast.success('Certificat PDF descărcat cu succes!');
-
-        // Confetti on successful PDF download
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 }
-        });
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-        toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
-      } finally {
-        setDownloading(false);
+      if (!canvas) {
+        throw new Error('Nu s-a putut genera canvas-ul certificatului');
       }
+
+      const imgData = canvas.toDataURL('image/png');
+
+      if (!imgData || imgData === 'data:,') {
+        throw new Error('Nu s-a putut converti certificatul în imagine');
+      }
+
+      // Create PDF in landscape mode (A4)
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Calculate dimensions to fit A4 landscape
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      // Add image to PDF (centered)
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      // Download PDF
+      pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
+
+      toast.success('Certificat PDF descărcat cu succes!');
+
+      // Confetti on successful PDF download
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 }
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // More detailed error message
+      const errorMsg = error.message || 'Eroare necunoscută';
+      toast.error(`Eroare: ${errorMsg}. Încearcă PNG în loc de PDF.`);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -420,7 +436,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                           </p>
                         </div>
                         <div className="bg-white p-2 rounded border border-gray-300">
-                          <QRCodeSVG
+                          <QRCodeCanvas
                             value={`${window.location.origin}/zid?certificat=${barosan.certificatId}`}
                             size={70}
                           />
