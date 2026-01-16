@@ -117,6 +117,12 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   else el.style[prop] = 'rgb(209, 213, 219)';
                 }
               });
+
+              // Ensure fonts are properly applied
+              const style = el.style;
+              if (style.fontFamily === 'serif' || style.fontFamily === 'cursive') {
+                style.fontFamily = "'Playfair Display', serif";
+              }
             });
           }
         });
@@ -235,6 +241,12 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   else el.style[prop] = 'rgb(209, 213, 219)';
                 }
               });
+
+              // Ensure fonts are properly applied
+              const style = el.style;
+              if (style.fontFamily === 'serif' || style.fontFamily === 'cursive') {
+                style.fontFamily = "'Playfair Display', serif";
+              }
             });
           }
         });
@@ -509,7 +521,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     {/* Header */}
                     <div className="text-center">
                       <div className="text-6xl mb-4">👑</div>
-                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: 'serif' }}>
+                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                         REPUBLICA BAROSANILOR
                       </h1>
                       <div className="w-48 h-1 bg-[#D4AF37] mx-auto"></div>
@@ -517,7 +529,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
                     {/* Title */}
                     <div className="text-center">
-                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: 'serif' }}>
+                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                         CERTIFICAT DE BAROSAN
                       </h2>
                       <h3 className="text-3xl font-bold text-[#D4AF37]">
@@ -530,7 +542,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                       <p className="text-lg leading-relaxed">
                         Se certifică prin prezenta că
                       </p>
-                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: 'serif' }}>
+                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: "'Playfair Display', serif" }}>
                         {barosan.nume}
                       </p>
                       <p className="text-base leading-relaxed px-8">
@@ -603,11 +615,11 @@ export default function CertificateGenerator({ barosan, onClose }) {
                       {/* Right: Signatures */}
                       <div className="text-right">
                         <div className="mb-6">
-                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Ion Barosan</p>
+                          <p className="text-2xl mb-1" style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>Ion Barosan</p>
                           <p className="text-xs border-t border-gray-400 pt-1">Mare Barosan Șef</p>
                         </div>
                         <div>
-                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Maria Șmechera</p>
+                          <p className="text-2xl mb-1" style={{ fontFamily: "'Playfair Display', serif", fontStyle: 'italic' }}>Maria Șmechera</p>
                           <p className="text-xs border-t border-gray-400 pt-1">Director Dept. Bășcălie</p>
                         </div>
                       </div>
