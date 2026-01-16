@@ -61,6 +61,53 @@ export default function CertificateGenerator({ barosan, onClose }) {
     basic: 'BASIC'
   };
 
+  // Draw a crown shape (replaces emoji for PDF compatibility)
+  const drawCrown = (ctx, x, y, size, color, glowColor = null) => {
+    ctx.save();
+    ctx.translate(x, y);
+
+    if (glowColor) {
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = 15;
+    }
+
+    const scale = size / 50;
+    ctx.scale(scale, scale);
+
+    // Crown base
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(-25, 20);
+    ctx.lineTo(-25, 5);
+    ctx.lineTo(-20, -15);
+    ctx.lineTo(-10, 5);
+    ctx.lineTo(0, -25);
+    ctx.lineTo(10, 5);
+    ctx.lineTo(20, -15);
+    ctx.lineTo(25, 5);
+    ctx.lineTo(25, 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Crown jewels
+    ctx.fillStyle = '#FF0000';
+    ctx.beginPath();
+    ctx.arc(-20, -8, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, -18, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(20, -8, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Crown band
+    ctx.fillStyle = '#B8860B';
+    ctx.fillRect(-25, 15, 50, 8);
+
+    ctx.restore();
+  };
+
   // Generate certificate as Canvas (template-based approach)
   const generateCertificateCanvas = async () => {
     const canvas = document.createElement('canvas');
@@ -84,7 +131,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, 1200, 850);
 
-    // Shimmering corner decorations
+    // Shimmering corner decorations (simplified for speed)
     const drawCornerStar = (x, y, size) => {
       ctx.save();
       ctx.translate(x, y);
@@ -103,7 +150,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
     // Outer golden border with shadow effect
     ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 10;
     ctx.strokeStyle = '#8B4513';
     ctx.lineWidth = 20;
     ctx.strokeRect(25, 25, 1150, 800);
@@ -125,31 +172,25 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.strokeRect(60, 60, 1080, 730);
     ctx.setLineDash([]);
 
-    // Watermark - multiple crowns pattern
-    ctx.globalAlpha = 0.04;
-    ctx.font = '120px serif';
-    ctx.fillStyle = '#000000';
-    ctx.textAlign = 'center';
-    ctx.fillText('👑', 300, 350);
-    ctx.fillText('👑', 900, 350);
-    ctx.fillText('👑', 600, 550);
+    // Watermark - multiple crowns pattern (using drawn crowns)
+    ctx.globalAlpha = 0.05;
+    drawCrown(ctx, 300, 350, 80, '#DAA520');
+    drawCrown(ctx, 900, 350, 80, '#DAA520');
+    drawCrown(ctx, 600, 550, 80, '#DAA520');
     ctx.globalAlpha = 1;
 
-    // Header crown with glow
-    ctx.shadowColor = colors.primary;
-    ctx.shadowBlur = 20;
-    ctx.font = '70px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('👑', 600, 115);
+    // Header crown with glow (drawn crown instead of emoji)
+    drawCrown(ctx, 600, 85, 55, '#FFD700', colors.primary);
     ctx.shadowBlur = 0;
 
     // Stars around crown
-    ctx.font = '24px serif';
+    ctx.font = '24px Georgia, serif';
+    ctx.textAlign = 'center';
     ctx.fillStyle = colors.primary;
-    ctx.fillText('★', 520, 95);
-    ctx.fillText('★', 680, 95);
-    ctx.fillText('✦', 480, 115);
-    ctx.fillText('✦', 720, 115);
+    ctx.fillText('★', 520, 75);
+    ctx.fillText('★', 680, 75);
+    ctx.fillText('✦', 480, 90);
+    ctx.fillText('✦', 720, 90);
 
     // Main title with shadow
     ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
@@ -167,21 +208,21 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = '#FFD700';
     ctx.fillRect(400, 182, 400, 2);
 
-    // Certificate title - big and bold
+    // Certificate title - big and bold (reduced shadow for speed)
     ctx.shadowColor = colors.primary;
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 5;
     ctx.font = 'bold 52px Georgia, serif';
     ctx.fillStyle = '#1a365d';
     ctx.fillText('CERTIFICAT DE BAROSAN', 600, 240);
     ctx.shadowBlur = 0;
 
-    // Tier badge with special styling
-    const tierEmojis = {
-      platinum: '💎',
-      gold: '🏆',
-      basic: '⭐'
+    // Tier badge with special styling (using text symbols for PDF compatibility)
+    const tierSymbols = {
+      platinum: '◆',
+      gold: '★',
+      basic: '●'
     };
-    const tierBadgeText = `${tierEmojis[barosan.tier]} ${tierLabels[barosan.tier]} ${tierEmojis[barosan.tier]}`;
+    const tierBadgeText = `${tierSymbols[barosan.tier]} ${tierLabels[barosan.tier]} ${tierSymbols[barosan.tier]}`;
 
     // Badge background
     ctx.fillStyle = colors.primary;
@@ -205,9 +246,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = '#333333';
     ctx.fillText('Se certifică prin prezenta că distinsul/a', 600, 360);
 
-    // Name with glow effect - truncate if too long
+    // Name with glow effect - truncate if too long (reduced shadow for speed)
     ctx.shadowColor = colors.primary;
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 4;
     ctx.font = 'bold 44px Georgia, serif';
     ctx.fillStyle = '#1a365d';
     let displayName = barosan.nume;
@@ -244,9 +285,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = '#888888';
     ctx.fillText('* Acest certificat conferă drepturi nelimitate de lăudăroșenie și flexare pe social media', 600, 590);
 
-    // Footer section background
+    // Footer section background (adjusted to not overlap bottom elements)
     ctx.fillStyle = 'rgba(139, 69, 19, 0.05)';
-    ctx.fillRect(70, 620, 1060, 160);
+    ctx.fillRect(70, 615, 1060, 155);
 
     // Footer - Certificate ID (left)
     ctx.textAlign = 'left';
@@ -307,9 +348,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.translate(580, 700);
     ctx.rotate(-0.15);
 
-    // Stamp outer glow
+    // Stamp outer glow (reduced for speed)
     ctx.shadowColor = '#DC143C';
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 5;
 
     // Outer circle
     ctx.strokeStyle = '#DC143C';
@@ -392,13 +433,13 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
     // Bottom decorative line
     ctx.fillStyle = '#DAA520';
-    ctx.fillRect(100, 790, 1000, 2);
+    ctx.fillRect(100, 780, 1000, 2);
 
-    // Final funny footer
+    // Final funny footer (adjusted position to stay within border)
     ctx.textAlign = 'center';
-    ctx.font = 'bold 10px Arial, sans-serif';
+    ctx.font = 'bold 9px Arial, sans-serif';
     ctx.fillStyle = '#8B4513';
-    ctx.fillText('🏆 CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII 🏆', 600, 815);
+    ctx.fillText('★ CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII ★', 600, 800);
 
     return canvas;
   };
