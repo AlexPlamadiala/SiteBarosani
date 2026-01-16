@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
@@ -9,6 +10,7 @@ const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
 
 export default function Zid() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBarosan, setSelectedBarosan] = useState(null);
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +23,19 @@ export default function Zid() {
 
   // Debounce search term to avoid filtering on every keystroke
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Detectează și deschide certificatul din URL query params
+  useEffect(() => {
+    const certificatId = searchParams.get('certificat');
+    if (certificatId && barosani.length > 0 && !selectedBarosan) {
+      const barosan = barosani.find(b => b.certificatId === certificatId);
+      if (barosan) {
+        setSelectedBarosan(barosan);
+        // Elimină query param din URL după ce certificatul e deschis
+        setSearchParams({});
+      }
+    }
+  }, [searchParams, barosani, selectedBarosan, setSearchParams]);
 
   // Load preferences from localStorage
   useEffect(() => {

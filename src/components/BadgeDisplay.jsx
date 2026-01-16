@@ -22,13 +22,13 @@ export default function BadgeDisplay({ barosan, totalBarosani = 0, maxDisplay = 
       {displayedBadges.map((badge) => (
         <div
           key={badge.id}
-          className={`group relative ${sizeClass} rounded-full bg-gradient-to-br ${badge.color} flex items-center justify-center shadow-md hover:scale-125 transition-transform cursor-help`}
+          className={`group/badge relative ${sizeClass} rounded-full bg-gradient-to-br ${badge.color} flex items-center justify-center shadow-md hover:scale-125 transition-transform cursor-help`}
           title={`${badge.name}: ${badge.description}`}
         >
           <span className="text-white filter drop-shadow-sm">{badge.emoji}</span>
 
           {/* Tooltip on hover */}
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
+          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-200 z-[100] pointer-events-none">
             <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap shadow-xl">
               <div className="font-bold">{badge.emoji} {badge.name}</div>
               <div className="text-gray-300 text-xs mt-1">{badge.description}</div>

@@ -79,7 +79,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
           if (blob) {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = `certificat-barosan-${barosan.certificat_id}.png`;
+            link.download = `certificat-barosan-${barosan.certificatId}.png`;
             link.href = url;
             document.body.appendChild(link);
             link.click();
@@ -105,14 +105,15 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   const handleShareWhatsApp = () => {
-    const text = `🏆 Tocmai am devenit Barosan ${tierLabels[barosan.tier]}! 🎉\nCertificat ID: ${barosan.certificat_id}\nVerifică Registrul Oficial: ${window.location.origin}/zid`;
+    const text = `🏆 Tocmai am devenit Barosan ${tierLabels[barosan.tier]}! 🎉\nCertificat ID: ${barosan.certificatId}\nVerifică Registrul Oficial: ${window.location.origin}/zid`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
     toast.success('Se deschide WhatsApp...');
   };
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/zid`;
+    // Link direct către certificatul specific (folosind certificatId pentru identificare unică)
+    const link = `${window.location.origin}/zid?certificat=${barosan.certificatId}`;
     navigator.clipboard.writeText(link).then(() => {
       toast.success('Link copiat în clipboard! 🔗');
       confetti({
@@ -158,7 +159,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
           if (blob) {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = `barosan-story-${barosan.certificat_id}.png`;
+            link.download = `barosan-story-${barosan.certificatId}.png`;
             link.href = url;
             document.body.appendChild(link);
             link.click();
@@ -213,7 +214,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
         // Download PDF
-        pdf.save(`certificat-barosan-${barosan.certificat_id}.pdf`);
+        pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
         toast.success('Certificat PDF descărcat cu succes!');
 
         // Confetti on successful PDF download
