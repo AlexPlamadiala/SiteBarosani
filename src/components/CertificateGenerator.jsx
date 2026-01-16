@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
-import { QRCodeCanvas } from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import confetti from 'canvas-confetti';
 import { useToast } from '../contexts/ToastContext';
@@ -71,95 +71,34 @@ export default function CertificateGenerator({ barosan, onClose }) {
           logging: false,
           useCORS: true,
           allowTaint: true,
-          onclone: (clonedDoc) => {
-            // Fix oklch colors that html2canvas doesn't support
-            // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
-
-            // Map of common Tailwind colors to RGB equivalents
-            const colorMap = {
-              'gray-700': 'rgb(55, 65, 81)',
-              'gray-400': 'rgb(156, 163, 175)',
-              'gray-300': 'rgb(209, 213, 219)',
-              'white': 'rgb(255, 255, 255)',
-            };
-
-            const allElements = clonedDoc.querySelectorAll('*');
-            allElements.forEach(el => {
-              // Fix gradient background
-              if (el.classList.contains('bg-gradient-to-br')) {
-                el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-              }
-
-              // Fix common Tailwind utility classes
-              el.classList.forEach(className => {
-                if (className.includes('text-gray-700')) {
-                  el.style.color = colorMap['gray-700'];
-                }
-                if (className.includes('bg-white')) {
-                  el.style.backgroundColor = colorMap['white'];
-                }
-                if (className.includes('border-gray-300')) {
-                  el.style.borderColor = colorMap['gray-300'];
-                }
-                if (className.includes('border-gray-400')) {
-                  el.style.borderColor = colorMap['gray-400'];
-                }
-              });
-
-              // As a fallback, replace any remaining oklch() in inline styles
-              const computedStyle = window.getComputedStyle(el);
-              ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
-                const value = computedStyle[prop];
-                if (value && typeof value === 'string' && value.includes('oklch')) {
-                  // Force to a neutral gray/white as fallback
-                  if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
-                  else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
-                  else el.style[prop] = 'rgb(209, 213, 219)';
-                }
-              });
-
-              // Ensure fonts are properly applied
-              const style = el.style;
-              if (style.fontFamily === 'serif' || style.fontFamily === 'cursive') {
-                style.fontFamily = "'Roboto Condensed', sans-serif";
-              }
-            });
-          }
+          width: 1200,
+          height: 800
         });
 
         canvas.toBlob((blob) => {
-          try {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.download = `certificat-barosan-${barosan.certificatId}.png`;
-              link.href = url;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-
-              toast.success('Certificat PNG descărcat cu succes!');
-
-              // Confetti on successful download
-              confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 }
-              });
-            } else {
-              toast.error('Eroare la crearea fișierului PNG');
-            }
-          } catch (err) {
-            console.error('Error in toBlob:', err);
-            toast.error('Eroare la descărcarea PNG');
-          } finally {
-            setDownloading(false);
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `certificat-barosan-${barosan.certificatId}.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
           }
         }, 'image/png');
+        toast.success('Certificat PNG descărcat cu succes!');
+
+        // Confetti on successful download
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
       } catch (error) {
         console.error('Error generating certificate:', error);
         toast.error('A apărut o eroare la generarea certificatului. Te rugăm să încerci din nou.');
+      } finally {
         setDownloading(false);
       }
     }
@@ -190,65 +129,11 @@ export default function CertificateGenerator({ barosan, onClose }) {
       try {
         setDownloading(true);
         const canvas = await html2canvas(certificateRef.current, {
-          scale: 2,
+          scale: 3,
           backgroundColor: '#ffffff',
           logging: false,
           useCORS: true,
-          allowTaint: true,
-          onclone: (clonedDoc) => {
-            // Fix oklch colors that html2canvas doesn't support
-            // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
-
-            // Map of common Tailwind colors to RGB equivalents
-            const colorMap = {
-              'gray-700': 'rgb(55, 65, 81)',
-              'gray-400': 'rgb(156, 163, 175)',
-              'gray-300': 'rgb(209, 213, 219)',
-              'white': 'rgb(255, 255, 255)',
-            };
-
-            const allElements = clonedDoc.querySelectorAll('*');
-            allElements.forEach(el => {
-              // Fix gradient background
-              if (el.classList.contains('bg-gradient-to-br')) {
-                el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-              }
-
-              // Fix common Tailwind utility classes
-              el.classList.forEach(className => {
-                if (className.includes('text-gray-700')) {
-                  el.style.color = colorMap['gray-700'];
-                }
-                if (className.includes('bg-white')) {
-                  el.style.backgroundColor = colorMap['white'];
-                }
-                if (className.includes('border-gray-300')) {
-                  el.style.borderColor = colorMap['gray-300'];
-                }
-                if (className.includes('border-gray-400')) {
-                  el.style.borderColor = colorMap['gray-400'];
-                }
-              });
-
-              // As a fallback, replace any remaining oklch() in inline styles
-              const computedStyle = window.getComputedStyle(el);
-              ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
-                const value = computedStyle[prop];
-                if (value && typeof value === 'string' && value.includes('oklch')) {
-                  // Force to a neutral gray/white as fallback
-                  if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
-                  else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
-                  else el.style[prop] = 'rgb(209, 213, 219)';
-                }
-              });
-
-              // Ensure fonts are properly applied
-              const style = el.style;
-              if (style.fontFamily === 'serif' || style.fontFamily === 'cursive') {
-                style.fontFamily = "'Roboto Condensed', sans-serif";
-              }
-            });
-          }
+          allowTaint: true
         });
 
         // Create story canvas (1080x1920)
@@ -271,155 +156,84 @@ export default function CertificateGenerator({ barosan, onClose }) {
         ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
 
         storyCanvas.toBlob((blob) => {
-          try {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.download = `barosan-story-${barosan.certificatId}.png`;
-              link.href = url;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-
-              toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
-              confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 }
-              });
-            } else {
-              toast.error('Eroare la crearea story format');
-            }
-          } catch (err) {
-            console.error('Error in story toBlob:', err);
-            toast.error('Eroare la descărcarea story');
-          } finally {
-            setDownloading(false);
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `barosan-story-${barosan.certificatId}.png`;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
           }
         }, 'image/png');
+
+        toast.success('Story format descărcat! Perfect pentru Instagram/TikTok! 📱');
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
       } catch (error) {
         console.error('Error:', error);
         toast.error('Eroare la generare story format');
+      } finally {
         setDownloading(false);
       }
     }
   };
 
   const handleDownloadPDF = async () => {
-    if (!certificateRef.current) {
-      toast.error('Certificatul nu este încă încărcat');
-      return;
-    }
+    if (certificateRef.current) {
+      try {
+        setDownloading(true);
+        const canvas = await html2canvas(certificateRef.current, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          width: 1200,
+          height: 800
+        });
 
-    try {
-      setDownloading(true);
+        const imgData = canvas.toDataURL('image/png');
 
-      // Generate canvas from certificate (QR Code is now canvas-based, no SVG issues)
-      const canvas = await html2canvas(certificateRef.current, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        imageTimeout: 0, // No timeout for images
-        onclone: (clonedDoc) => {
-          // Fix oklch colors that html2canvas doesn't support
-          // Tailwind CSS v4 uses oklch by default, so we need to convert to RGB
+        // Create PDF in landscape mode (A4)
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
 
-          // Map of common Tailwind colors to RGB equivalents
-          const colorMap = {
-            'gray-700': 'rgb(55, 65, 81)',
-            'gray-400': 'rgb(156, 163, 175)',
-            'gray-300': 'rgb(209, 213, 219)',
-            'white': 'rgb(255, 255, 255)',
-          };
+        // Calculate dimensions to fit A4 landscape
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
 
-          const allElements = clonedDoc.querySelectorAll('*');
-          allElements.forEach(el => {
-            // Fix gradient background
-            if (el.classList.contains('bg-gradient-to-br')) {
-              el.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
-            }
+        // Add image to PDF (centered)
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
-            // Fix common Tailwind utility classes
-            el.classList.forEach(className => {
-              if (className.includes('text-gray-700')) {
-                el.style.color = colorMap['gray-700'];
-              }
-              if (className.includes('bg-white')) {
-                el.style.backgroundColor = colorMap['white'];
-              }
-              if (className.includes('border-gray-300')) {
-                el.style.borderColor = colorMap['gray-300'];
-              }
-              if (className.includes('border-gray-400')) {
-                el.style.borderColor = colorMap['gray-400'];
-              }
-            });
+        // Download PDF
+        pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
+        toast.success('Certificat PDF descărcat cu succes!');
 
-            // As a fallback, replace any remaining oklch() in inline styles
-            const computedStyle = window.getComputedStyle(el);
-            ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach(prop => {
-              const value = computedStyle[prop];
-              if (value && typeof value === 'string' && value.includes('oklch')) {
-                // Force to a neutral gray/white as fallback
-                if (prop === 'color') el.style[prop] = 'rgb(0, 0, 0)';
-                else if (prop === 'backgroundColor') el.style[prop] = 'rgb(255, 255, 255)';
-                else el.style[prop] = 'rgb(209, 213, 219)';
-              }
-            });
-          });
-        }
-      });
-
-      if (!canvas) {
-        throw new Error('Nu s-a putut genera canvas-ul certificatului');
+        // Confetti on successful PDF download
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        toast.error('A apărut o eroare la generarea PDF-ului. Te rugăm să încerci din nou.');
+      } finally {
+        setDownloading(false);
       }
-
-      const imgData = canvas.toDataURL('image/png');
-
-      if (!imgData || imgData === 'data:,') {
-        throw new Error('Nu s-a putut converti certificatul în imagine');
-      }
-
-      // Create PDF in landscape mode (A4)
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      // Calculate dimensions to fit A4 landscape
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      // Add image to PDF (centered)
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-      // Download PDF
-      pdf.save(`certificat-barosan-${barosan.certificatId}.pdf`);
-
-      toast.success('Certificat PDF descărcat cu succes!');
-
-      // Confetti on successful PDF download
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.7 }
-      });
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      // More detailed error message
-      const errorMsg = error.message || 'Eroare necunoscută';
-      toast.error(`Eroare: ${errorMsg}. Încearcă PNG în loc de PDF.`);
-    } finally {
-      setDownloading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 z-[100] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-90 z-50 overflow-y-auto">
       <div className="min-h-screen flex flex-col">
         {/* Fixed Header with Navigation */}
         <div className="sticky top-0 bg-white shadow-lg z-10">
@@ -474,31 +288,29 @@ export default function CertificateGenerator({ barosan, onClose }) {
         </div>
 
         {/* Certificate Container */}
-        <div className="flex-grow flex items-center justify-center p-2 md:p-8 overflow-hidden">
+        <div className="flex-grow flex items-center justify-center p-2 md:p-8">
           <div className="w-full max-w-7xl">
             {/* Certificate Wrapper - Scaled for viewing */}
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center overflow-x-auto">
               <div
                 className="certificate-wrapper"
                 style={{
                   transform: 'scale(0.3)',
-                  transformOrigin: 'center center'
+                  transformOrigin: 'top center',
+                  marginBottom: '-450px'
                 }}
               >
                 <style>{`
                   @media (min-width: 640px) {
                     .certificate-wrapper {
                       transform: scale(0.5) !important;
+                      margin-bottom: -300px !important;
                     }
                   }
                   @media (min-width: 1024px) {
                     .certificate-wrapper {
-                      transform: scale(0.7) !important;
-                    }
-                  }
-                  @media (min-width: 1280px) {
-                    .certificate-wrapper {
-                      transform: scale(0.85) !important;
+                      transform: scale(0.75) !important;
+                      margin-bottom: -200px !important;
                     }
                   }
                 `}</style>
@@ -517,44 +329,45 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 h-full flex flex-col items-center py-6">
+                  <div className="relative z-10 h-full flex flex-col items-center justify-between py-8">
                     {/* Header */}
-                    <div className="text-center mb-8">
+                    <div className="text-center">
                       <div className="text-6xl mb-4">👑</div>
-                      <h1 className="text-3xl font-bold text-[#8B0000] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em', lineHeight: '1.2' }}>
+                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: 'serif' }}>
                         REPUBLICA BAROSANILOR
                       </h1>
-                      <div className="w-48 h-1 bg-[#D4AF37] mx-auto mt-2"></div>
+                      <div className="w-48 h-1 bg-[#D4AF37] mx-auto"></div>
                     </div>
 
                     {/* Title */}
-                    <div className="text-center mb-8">
-                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em', lineHeight: '1.2' }}>
+                    <div className="text-center">
+                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: 'serif' }}>
                         CERTIFICAT DE BAROSAN
                       </h2>
-                      <h3 className="text-3xl font-bold text-[#D4AF37]" style={{ lineHeight: '1.3' }}>
+                      <h3 className="text-3xl font-bold text-[#D4AF37]">
                         {tierLabels[barosan.tier]}
                       </h3>
                     </div>
 
                     {/* Body Text */}
-                    <div className="max-w-3xl text-center space-y-6 mb-8">
-                      <p className="text-lg" style={{ lineHeight: '1.6', marginBottom: '1.5rem' }}>
+                    <div className="max-w-3xl text-center space-y-4">
+                      <p className="text-lg leading-relaxed">
                         Se certifică prin prezenta că
                       </p>
-                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: "'Roboto Condensed', sans-serif", lineHeight: '1.3', margin: '2rem 0' }}>
+                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: 'serif' }}>
                         {barosan.nume}
                       </p>
-                      <p className="text-base px-8" style={{ lineHeight: '1.7', marginTop: '1.5rem' }}>
-                        a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
+                      <p className="text-base leading-relaxed px-8">
+                        a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor
+                        internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
                       </p>
-                      <p className="text-lg italic text-gray-700" style={{ lineHeight: '1.6', marginTop: '1.5rem' }}>
+                      <p className="text-lg italic text-gray-700">
                         "{barosan.motto}"
                       </p>
                     </div>
 
                     {/* Footer Info */}
-                    <div className="w-full flex justify-between items-end px-12 mt-auto">
+                    <div className="w-full flex justify-between items-end px-12">
                       {/* Left: Certificate Number and Date + QR */}
                       <div className="flex items-end space-x-6">
                         <div className="text-left">
@@ -570,8 +383,8 @@ export default function CertificateGenerator({ barosan, onClose }) {
                           </p>
                         </div>
                         <div className="bg-white p-2 rounded border border-gray-300">
-                          <QRCodeCanvas
-                            value={`${window.location.origin}/zid?certificat=${barosan.certificatId}`}
+                          <QRCodeSVG
+                            value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
                             size={70}
                           />
                           <p className="text-xs text-center mt-1">Verifică online</p>
@@ -614,11 +427,11 @@ export default function CertificateGenerator({ barosan, onClose }) {
                       {/* Right: Signatures */}
                       <div className="text-right">
                         <div className="mb-6">
-                          <p className="text-2xl mb-1" style={{ fontFamily: "'Roboto Condensed', sans-serif", fontStyle: 'italic' }}>Ion Barosan</p>
+                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Ion Barosan</p>
                           <p className="text-xs border-t border-gray-400 pt-1">Mare Barosan Șef</p>
                         </div>
                         <div>
-                          <p className="text-2xl mb-1" style={{ fontFamily: "'Roboto Condensed', sans-serif", fontStyle: 'italic' }}>Maria Șmechera</p>
+                          <p className="text-2xl mb-1" style={{ fontFamily: 'cursive' }}>Maria Șmechera</p>
                           <p className="text-xs border-t border-gray-400 pt-1">Director Dept. Bășcălie</p>
                         </div>
                       </div>
