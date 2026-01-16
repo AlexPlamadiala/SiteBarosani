@@ -519,36 +519,36 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   {/* Content */}
                   <div className="relative z-10 h-full flex flex-col items-center py-6">
                     {/* Header */}
-                    <div className="text-center mb-6">
-                      <div className="text-6xl mb-6">👑</div>
-                      <h1 className="text-3xl font-bold text-[#8B0000] mb-3" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em' }}>
+                    <div className="text-center mb-8">
+                      <div className="text-6xl mb-4">👑</div>
+                      <h1 className="text-3xl font-bold text-[#8B0000] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em', lineHeight: '1.2' }}>
                         REPUBLICA BAROSANILOR
                       </h1>
-                      <div className="w-48 h-1 bg-[#D4AF37] mx-auto"></div>
+                      <div className="w-48 h-1 bg-[#D4AF37] mx-auto mt-2"></div>
                     </div>
 
                     {/* Title */}
-                    <div className="text-center mb-6">
-                      <h2 className="text-5xl font-bold text-[#1a365d] mb-3" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em' }}>
+                    <div className="text-center mb-8">
+                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em', lineHeight: '1.2' }}>
                         CERTIFICAT DE BAROSAN
                       </h2>
-                      <h3 className="text-3xl font-bold text-[#D4AF37]">
+                      <h3 className="text-3xl font-bold text-[#D4AF37]" style={{ lineHeight: '1.3' }}>
                         {tierLabels[barosan.tier]}
                       </h3>
                     </div>
 
                     {/* Body Text */}
-                    <div className="max-w-3xl text-center space-y-6 mb-6">
-                      <p className="text-lg leading-relaxed">
+                    <div className="max-w-3xl text-center space-y-6 mb-8">
+                      <p className="text-lg" style={{ lineHeight: '1.6', marginBottom: '1.5rem' }}>
                         Se certifică prin prezenta că
                       </p>
-                      <p className="text-4xl font-bold text-[#1a365d] my-6" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: "'Roboto Condensed', sans-serif", lineHeight: '1.3', margin: '2rem 0' }}>
                         {barosan.nume}
                       </p>
-                      <p className="text-base leading-relaxed px-8 mt-6">
+                      <p className="text-base px-8" style={{ lineHeight: '1.7', marginTop: '1.5rem' }}>
                         a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
                       </p>
-                      <p className="text-lg italic text-gray-700 mt-6">
+                      <p className="text-lg italic text-gray-700" style={{ lineHeight: '1.6', marginTop: '1.5rem' }}>
                         "{barosan.motto}"
                       </p>
                     </div>
