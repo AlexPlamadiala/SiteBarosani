@@ -5,6 +5,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['jspdf', 'html2canvas', 'qrcode.react']
+    include: ['jspdf', 'qrcode.react'],
+    exclude: ['html2canvas']
+  },
+  build: {
+    rollupOptions: {
+      external: ['html2canvas']
+    }
   }
 })
