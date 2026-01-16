@@ -517,19 +517,19 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 h-full flex flex-col items-center justify-between py-8">
+                  <div className="relative z-10 h-full flex flex-col items-center py-8">
                     {/* Header */}
-                    <div className="text-center">
+                    <div className="text-center mb-8">
                       <div className="text-6xl mb-4">👑</div>
-                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                      <h1 className="text-3xl font-bold text-[#8B0000] mb-2" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em' }}>
                         REPUBLICA BAROSANILOR
                       </h1>
                       <div className="w-48 h-1 bg-[#D4AF37] mx-auto"></div>
                     </div>
 
                     {/* Title */}
-                    <div className="text-center">
-                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                    <div className="text-center mb-8">
+                      <h2 className="text-5xl font-bold text-[#1a365d] mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: '0.05em' }}>
                         CERTIFICAT DE BAROSAN
                       </h2>
                       <h3 className="text-3xl font-bold text-[#D4AF37]">
@@ -538,24 +538,23 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     </div>
 
                     {/* Body Text */}
-                    <div className="max-w-3xl text-center space-y-4">
+                    <div className="max-w-3xl text-center space-y-4 mb-8">
                       <p className="text-lg leading-relaxed">
                         Se certifică prin prezenta că
                       </p>
-                      <p className="text-4xl font-bold text-[#1a365d]" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                      <p className="text-4xl font-bold text-[#1a365d] my-4" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
                         {barosan.nume}
                       </p>
                       <p className="text-base leading-relaxed px-8">
-                        a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor
-                        internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
+                        a fost verificat și confirmat ca <strong>BAROSAN AUTENTIC</strong> conform standardelor internaționale de șmecherie și a fost admis în registrul oficial al Zidului Barosanilor.
                       </p>
-                      <p className="text-lg italic text-gray-700">
+                      <p className="text-lg italic text-gray-700 mt-4">
                         "{barosan.motto}"
                       </p>
                     </div>
 
                     {/* Footer Info */}
-                    <div className="w-full flex justify-between items-end px-12">
+                    <div className="w-full flex justify-between items-end px-12 mt-auto">
                       {/* Left: Certificate Number and Date + QR */}
                       <div className="flex items-end space-x-6">
                         <div className="text-left">
