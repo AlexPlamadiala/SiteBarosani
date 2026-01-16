@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCountUp } from '../hooks/useCountUp';
 import RecentActivity from '../components/RecentActivity';
 import Leaderboard from '../components/Leaderboard';
+import confetti from 'canvas-confetti';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
@@ -11,6 +12,48 @@ export default function Home() {
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sseConnected, setSseConnected] = useState(false);
+
+  // Confetti effect when page loads
+  useEffect(() => {
+    const colors = ['#D4AF37', '#FFD700', '#4169E1', '#00CED1'];
+
+    // Big burst on mount
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: colors
+      });
+    }, 300);
+
+    // Continuous confetti for 3 seconds
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: colors
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+
+    setTimeout(() => frame(), 400);
+  }, []);
 
   useEffect(() => {
     async function fetchBarosani() {

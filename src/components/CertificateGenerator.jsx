@@ -68,9 +68,16 @@ export default function CertificateGenerator({ barosan, onClose }) {
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: true,
+          logging: false,
           useCORS: true,
-          allowTaint: true
+          allowTaint: true,
+          onclone: (clonedDoc) => {
+            // Fix oklch colors that html2canvas doesn't support
+            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
+            if (clonedElement) {
+              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+            }
+          }
         });
 
         canvas.toBlob((blob) => {
@@ -138,9 +145,16 @@ export default function CertificateGenerator({ barosan, onClose }) {
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: true,
+          logging: false,
           useCORS: true,
-          allowTaint: true
+          allowTaint: true,
+          onclone: (clonedDoc) => {
+            // Fix oklch colors that html2canvas doesn't support
+            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
+            if (clonedElement) {
+              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+            }
+          }
         });
 
         // Create story canvas (1080x1920)
@@ -205,9 +219,16 @@ export default function CertificateGenerator({ barosan, onClose }) {
         const canvas = await html2canvas(certificateRef.current, {
           scale: 2,
           backgroundColor: '#ffffff',
-          logging: true,
+          logging: false,
           useCORS: true,
-          allowTaint: true
+          allowTaint: true,
+          onclone: (clonedDoc) => {
+            // Fix oklch colors that html2canvas doesn't support
+            const clonedElement = clonedDoc.querySelector('.bg-gradient-to-br');
+            if (clonedElement) {
+              clonedElement.style.background = 'linear-gradient(to bottom right, #F5E6D3, #E8D5B7)';
+            }
+          }
         });
 
         const imgData = canvas.toDataURL('image/png');
@@ -400,7 +421,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                         </div>
                         <div className="bg-white p-2 rounded border border-gray-300">
                           <QRCodeSVG
-                            value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
+                            value={`${window.location.origin}/zid?certificat=${barosan.certificatId}`}
                             size={70}
                           />
                           <p className="text-xs text-center mt-1">Verifică online</p>
