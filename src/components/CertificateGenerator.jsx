@@ -55,6 +55,30 @@ export default function CertificateGenerator({ barosan, onClose }) {
     });
   }, [barosan.tier]);
 
+  // SVG Crown component for HTML preview (matches drawn crown in canvas)
+  const CrownSVG = ({ size = 50, className = "" }) => (
+    <svg width={size} height={size * 0.9} viewBox="-30 -30 60 54" className={className}>
+      {/* Crown base */}
+      <path
+        d="M-25,20 L-25,5 L-20,-15 L-10,5 L0,-25 L10,5 L20,-15 L25,5 L25,20 Z"
+        fill="#FFD700"
+      />
+      {/* Crown jewels */}
+      <circle cx="-20" cy="-8" r="4" fill="#FF0000" />
+      <circle cx="0" cy="-18" r="5" fill="#FF0000" />
+      <circle cx="20" cy="-8" r="4" fill="#FF0000" />
+      {/* Crown band */}
+      <rect x="-25" y="15" width="50" height="8" fill="#B8860B" />
+    </svg>
+  );
+
+  // Tier symbols for HTML preview (matching PDF)
+  const tierSymbols = {
+    platinum: '◆',
+    gold: '★',
+    basic: '●'
+  };
+
   const tierLabels = {
     platinum: 'PLATINUM',
     gold: 'GOLD',
@@ -694,10 +718,10 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
 
                   {/* Watermarks */}
-                  <div className="absolute inset-0 flex items-center justify-around opacity-[0.04] pointer-events-none">
-                    <div className="text-[100px]">👑</div>
-                    <div className="text-[100px]">👑</div>
-                    <div className="text-[100px]">👑</div>
+                  <div className="absolute inset-0 flex items-center justify-around opacity-[0.05] pointer-events-none">
+                    <CrownSVG size={100} />
+                    <CrownSVG size={100} />
+                    <CrownSVG size={100} />
                   </div>
 
                   {/* Content */}
@@ -707,7 +731,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
                       <div className="flex items-center justify-center gap-4 mb-2">
                         <span className="text-2xl text-yellow-500">★</span>
                         <span className="text-xl text-yellow-400">✦</span>
-                        <div className="text-5xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))' }}>👑</div>
+                        <div className="drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))' }}>
+                          <CrownSVG size={55} />
+                        </div>
                         <span className="text-xl text-yellow-400">✦</span>
                         <span className="text-2xl text-yellow-500">★</span>
                       </div>
@@ -736,7 +762,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                         'bg-gradient-to-r from-blue-400 via-blue-200 to-blue-400'
                       } bg-opacity-30`}>
                         <span className="text-2xl font-bold" style={{ fontFamily: 'Georgia, serif', color: barosan.tier === 'platinum' ? '#666' : barosan.tier === 'gold' ? '#B8860B' : '#1E90FF' }}>
-                          {barosan.tier === 'platinum' ? '💎' : barosan.tier === 'gold' ? '🏆' : '⭐'} {tierLabels[barosan.tier]} {barosan.tier === 'platinum' ? '💎' : barosan.tier === 'gold' ? '🏆' : '⭐'}
+                          {tierSymbols[barosan.tier]} {tierLabels[barosan.tier]} {tierSymbols[barosan.tier]}
                         </span>
                       </div>
                     </div>
@@ -845,8 +871,8 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     {/* Bottom decorative line and footer */}
                     <div className="w-full mt-2">
                       <div className="w-full h-[2px] bg-[#DAA520] mb-2"></div>
-                      <p className="text-center text-[10px] font-bold text-[#8B4513]">
-                        🏆 CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII 🏆
+                      <p className="text-center text-[9px] font-bold text-[#8B4513]">
+                        ★ CERTIFICAT OFICIAL • VALABIL PE TOATĂ PLANETA • NU SE ACCEPTĂ CONTESTAȚII ★
                       </p>
                     </div>
                   </div>
