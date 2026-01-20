@@ -6,53 +6,28 @@ import Leaderboard from '../components/Leaderboard';
 import confetti from 'canvas-confetti';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
+const SUPREM_API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
 
 export default function Home() {
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sseConnected, setSseConnected] = useState(false);
+  const [supremBarosan, setSupremBarosan] = useState(null);
+  const [supremAvailable, setSupremAvailable] = useState(true);
 
   // Confetti effect when page loads
   useEffect(() => {
-    const colors = ['#D4AF37', '#FFD700', '#4169E1', '#00CED1'];
+    const colors = ['#D4AF37', '#FFD700', '#9333ea', '#ec4899'];
 
-    // Big burst on mount
     setTimeout(() => {
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 80,
+        spread: 60,
         origin: { y: 0.6 },
         colors: colors
       });
     }, 300);
-
-    // Continuous confetti for 3 seconds
-    const duration = 3000;
-    const end = Date.now() + duration;
-
-    const frame = () => {
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    };
-
-    setTimeout(() => frame(), 400);
   }, []);
 
   useEffect(() => {
@@ -70,25 +45,36 @@ export default function Home() {
       }
     }
 
+    async function fetchSuprem() {
+      try {
+        const response = await fetch(SUPREM_API_URL);
+        const data = await response.json();
+        if (data.success) {
+          setSupremAvailable(data.available);
+          setSupremBarosan(data.suprem);
+        }
+      } catch (err) {
+        console.error('Error fetching suprem:', err);
+      }
+    }
+
     fetchBarosani();
+    fetchSuprem();
 
     // SSE pentru real-time updates
     let eventSource;
     try {
       eventSource = new EventSource(SSE_URL);
 
-      eventSource.addEventListener('connected', (e) => {
-        console.log('SSE Connected:', e.data);
+      eventSource.addEventListener('connected', () => {
         setSseConnected(true);
       });
 
-      eventSource.addEventListener('barosani-updated', (e) => {
-        console.log('Barosani updated:', e.data);
+      eventSource.addEventListener('barosani-updated', () => {
         fetchBarosani();
       });
 
-      eventSource.onerror = (err) => {
-        console.error('SSE Error:', err);
+      eventSource.onerror = () => {
         setSseConnected(false);
       };
     } catch (err) {
@@ -98,12 +84,14 @@ export default function Home() {
     const pollInterval = setInterval(() => {
       if (!sseConnected) {
         fetchBarosani();
+        fetchSuprem();
       }
     }, 30000);
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         fetchBarosani();
+        fetchSuprem();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -131,214 +119,318 @@ export default function Home() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-        {/* Hero Section Skeleton */}
-        <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-[#1a365d] to-[#2d5986] text-white">
-          <div className="container mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-5 animate-pulse">
-              <span className="text-5xl opacity-50">🏆</span>
-            </div>
-            <div className="h-12 bg-white/20 rounded-lg w-3/4 max-w-2xl mx-auto mb-4 animate-pulse"></div>
-            <div className="h-6 bg-white/20 rounded w-1/2 mx-auto mb-2 animate-pulse"></div>
-            <div className="h-5 bg-white/20 rounded w-1/3 mx-auto mb-8 animate-pulse"></div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
-              <div className="h-12 bg-white/20 rounded-xl w-40 animate-pulse"></div>
-              <div className="h-12 bg-white/20 rounded-xl w-40 animate-pulse"></div>
-            </div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-white/20 rounded-xl p-4 animate-pulse">
-                  <div className="h-10 bg-white/30 rounded mb-2"></div>
-                  <div className="h-4 bg-white/30 rounded w-2/3 mx-auto"></div>
-                </div>
-              ))}
-            </div>
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="text-6xl animate-bounce mb-4">👑</div>
+            <p className="text-yellow-400 font-bold animate-pulse">Se încarcă...</p>
           </div>
-        </section>
-
-        {/* Features Skeleton */}
-        <section className="py-12 md:py-16 px-4 bg-white">
-          <div className="container mx-auto">
-            <div className="h-10 bg-gray-200 rounded w-1/3 mx-auto mb-10 animate-pulse"></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-gray-100 rounded-xl p-6 animate-pulse">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                  <div className="h-6 bg-gray-200 rounded w-2/3 mx-auto mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-      {/* Hero Section - Compact */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-br from-[#1a365d] to-[#2d5986] text-white">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-5 shadow-xl">
-            <span className="text-5xl">🏆</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 text-white">
-            REGISTRUL OFICIAL AL BAROSANILOR
-          </h1>
-          <p className="text-base md:text-lg mb-2 max-w-2xl mx-auto opacity-90">
-            Singura instituție acreditată pentru certificarea oficială a barosanilor
-          </p>
-          <p className="text-sm md:text-base mb-8 opacity-75 italic">
-            "Unde șmecheria devine oficială"
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
-            <Link
-              to="/zid"
-              className="bg-white text-[#1a365d] px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
-            >
-              Vezi Registrul 👑
-            </Link>
-            <Link
-              to="/cum-devin-barosan"
-              className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
-            >
-              Înscrie-te Acum ⭐
-            </Link>
-          </div>
-
-          {/* Stats Cards - Compact with Animation - Clickable */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <Link to="/zid" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedTotal}</div>
-              <div className="text-gray-700 font-semibold text-sm">Barosani Verificați</div>
-            </Link>
-            <Link to="/zid?tier=platinum" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2] hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-extrabold text-[#1a365d] tabular-nums">{animatedPlatinum}</div>
-              <div className="text-gray-700 font-semibold text-sm">💎 Platinum</div>
-            </Link>
-            <Link to="/zid?tier=gold" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedGold}</div>
-              <div className="text-gray-700 font-semibold text-sm">🏆 Gold</div>
-            </Link>
-            <Link to="/zid?tier=basic" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform cursor-pointer">
-              <div className="text-4xl font-extrabold text-gray-600 tabular-nums">{animatedBasic}</div>
-              <div className="text-gray-700 font-semibold text-sm">⭐ Basic</div>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-[#0a0a0a]">
+      {/* Hero Section - Dark Modern */}
+      <section className="relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-white/5 rounded-full"></div>
         </div>
-      </section>
 
-      {/* Recent Activity Section */}
-      <section className="py-8 px-4 bg-gradient-to-b from-white to-[#F5E6D3]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 flex flex-col justify-center">
-              <div className="text-center lg:text-left mb-4 lg:mb-0">
-                <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-3">
-                  Comunitatea Crește! 🚀
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Barosani noi se înscriu în fiecare zi. Nu rămâne în urmă!
-                </p>
-                <Link
-                  to="/cum-devin-barosan"
-                  className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
-                >
-                  Înscrie-te Acum 🔥
-                </Link>
-              </div>
-            </div>
-            <div className="lg:col-span-1">
-              <RecentActivity barosani={barosani} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section - Compact */}
-      <section className="py-12 md:py-16 px-4 bg-white">
-        <div className="container mx-auto">
-          <h2 className="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-center mb-10">
-            De Ce Registrul Oficial?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-gray-100 hover:border-[#D4AF37] transition-colors">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-4">
-                <span className="text-3xl">🏆</span>
-              </div>
-              <h3 className="text-lg font-bold text-[#1a365d] mb-2">Certificare Oficială</h3>
-              <p className="text-gray-600 text-sm">
-                Certificat digital descărcabil cu ștampilă oficială
-              </p>
+        <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6 border border-white/10">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span className="text-white/80 text-sm font-medium">{animatedTotal} barosani activi</span>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-gray-100 hover:border-[#2d5986] transition-colors">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#2d5986] to-[#1a365d] rounded-full mb-4">
-                <span className="text-3xl">🌟</span>
-              </div>
-              <h3 className="text-lg font-bold text-[#1a365d] mb-2">Vizibilitate Publică</h3>
-              <p className="text-gray-600 text-sm">
-                Apari în Registrul Oficial vizibil tuturor
-              </p>
-            </div>
+            {/* Main Title */}
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
+              <span className="text-white">REGISTRUL</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400">
+                OFICIAL
+              </span>
+              <br />
+              <span className="text-white">AL BAROSANILOR</span>
+            </h1>
 
-            <div className="bg-white rounded-xl p-6 shadow-lg text-center border-2 border-gray-100 hover:border-[#BCC6CC] transition-colors">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#E5E4E2] to-[#BCC6CC] rounded-full mb-4">
-                <span className="text-3xl">💎</span>
-              </div>
-              <h3 className="text-lg font-bold text-[#1a365d] mb-2">Comunitate Elite</h3>
-              <p className="text-gray-600 text-sm">
-                Comunitate selectă cu șmecherie certificată
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Leaderboard Section */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-white to-[#F5E6D3]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-3">
-              Ierarhia Elitei 🏆
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Cei mai dedicați și influenți barosani. Alătură-te lor și câștigă puncte!
+            <p className="text-lg md:text-xl text-white/60 mb-8 max-w-2xl mx-auto">
+              Singura instituție acreditată pentru certificarea oficială a barosanilor din România
             </p>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <Leaderboard barosani={barosani} />
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Link
+                to="/zid"
+                className="group bg-white text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all shadow-2xl shadow-white/10"
+              >
+                Vezi Registrul
+                <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+              <Link
+                to="/cum-devin-barosan"
+                className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all shadow-2xl shadow-yellow-500/20"
+              >
+                Înscrie-te Acum ⭐
+              </Link>
+            </div>
+
+            {/* Stats Grid - 5 columns with Suprem */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+              {/* Suprem Card - Special */}
+              <Link
+                to="/barosanul-suprem"
+                className="relative group bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all hover:scale-105 col-span-2 sm:col-span-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative">
+                  {supremBarosan && !supremAvailable ? (
+                    <>
+                      <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">ACTIV</div>
+                      <div className="text-purple-300/80 font-semibold text-sm">👑 Suprem</div>
+                      <div className="text-xs text-purple-300/60 mt-1 truncate">{supremBarosan.nume}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">LIBER</div>
+                      <div className="text-purple-300/80 font-semibold text-sm">👑 Suprem</div>
+                      <div className="text-xs text-green-400 mt-1">Disponibil!</div>
+                    </>
+                  )}
+                </div>
+              </Link>
+
+              {/* Total */}
+              <Link
+                to="/zid"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
+              >
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedTotal}</div>
+                <div className="text-white/60 font-semibold text-sm">🎯 Total</div>
+              </Link>
+
+              {/* Platinum */}
+              <Link
+                to="/zid?tier=platinum"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-gray-300/30 transition-all hover:scale-105"
+              >
+                <div className="text-3xl font-black text-gray-300 tabular-nums">{animatedPlatinum}</div>
+                <div className="text-white/60 font-semibold text-sm">💎 Platinum</div>
+              </Link>
+
+              {/* Gold */}
+              <Link
+                to="/zid?tier=gold"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
+              >
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedGold}</div>
+                <div className="text-white/60 font-semibold text-sm">🏆 Gold</div>
+              </Link>
+
+              {/* Basic */}
+              <Link
+                to="/zid?tier=basic"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-gray-500/30 transition-all hover:scale-105"
+              >
+                <div className="text-3xl font-black text-gray-400 tabular-nums">{animatedBasic}</div>
+                <div className="text-white/60 font-semibold text-sm">⭐ Basic</div>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Final - Compact */}
-      <section className="py-12 md:py-16 bg-gradient-to-br from-[#1a365d] to-[#2d5986] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-5 shadow-xl">
-            <span className="text-3xl">👑</span>
+      {/* Suprem Spotlight - Only show when active */}
+      {supremBarosan && !supremAvailable && (
+        <section className="py-8 px-4 bg-gradient-to-r from-purple-900/30 via-black to-pink-900/30 border-y border-purple-500/20">
+          <div className="container mx-auto">
+            <Link to="/barosanul-suprem" className="flex items-center justify-center gap-4 group">
+              <div className="flex items-center gap-3">
+                {supremBarosan.poza ? (
+                  <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-12 h-12 rounded-full border-2 border-purple-400 object-cover" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl">👑</div>
+                )}
+                <div>
+                  <div className="text-xs text-purple-300 uppercase tracking-wider">Barosanul Suprem</div>
+                  <div className="text-white font-bold group-hover:text-purple-300 transition-colors">{supremBarosan.nume}</div>
+                </div>
+              </div>
+              <span className="text-purple-400 group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
           </div>
-          <h2 className="text-2xl md:text-4xl font-extrabold mb-4 text-white">
+        </section>
+      )}
+
+      {/* Features Section - Glass Cards */}
+      <section className="py-16 px-4 bg-gradient-to-b from-[#0a0a0a] to-[#111]">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-12">
+            <span className="text-white">De Ce </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500">Registrul Oficial?</span>
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-yellow-500/30 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <span className="text-2xl">🏆</span>
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">Certificare Oficială</h3>
+              <p className="text-white/50 text-sm">
+                Certificat digital descărcabil cu ștampilă oficială și cod unic de verificare
+              </p>
+            </div>
+
+            <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-purple-500/30 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <span className="text-2xl">🌟</span>
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">Vizibilitate Publică</h3>
+              <p className="text-white/50 text-sm">
+                Apari în Registrul Oficial vizibil tuturor și primești certificat partajabil
+              </p>
+            </div>
+
+            <div className="group bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-gray-300/30 transition-all">
+              <div className="w-14 h-14 bg-gradient-to-br from-gray-300 to-gray-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <span className="text-2xl">💎</span>
+              </div>
+              <h3 className="text-white font-bold text-lg mb-2">Comunitate Elite</h3>
+              <p className="text-white/50 text-sm">
+                Comunitate selectă cu șmecherie certificată și statut verificat oficial
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Two Column: Recent + Leaderboard */}
+      <section className="py-16 px-4 bg-[#111]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Recent Activity */}
+            <div>
+              <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
+                <span className="text-2xl">🔥</span>
+                Activitate Recentă
+              </h2>
+              <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
+                <RecentActivity barosani={barosani} />
+              </div>
+            </div>
+
+            {/* Leaderboard */}
+            <div>
+              <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
+                <span className="text-2xl">🏆</span>
+                Top Barosani
+              </h2>
+              <Leaderboard barosani={barosani} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Tier Comparison */}
+      <section className="py-16 px-4 bg-gradient-to-b from-[#111] to-[#0a0a0a]">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-3xl md:text-4xl font-black text-center mb-4 text-white">
+            Alege-ți Nivelul
+          </h2>
+          <p className="text-center text-white/50 mb-12">Fiecare tier oferă beneficii unice</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Suprem */}
+            <Link to="/barosanul-suprem" className="group relative">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-50 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative bg-[#0a0a0a] rounded-2xl p-4 border border-purple-500/50 h-full">
+                <div className="text-3xl mb-2">👑</div>
+                <h3 className="text-white font-bold mb-1">Suprem</h3>
+                <p className="text-purple-300 text-xs mb-2">De la 50 RON/oră</p>
+                <ul className="text-white/50 text-xs space-y-1">
+                  <li>• Prima pagină</li>
+                  <li>• Efecte speciale</li>
+                  <li>• Badge exclusiv</li>
+                </ul>
+              </div>
+            </Link>
+
+            {/* Platinum */}
+            <Link to="/cum-devin-barosan?tier=platinum" className="group">
+              <div className="bg-white/5 rounded-2xl p-4 border border-gray-300/20 h-full hover:border-gray-300/40 transition-colors">
+                <div className="text-3xl mb-2">💎</div>
+                <h3 className="text-white font-bold mb-1">Platinum</h3>
+                <p className="text-gray-300 text-xs mb-2">149 RON</p>
+                <ul className="text-white/50 text-xs space-y-1">
+                  <li>• Link social</li>
+                  <li>• Prioritate afișare</li>
+                  <li>• Certificat premium</li>
+                </ul>
+              </div>
+            </Link>
+
+            {/* Gold */}
+            <Link to="/cum-devin-barosan?tier=gold" className="group">
+              <div className="bg-white/5 rounded-2xl p-4 border border-yellow-500/20 h-full hover:border-yellow-500/40 transition-colors">
+                <div className="text-3xl mb-2">🏆</div>
+                <h3 className="text-white font-bold mb-1">Gold</h3>
+                <p className="text-yellow-400 text-xs mb-2">49 RON</p>
+                <ul className="text-white/50 text-xs space-y-1">
+                  <li>• Certificat gold</li>
+                  <li>• Badge special</li>
+                  <li>• Vizibilitate bună</li>
+                </ul>
+              </div>
+            </Link>
+
+            {/* Basic */}
+            <Link to="/cum-devin-barosan?tier=basic" className="group">
+              <div className="bg-white/5 rounded-2xl p-4 border border-white/10 h-full hover:border-white/20 transition-colors">
+                <div className="text-3xl mb-2">⭐</div>
+                <h3 className="text-white font-bold mb-1">Basic</h3>
+                <p className="text-gray-400 text-xs mb-2">GRATUIT</p>
+                <ul className="text-white/50 text-xs space-y-1">
+                  <li>• Certificat basic</li>
+                  <li>• În registru</li>
+                  <li>• Verificat oficial</li>
+                </ul>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-16 px-4 bg-[#0a0a0a] relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 container mx-auto text-center max-w-2xl">
+          <div className="text-6xl mb-6">👑</div>
+          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
             Gata Să Devii Barosan Oficial?
           </h2>
-          <p className="text-base md:text-lg mb-8 max-w-xl mx-auto opacity-90">
-            Alătură-te celor <span className="font-bold text-[#D4AF37] tabular-nums">{animatedTotal}</span> barosani verificați
+          <p className="text-white/60 mb-8">
+            Alătură-te celor <span className="text-yellow-400 font-bold tabular-nums">{animatedTotal}</span> barosani verificați și primește certificatul tău oficial
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/zid"
-              className="bg-white text-[#1a365d] px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
+              className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all border border-white/10"
             >
               Explorează Registrul 🔍
             </Link>
             <Link
               to="/cum-devin-barosan"
-              className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-8 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg"
+              className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-8 py-4 rounded-xl font-bold hover:scale-105 transition-all shadow-2xl shadow-yellow-500/20"
             >
               Începe Procesul 🚀
             </Link>

@@ -20,6 +20,7 @@ export default function RecentActivity({ barosani }) {
 
   const getTierEmoji = (tier) => {
     switch (tier) {
+      case 'suprem': return '👑';
       case 'platinum': return '💎';
       case 'gold': return '🏆';
       default: return '⭐';
@@ -28,6 +29,7 @@ export default function RecentActivity({ barosani }) {
 
   const getTierColor = (tier) => {
     switch (tier) {
+      case 'suprem': return 'text-purple-500';
       case 'platinum': return 'text-[#BCC6CC]';
       case 'gold': return 'text-[#D4AF37]';
       default: return 'text-gray-600';

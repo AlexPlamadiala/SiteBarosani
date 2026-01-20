@@ -18,7 +18,7 @@ export default function Zid() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sseConnected, setSseConnected] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all'); // 'all', 'platinum', 'gold', 'basic'
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'suprem', 'platinum', 'gold', 'basic'
   const [sortBy, setSortBy] = useState('tier');
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
@@ -28,7 +28,7 @@ export default function Zid() {
     const certificatId = searchParams.get('certificat');
     const tierParam = searchParams.get('tier');
 
-    if (tierParam && ['platinum', 'gold', 'basic', 'all'].includes(tierParam)) {
+    if (tierParam && ['suprem', 'platinum', 'gold', 'basic', 'all'].includes(tierParam)) {
       setActiveTab(tierParam);
       const newParams = new URLSearchParams(searchParams);
       newParams.delete('tier');
@@ -115,6 +115,7 @@ export default function Zid() {
   // Count by tier
   const tierCounts = useMemo(() => ({
     all: barosani.length,
+    suprem: barosani.filter(b => b.tier === 'suprem').length,
     platinum: barosani.filter(b => b.tier === 'platinum').length,
     gold: barosani.filter(b => b.tier === 'gold').length,
     basic: barosani.filter(b => b.tier === 'basic').length
@@ -143,7 +144,7 @@ export default function Zid() {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'tier':
-          const tierOrder = { platinum: 1, gold: 2, basic: 3 };
+          const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
           return tierOrder[a.tier] - tierOrder[b.tier];
         case 'date-desc':
           return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
@@ -210,6 +211,7 @@ export default function Zid() {
 
   const tabs = [
     { id: 'all', label: 'Toți', icon: '🎯', count: tierCounts.all, color: 'from-[#1a365d] to-[#2d5986]' },
+    { id: 'suprem', label: 'Suprem', icon: '👑', count: tierCounts.suprem, color: 'from-purple-500 to-pink-500' },
     { id: 'platinum', label: 'Platinum', icon: '💎', count: tierCounts.platinum, color: 'from-[#E5E4E2] to-[#BCC6CC]', textColor: 'text-[#1a365d]' },
     { id: 'gold', label: 'Gold', icon: '🏆', count: tierCounts.gold, color: 'from-[#D4AF37] to-[#FFD700]', textColor: 'text-[#1a365d]' },
     { id: 'basic', label: 'Basic', icon: '⭐', count: tierCounts.basic, color: 'from-gray-400 to-gray-500' }
@@ -217,6 +219,7 @@ export default function Zid() {
 
   // Grid columns based on active tab
   const getGridClass = () => {
+    if (activeTab === 'suprem') return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
     if (activeTab === 'platinum') return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
     if (activeTab === 'gold') return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5';
     return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4';
@@ -243,7 +246,8 @@ export default function Zid() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? tab.id === 'platinum' ? 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800' :
+                      ? tab.id === 'suprem' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' :
+                        tab.id === 'platinum' ? 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800' :
                         tab.id === 'gold' ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900' :
                         tab.id === 'basic' ? 'bg-gray-500 text-white' :
                         'bg-[#1a365d] text-white'

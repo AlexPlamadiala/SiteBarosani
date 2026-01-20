@@ -10,7 +10,8 @@ export default function Leaderboard({ barosani }) {
       let score = 0;
 
       // Tier points
-      if (barosan.tier === 'platinum') score += 1000;
+      if (barosan.tier === 'suprem') score += 2000;
+      else if (barosan.tier === 'platinum') score += 1000;
       else if (barosan.tier === 'gold') score += 500;
       else score += 100;
 
@@ -23,8 +24,8 @@ export default function Leaderboard({ barosani }) {
       // Bonus pentru poza
       if (barosan.poza) score += 50;
 
-      // Bonus pentru link (doar platinum)
-      if (barosan.link && barosan.tier === 'platinum') score += 100;
+      // Bonus pentru link (platinum și suprem)
+      if (barosan.link && (barosan.tier === 'platinum' || barosan.tier === 'suprem')) score += 100;
 
       // Bonus pentru motto creativ (mai lung = mai creativ)
       if (barosan.motto) score += barosan.motto.length;
@@ -44,6 +45,8 @@ export default function Leaderboard({ barosani }) {
 
   const getTierBadge = (tier) => {
     switch (tier) {
+      case 'suprem':
+        return { emoji: '👑', color: 'from-purple-500 to-pink-500', text: 'text-white' };
       case 'platinum':
         return { emoji: '💎', color: 'from-[#E5E4E2] to-[#BCC6CC]', text: 'text-[#1a365d]' };
       case 'gold':

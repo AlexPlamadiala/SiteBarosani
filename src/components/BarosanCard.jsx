@@ -22,6 +22,14 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   }, []);
 
   const tierColors = {
+    suprem: {
+      border: 'border-purple-500',
+      badge: 'bg-gradient-to-r from-purple-500 to-pink-500',
+      badgeText: 'text-white',
+      glow: 'shadow-[0_0_25px_rgba(168,85,247,0.6)]',
+      cardGradient: 'from-purple-500/10 to-pink-500/10',
+      blurColor: 'bg-purple-500'
+    },
     platinum: {
       border: 'border-[#BCC6CC]',
       badge: 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC]',
@@ -49,6 +57,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   };
 
   const tierLabels = {
+    suprem: '👑 SUPREM',
     platinum: '💎 PLATINUM',
     gold: '🏆 GOLD',
     basic: '⭐ BASIC'
@@ -88,8 +97,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
 
   return (
     <div className="group relative">
-      {/* Glow Effect - Always visible for platinum/gold */}
-      {(barosan.tier === 'platinum' || barosan.tier === 'gold') && (
+      {/* Glow Effect - Always visible for suprem/platinum/gold */}
+      {(barosan.tier === 'suprem' || barosan.tier === 'platinum' || barosan.tier === 'gold') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
       )}
 
@@ -169,14 +178,18 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
         </div>
 
-        {/* Link for Platinum - Enhanced */}
-        {barosan.tier === 'platinum' && barosan.link && (
+        {/* Link for Suprem/Platinum - Enhanced */}
+        {(barosan.tier === 'suprem' || barosan.tier === 'platinum') && barosan.link && (
           <div className="pt-2 text-center">
             <a
               href={barosan.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[#BCC6CC] hover:text-[#E5E4E2] transition-colors text-sm font-bold bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 px-4 py-2 rounded-lg shadow-sm"
+              className={`inline-flex items-center gap-1.5 transition-colors text-sm font-bold px-4 py-2 rounded-lg shadow-sm ${
+                barosan.tier === 'suprem'
+                  ? 'text-purple-500 hover:text-purple-400 bg-gradient-to-r from-purple-100 to-pink-50 hover:from-purple-200 hover:to-pink-100'
+                  : 'text-[#BCC6CC] hover:text-[#E5E4E2] bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100'
+              }`}
             >
               <span>🔗</span>
               <span>Link Personal</span>
