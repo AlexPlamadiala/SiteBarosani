@@ -313,21 +313,21 @@ export default function Zid() {
             Descoperă barosanii verificați și certificați oficial, organizați după nivelul lor de elită
           </p>
 
-          {/* Search, Filter and Sort - Modern Cards */}
-          <div className="max-w-5xl mx-auto mb-6">
-            <div className="backdrop-blur-md bg-white/10 rounded-2xl p-4 md:p-6 shadow-2xl border border-white/20">
-              <div className="flex flex-col gap-4">
-                {/* Search Bar - Enhanced */}
-                <div className="relative">
+          {/* Search, Filter and Sort - Compact Design */}
+          <div className="max-w-4xl mx-auto mb-4">
+            <div className="backdrop-blur-md bg-white/10 rounded-xl p-3 shadow-lg border border-white/20">
+              <div className="flex flex-col md:flex-row gap-2 md:gap-3 items-stretch">
+                {/* Search Bar - Compact */}
+                <div className="relative flex-grow md:max-w-xs">
                   <input
                     type="text"
-                    placeholder="🔍 Caută după nume, motto sau certificat..."
+                    placeholder="Caută..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-3 pl-12 rounded-xl bg-white text-gray-900 font-medium border-2 border-transparent focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 transition-all placeholder:text-gray-400 text-sm md:text-base shadow-lg"
+                    className="w-full px-3 py-2 pl-9 rounded-lg bg-white text-gray-900 font-medium border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-gray-400 text-sm shadow-md"
                   />
                   <svg
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -337,50 +337,47 @@ export default function Zid() {
                   {searchTerm && (
                     <button
                       onClick={() => setSearchTerm('')}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm transition-colors"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center font-bold text-xs transition-colors"
                     >
                       ✕
                     </button>
                   )}
                 </div>
 
-                {/* Filters Row - Enhanced Design */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Filters Row - Compact */}
+                <div className="flex gap-2 flex-grow md:flex-grow-0">
                   {/* Tier Filter */}
                   <select
                     value={selectedTierFilter}
                     onChange={(e) => setSelectedTierFilter(e.target.value)}
-                    className="px-4 py-3 rounded-xl bg-white text-gray-800 border-2 border-transparent focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 transition-all cursor-pointer font-semibold text-sm md:text-base shadow-lg"
+                    className="flex-1 md:flex-none px-3 py-2 rounded-lg bg-white text-gray-800 border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all cursor-pointer font-medium text-sm shadow-md"
                   >
-                    <option value="all">🎯 Toate Tier-urile</option>
-                    <option value="platinum">💎 Doar Platinum</option>
-                    <option value="gold">🏆 Doar Gold</option>
-                    <option value="basic">⭐ Doar Basic</option>
+                    <option value="all">🎯 Toate</option>
+                    <option value="platinum">💎 Platinum</option>
+                    <option value="gold">🏆 Gold</option>
+                    <option value="basic">⭐ Basic</option>
                   </select>
 
                   {/* Sort */}
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="px-4 py-3 rounded-xl bg-white text-gray-800 border-2 border-transparent focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 transition-all cursor-pointer font-semibold text-sm md:text-base shadow-lg"
+                    className="flex-1 md:flex-none px-3 py-2 rounded-lg bg-white text-gray-800 border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all cursor-pointer font-medium text-sm shadow-md"
                   >
-                    <option value="tier">🏅 Sortează după Tier</option>
-                    <option value="date-desc">📅 Cei mai noi</option>
-                    <option value="date-asc">📅 Cei mai vechi</option>
-                    <option value="name-asc">🔤 Nume A-Z</option>
-                    <option value="name-desc">🔤 Nume Z-A</option>
+                    <option value="tier">🏅 Tier</option>
+                    <option value="date-desc">📅 Noi</option>
+                    <option value="date-asc">📅 Vechi</option>
+                    <option value="name-asc">A-Z</option>
+                    <option value="name-desc">Z-A</option>
                   </select>
                 </div>
 
-                {/* Results Count - Enhanced */}
+                {/* Results Count - Inline */}
                 {(searchTerm || selectedTierFilter !== 'all') && (
-                  <div className="text-center">
-                    <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                      <p className="text-sm font-semibold text-white">
-                        ✨ {filteredBarosani.length} {filteredBarosani.length === 1 ? 'barosan găsit' : 'barosani găsiți'}
-                        {searchTerm && ` pentru "${searchTerm}"`}
-                      </p>
-                    </div>
+                  <div className="flex items-center justify-center md:justify-start">
+                    <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold text-white whitespace-nowrap">
+                      {filteredBarosani.length} {filteredBarosani.length === 1 ? 'găsit' : 'găsiți'}
+                    </span>
                   </div>
                 )}
               </div>
