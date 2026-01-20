@@ -7,10 +7,11 @@ export default function ApplicationForm() {
   const toast = useToast();
   const [searchParams] = useSearchParams();
 
-  // Get tier from URL params (e.g., ?tier=gold)
-  const initialTier = ['basic', 'gold', 'platinum'].includes(searchParams.get('tier'))
+  // Get tier from URL params (e.g., ?tier=gold or ?tier=suprem&hours=12)
+  const initialTier = ['basic', 'gold', 'platinum', 'suprem'].includes(searchParams.get('tier'))
     ? searchParams.get('tier')
     : 'basic';
+  const initialHours = searchParams.get('hours') || '1';
 
   const [formData, setFormData] = useState({
     nume: '',
@@ -18,6 +19,7 @@ export default function ApplicationForm() {
     revolutId: '',
     motto: '',
     tier: initialTier,
+    supremHours: initialHours, // For suprem tier: '1', '12', '24'
     poza: '',
     link: ''
   });
@@ -25,8 +27,13 @@ export default function ApplicationForm() {
   // Update tier if URL param changes
   useEffect(() => {
     const tierParam = searchParams.get('tier');
-    if (tierParam && ['basic', 'gold', 'platinum'].includes(tierParam)) {
-      setFormData(prev => ({ ...prev, tier: tierParam }));
+    const hoursParam = searchParams.get('hours');
+    if (tierParam && ['basic', 'gold', 'platinum', 'suprem'].includes(tierParam)) {
+      setFormData(prev => ({
+        ...prev,
+        tier: tierParam,
+        supremHours: hoursParam || prev.supremHours
+      }));
     }
   }, [searchParams]);
 
@@ -40,7 +47,14 @@ export default function ApplicationForm() {
   const tierPrices = {
     basic: '20 RON',
     gold: '50 RON',
-    platinum: '100 RON'
+    platinum: '100 RON',
+    suprem: '50-800 RON'
+  };
+
+  const supremPackages = {
+    '1': { price: '50 RON', label: '1 Oră' },
+    '12': { price: '450 RON', label: '12 Ore' },
+    '24': { price: '800 RON', label: '24 Ore' }
   };
 
   const generateApplicationCode = () => {
@@ -246,7 +260,7 @@ export default function ApplicationForm() {
     // Bonus points for optional fields
     const optionalFields = {
       poza: imagePreview || formData.poza,
-      link: formData.tier === 'platinum' ? formData.link.trim() : null
+      link: (formData.tier === 'platinum' || formData.tier === 'suprem') ? formData.link.trim() : null
     };
 
     const completedRequired = Object.values(requiredFields).filter(Boolean).length;
@@ -299,7 +313,7 @@ export default function ApplicationForm() {
                     <span>📱</span> 1. Plată Revolut
                   </p>
                   <p className="text-sm text-gray-700">
-                    Trimite <strong>{tierPrices[formData.tier]}</strong> la <strong>@username-revolut</strong><br/>
+                    Trimite <strong>{formData.tier === 'suprem' ? supremPackages[formData.supremHours]?.price : tierPrices[formData.tier]}</strong> la <strong>@username-revolut</strong><br/>
                     Mesaj: <strong>{applicationCode}</strong>
                   </p>
                 </div>
@@ -329,7 +343,7 @@ export default function ApplicationForm() {
                 <p className="text-xs font-bold text-gray-600 mb-2">Detalii cerere:</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div><span className="text-gray-600">Nume:</span> <strong>{formData.nume}</strong></div>
-                  <div><span className="text-gray-600">Tier:</span> <strong className="uppercase">{formData.tier}</strong></div>
+                  <div><span className="text-gray-600">Tier:</span> <strong className="uppercase">{formData.tier}{formData.tier === 'suprem' ? ` (${supremPackages[formData.supremHours]?.label})` : ''}</strong></div>
                   <div className="col-span-2"><span className="text-gray-600">Email:</span> <strong className="break-all">{formData.email}</strong></div>
                   <div className="col-span-2"><span className="text-gray-600">Motto:</span> <em>"{formData.motto}"</em></div>
                 </div>
@@ -458,13 +472,15 @@ export default function ApplicationForm() {
             <label className="block text-sm font-bold text-gray-700 mb-3">
               Alege Tier-ul <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {['basic', 'gold', 'platinum'].map((tier) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {['basic', 'gold', 'platinum', 'suprem'].map((tier) => (
                 <label
                   key={tier}
-                  className={`relative flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                  className={`relative flex flex-col items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${
                     formData.tier === tier
-                      ? 'border-[#D4AF37] bg-gradient-to-br from-[#FFF9E6] to-[#FFF5CC] scale-105'
+                      ? tier === 'suprem'
+                        ? 'border-purple-500 bg-gradient-to-br from-purple-900 to-black scale-105'
+                        : 'border-[#D4AF37] bg-gradient-to-br from-[#FFF9E6] to-[#FFF5CC] scale-105'
                       : 'border-gray-300 hover:border-[#D4AF37]'
                   }`}
                 >
@@ -477,18 +493,57 @@ export default function ApplicationForm() {
                     className="sr-only"
                   />
                   {formData.tier === tier && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center">
+                    <div className={`absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center ${
+                      tier === 'suprem' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-[#D4AF37] to-[#FFD700]'
+                    }`}>
                       <span className="text-white text-xs">✓</span>
                     </div>
                   )}
-                  <span className="text-3xl mb-2">
-                    {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : '💎'}
+                  <span className="text-2xl mb-1">
+                    {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : '👑'}
                   </span>
-                  <span className="font-bold uppercase text-sm text-[#1a365d]">{tier}</span>
-                  <span className="text-xs font-semibold text-gray-600">{tierPrices[tier]}</span>
+                  <span className={`font-bold uppercase text-xs ${
+                    formData.tier === tier && tier === 'suprem' ? 'text-yellow-400' : 'text-[#1a365d]'
+                  }`}>{tier}</span>
+                  <span className={`text-xs font-semibold ${
+                    formData.tier === tier && tier === 'suprem' ? 'text-purple-300' : 'text-gray-600'
+                  }`}>
+                    {tier === 'suprem' ? 'TEMPORAR' : tierPrices[tier]}
+                  </span>
                 </label>
               ))}
             </div>
+
+            {/* Suprem Hours Selection */}
+            {formData.tier === 'suprem' && (
+              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/20 to-black/20 rounded-xl border border-purple-500/30">
+                <p className="text-sm font-bold text-purple-700 mb-3">👑 Alege durata Suprem:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {Object.entries(supremPackages).map(([hours, pkg]) => (
+                    <label
+                      key={hours}
+                      className={`flex flex-col items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                        formData.supremHours === hours
+                          ? 'border-yellow-500 bg-yellow-500/20'
+                          : 'border-purple-300/50 hover:border-yellow-400'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="supremHours"
+                        value={hours}
+                        checked={formData.supremHours === hours}
+                        onChange={handleChange}
+                        className="sr-only"
+                      />
+                      <span className="text-lg">{hours === '1' ? '⏰' : hours === '12' ? '🌅' : '👑'}</span>
+                      <span className="font-bold text-sm text-gray-800">{pkg.label}</span>
+                      <span className="text-xs font-bold text-purple-600">{pkg.price}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Motto */}
@@ -562,8 +617,8 @@ export default function ApplicationForm() {
             {errors.poza && <p className="text-red-500 text-sm mt-1">{errors.poza}</p>}
           </div>
 
-          {/* Link (doar pentru Platinum) */}
-          {formData.tier === 'platinum' && (
+          {/* Link (pentru Platinum și Suprem) */}
+          {(formData.tier === 'platinum' || formData.tier === 'suprem') && (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Link Personal <span className="text-gray-500 text-xs font-normal">(opțional)</span>

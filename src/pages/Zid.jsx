@@ -167,13 +167,17 @@ export default function Zid() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-        <section className="py-4 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <div className="min-h-screen bg-[#F8F4EF]">
+        <div className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm py-2 px-4">
           <div className="container mx-auto">
-            <div className="h-8 bg-white/20 rounded w-64 mx-auto animate-pulse"></div>
+            <div className="flex gap-2">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="h-8 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+              ))}
+            </div>
           </div>
-        </section>
-        <section className="py-8 px-4">
+        </div>
+        <section className="py-6 px-4">
           <div className="container mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {[...Array(18)].map((_, index) => (
@@ -189,7 +193,7 @@ export default function Zid() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8F4EF] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">⚠️</div>
           <p className="text-xl font-bold text-red-600 mb-4">{error}</p>
@@ -219,89 +223,77 @@ export default function Zid() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-      {/* Compact Header */}
-      <section className="py-3 px-4 bg-gradient-to-br from-[#1a365d] via-[#2d5986] to-[#1a365d] text-white sticky top-16 z-40 shadow-lg">
-        <div className="container mx-auto">
-          {/* Refresh indicator */}
-          {isRefreshing && (
-            <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
-              Actualizare...
+    <div className="min-h-screen bg-[#F8F4EF]">
+      {/* Refresh indicator */}
+      {isRefreshing && (
+        <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
+          ●
+        </div>
+      )}
+
+      {/* Minimal Filter Bar */}
+      <div className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm">
+        <div className="container mx-auto px-4">
+          {/* Tier Tabs - Main element */}
+          <div className="flex items-center justify-between py-2">
+            <div className="flex items-center gap-1 overflow-x-auto">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    activeTab === tab.id
+                      ? tab.id === 'platinum' ? 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800' :
+                        tab.id === 'gold' ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900' :
+                        tab.id === 'basic' ? 'bg-gray-500 text-white' :
+                        'bg-[#1a365d] text-white'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-sm">{tab.icon}</span>
+                  <span>{tab.count}</span>
+                </button>
+              ))}
             </div>
-          )}
 
-          {/* Search and Sort Row */}
-          <div className="flex flex-col sm:flex-row gap-2 items-center justify-between mb-3">
-            <h1 className="text-lg md:text-xl font-bold whitespace-nowrap">
-              🏆 Registrul Barosanilor
-            </h1>
-
-            <div className="flex gap-2 items-center w-full sm:w-auto">
-              {/* Search */}
-              <div className="relative flex-grow sm:w-48">
+            {/* Search & Sort */}
+            <div className="flex items-center gap-2">
+              <div className="relative">
                 <input
                   type="text"
                   placeholder="Caută..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-1.5 pl-8 rounded-lg bg-white/90 text-gray-900 text-sm border-0 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  className="w-32 sm:w-40 px-3 py-1 pl-7 text-sm rounded-full border border-gray-300 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
                 />
-                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                {searchTerm && (
-                  <button onClick={() => setSearchTerm('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                    ✕
-                  </button>
-                )}
               </div>
-
-              {/* Sort */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-2 py-1.5 rounded-lg bg-white/90 text-gray-800 text-sm border-0 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] cursor-pointer"
+                className="px-2 py-1 text-xs rounded-full border border-gray-300 text-gray-600 focus:outline-none focus:border-[#D4AF37] cursor-pointer bg-white"
               >
-                <option value="tier">🏅 Tier</option>
-                <option value="date-desc">📅 Noi</option>
-                <option value="date-asc">📅 Vechi</option>
+                <option value="tier">Tier</option>
+                <option value="date-desc">Noi</option>
+                <option value="date-asc">Vechi</option>
                 <option value="name-asc">A-Z</option>
-                <option value="name-desc">Z-A</option>
               </select>
             </div>
           </div>
-
-          {/* Tier Tabs */}
-          <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 -mx-2 px-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
-                  activeTab === tab.id
-                    ? `bg-gradient-to-r ${tab.color} ${tab.textColor || 'text-white'} shadow-lg scale-105`
-                    : 'bg-white/20 text-white/80 hover:bg-white/30'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  activeTab === tab.id ? 'bg-black/20' : 'bg-white/20'
-                }`}>
-                  {tab.count}
-                </span>
-              </button>
-            ))}
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Results Info */}
+      {/* Results count - only when filtered */}
       {(searchTerm || activeTab !== 'all') && (
-        <div className="bg-white/50 py-2 px-4 text-center text-sm text-gray-700 border-b border-gray-200">
-          {filteredBarosani.length} {filteredBarosani.length === 1 ? 'barosan' : 'barosani'}
-          {searchTerm && ` pentru "${searchTerm}"`}
-          {activeTab !== 'all' && ` în categoria ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
+        <div className="bg-gray-50 py-1.5 px-4 text-center text-xs text-gray-500">
+          {filteredBarosani.length} rezultat{filteredBarosani.length !== 1 ? 'e' : ''}
+          {searchTerm && (
+            <button onClick={() => setSearchTerm('')} className="ml-2 text-blue-600 hover:underline">
+              Șterge căutarea
+            </button>
+          )}
         </div>
       )}
 

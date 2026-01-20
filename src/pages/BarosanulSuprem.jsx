@@ -217,32 +217,18 @@ export default function BarosanulSuprem() {
                 </div>
               </div>
 
-              {/* Countdown or Available Status - Compact */}
+              {/* Countdown or Available Status - Inline small */}
               {!isAvailable && supremeBarosan ? (
-                <div className="bg-black/50 rounded-xl p-3 border border-yellow-500/50">
-                  <p className="text-center text-yellow-300 font-bold mb-2 text-sm">
-                    ⏰ TIMP RĂMAS ⏰
-                  </p>
-                  <div className="flex justify-center gap-2">
-                    <div className="bg-gradient-to-b from-yellow-500 to-yellow-700 rounded-lg px-3 py-2 shadow-lg text-center">
-                      <div className="text-2xl font-black text-white tabular-nums">{formatTime(timeLeft.hours)}</div>
-                      <div className="text-[10px] text-yellow-200 font-bold">ORE</div>
-                    </div>
-                    <div className="text-2xl text-yellow-400 font-bold self-center">:</div>
-                    <div className="bg-gradient-to-b from-yellow-500 to-yellow-700 rounded-lg px-3 py-2 shadow-lg text-center">
-                      <div className="text-2xl font-black text-white tabular-nums">{formatTime(timeLeft.minutes)}</div>
-                      <div className="text-[10px] text-yellow-200 font-bold">MIN</div>
-                    </div>
-                    <div className="text-2xl text-yellow-400 font-bold self-center">:</div>
-                    <div className="bg-gradient-to-b from-red-500 to-red-700 rounded-lg px-3 py-2 shadow-lg animate-pulse text-center">
-                      <div className="text-2xl font-black text-white tabular-nums">{formatTime(timeLeft.seconds)}</div>
-                      <div className="text-[10px] text-red-200 font-bold">SEC</div>
-                    </div>
-                  </div>
+                <div className="bg-black/40 rounded-lg px-3 py-2 flex items-center justify-center gap-2">
+                  <span className="text-yellow-300 text-xs">⏰</span>
+                  <span className="text-yellow-100 font-mono font-bold text-sm tabular-nums">
+                    {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
+                  </span>
+                  <span className="text-yellow-300/60 text-xs">rămas</span>
                 </div>
               ) : (
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-3 animate-pulse">
-                  <p className="text-center text-white font-black text-lg">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg px-3 py-2">
+                  <p className="text-center text-white font-bold text-sm">
                     🎉 LOCUL ESTE LIBER! 🎉
                   </p>
                 </div>

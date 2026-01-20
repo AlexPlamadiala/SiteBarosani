@@ -1,11 +1,19 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Check if we're on the Suprem page for special styling
+  const isSupremPage = location.pathname === '/barosanul-suprem' || location.pathname === '/suprem';
+
+  const headerClasses = isSupremPage
+    ? 'sticky top-0 z-50 bg-black/80 backdrop-blur-md text-white border-b border-yellow-500/30'
+    : 'sticky top-0 z-50 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white shadow-xl border-b border-white/10';
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white shadow-xl border-b border-white/10" role="banner">
+    <header className={headerClasses} role="banner">
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
