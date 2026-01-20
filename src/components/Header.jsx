@@ -41,6 +41,12 @@ export default function Header() {
               📋 Registrul
             </Link>
             <Link
+              to="/barosanul-suprem"
+              className="px-4 py-2 text-sm lg:text-base font-bold rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 animate-pulse"
+            >
+              👑 Suprem
+            </Link>
+            <Link
               to="/cum-devin-barosan"
               className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-4 lg:px-6 py-2 rounded-lg font-bold text-sm lg:text-base hover:scale-105 transition-transform shadow-lg focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/50"
             >
@@ -84,6 +90,13 @@ export default function Header() {
               className="block text-base hover:text-[#D4AF37] transition-colors font-semibold py-2 px-3 rounded-lg hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
             >
               📋 Registrul
+            </Link>
+            <Link
+              to="/barosanul-suprem"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block text-base font-bold py-3 px-4 text-center bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
+              👑 Barosanul Suprem
             </Link>
             <Link
               to="/cum-devin-barosan"

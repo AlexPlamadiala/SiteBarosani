@@ -9,6 +9,7 @@ import Zid from './pages/Zid';
 import CumDevinBarosan from './pages/CumDevinBarosan';
 import Termeni from './pages/Termeni';
 import Confidentialitate from './pages/Confidentialitate';
+import BarosanulSuprem from './pages/BarosanulSuprem';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="/cum-devin-barosan" element={<CumDevinBarosan />} />
               <Route path="/termeni" element={<Termeni />} />
               <Route path="/confidentialitate" element={<Confidentialitate />} />
+              <Route path="/barosanul-suprem" element={<BarosanulSuprem />} />
             </Routes>
           </main>
           <Footer />
