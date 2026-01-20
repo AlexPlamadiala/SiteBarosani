@@ -7,6 +7,7 @@ import { fetchJSONWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
 import { useDebounce } from '../utils/useDebounce';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
+const SUPREM_API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
 const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
 
 export default function Zid() {
@@ -20,6 +21,7 @@ export default function Zid() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'suprem', 'platinum', 'gold', 'basic'
   const [sortBy, setSortBy] = useState('tier');
+  const [activeSuprem, setActiveSuprem] = useState(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
@@ -63,17 +65,30 @@ export default function Zid() {
     localStorage.setItem('zidPreferences', JSON.stringify({ sortBy, activeTab }));
   }, [sortBy, activeTab]);
 
-  // Fetch barosani
+  // Fetch barosani and suprem
   useEffect(() => {
     async function fetchBarosani(isInitialLoad = false) {
       try {
         if (!isInitialLoad) setIsRefreshing(true);
-        const data = await fetchJSONWithRetry(API_URL, {}, 3);
-        if (data.success) {
-          setBarosani(data.barosani);
+
+        // Fetch both regular barosani and suprem in parallel
+        const [barosaniData, supremData] = await Promise.all([
+          fetchJSONWithRetry(API_URL, {}, 3),
+          fetchJSONWithRetry(SUPREM_API_URL, {}, 3).catch(() => ({ success: false }))
+        ]);
+
+        if (barosaniData.success) {
+          setBarosani(barosaniData.barosani);
           setError(null);
         } else {
           setError('Eroare la încărcarea datelor');
+        }
+
+        // Set active suprem if exists
+        if (supremData.success && supremData.suprem) {
+          setActiveSuprem(supremData.suprem);
+        } else {
+          setActiveSuprem(null);
         }
       } catch (err) {
         console.error('Error fetching barosani:', err);
@@ -112,14 +127,14 @@ export default function Zid() {
     };
   }, []);
 
-  // Count by tier
+  // Count by tier (including active suprem from separate table)
   const tierCounts = useMemo(() => ({
-    all: barosani.length,
-    suprem: barosani.filter(b => b.tier === 'suprem').length,
+    all: barosani.length + (activeSuprem ? 1 : 0),
+    suprem: (activeSuprem ? 1 : 0),
     platinum: barosani.filter(b => b.tier === 'platinum').length,
     gold: barosani.filter(b => b.tier === 'gold').length,
     basic: barosani.filter(b => b.tier === 'basic').length
-  }), [barosani]);
+  }), [barosani, activeSuprem]);
 
   // Filter and sort
   const filteredBarosani = useMemo(() => {
@@ -285,7 +300,7 @@ export default function Zid() {
       {/* Results count - only when filtered */}
       {(searchTerm || activeTab !== 'all') && (
         <div className="bg-white/5 py-1.5 px-4 text-center text-xs text-white/50">
-          {filteredBarosani.length} rezultat{filteredBarosani.length !== 1 ? 'e' : ''}
+          {filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)} rezultat{(filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)) !== 1 ? 'e' : ''}
           {searchTerm && (
             <button onClick={() => setSearchTerm('')} className="ml-2 text-purple-400 hover:underline">
               Șterge căutarea
@@ -294,10 +309,101 @@ export default function Zid() {
         </div>
       )}
 
+      {/* Active Suprem Banner - Only show when viewing all or suprem tab */}
+      {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (
+        <section className="py-6 px-4">
+          <div className="container mx-auto">
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-lg opacity-30 animate-pulse"></div>
+
+              <div className="relative bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-2xl border border-purple-500/30 p-6 backdrop-blur-sm">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  {/* Crown badge */}
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-xl opacity-50"></div>
+                      <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-purple-500 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500">
+                        {activeSuprem.poza ? (
+                          <img
+                            src={activeSuprem.poza}
+                            alt={activeSuprem.nume}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-5xl">
+                            👑
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl shadow-lg">
+                        👑
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
+                      👑 BAROSANUL SUPREM ACTIV
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+                      {activeSuprem.nume}
+                    </h3>
+                    {activeSuprem.motto && (
+                      <p className="text-white/70 italic mb-3">"{activeSuprem.motto}"</p>
+                    )}
+
+                    {/* Timer */}
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-sm">
+                      <span className="text-purple-300">⏱️</span>
+                      <span className="text-white/60">Expiră:</span>
+                      <span className="text-purple-300 font-bold">
+                        {new Date(activeSuprem.dataExpirare).toLocaleString('ro-RO', {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Link button if exists */}
+                  {activeSuprem.link && (
+                    <div className="flex-shrink-0">
+                      <a
+                        href={activeSuprem.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl font-bold transition-all"
+                      >
+                        🔗 Link Personal
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* View full page link */}
+                <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                  <a
+                    href="/barosanul-suprem"
+                    className="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 font-semibold text-sm transition-colors"
+                  >
+                    Vezi pagina completă 👑
+                    <span>→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Barosani Grid */}
       <section className="py-6 px-4">
         <div className="container mx-auto">
-          {filteredBarosani.length === 0 ? (
+          {filteredBarosani.length === 0 && !(activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm) ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
               <p className="text-xl text-white/70 font-medium">
@@ -310,7 +416,7 @@ export default function Zid() {
                 Resetează filtrele
               </button>
             </div>
-          ) : (
+          ) : filteredBarosani.length > 0 ? (
             <div className={`grid ${getGridClass()}`}>
               {filteredBarosani.map((barosan) => (
                 <BarosanCard
@@ -320,7 +426,7 @@ export default function Zid() {
                 />
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 

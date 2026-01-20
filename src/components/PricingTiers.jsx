@@ -69,7 +69,13 @@ export default function PricingTiers() {
     }
   };
 
-  const scrollToForm = () => {
+  const scrollToForm = (tier, hours = null) => {
+    // Update URL with tier and hours
+    const params = new URLSearchParams();
+    params.set('tier', tier);
+    if (hours) params.set('hours', hours.toString());
+    navigate(`/cum-devin-barosan?${params.toString()}`, { replace: true });
+
     setTimeout(() => {
       const formElement = document.querySelector('form');
       if (formElement) {
@@ -232,7 +238,7 @@ export default function PricingTiers() {
                 </div>
 
                 <button
-                  onClick={scrollToForm}
+                  onClick={() => scrollToForm('suprem', supremHours)}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-all"
                 >
                   Continuă cu {supremHours}h 👑
@@ -264,7 +270,7 @@ export default function PricingTiers() {
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="w-full bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('platinum')} className="w-full bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
                 Continuă cu Platinum 💎
               </button>
             </div>
@@ -293,7 +299,7 @@ export default function PricingTiers() {
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="w-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('gold')} className="w-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
                 Continuă cu Gold 🏆
               </button>
             </div>
@@ -322,7 +328,7 @@ export default function PricingTiers() {
                   </div>
                 ))}
               </div>
-              <button onClick={scrollToForm} className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('basic')} className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
                 Continuă cu Basic ⭐
               </button>
             </div>
