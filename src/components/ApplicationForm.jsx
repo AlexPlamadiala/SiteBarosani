@@ -48,13 +48,23 @@ export default function ApplicationForm() {
     basic: '20 RON',
     gold: '50 RON',
     platinum: '100 RON',
-    suprem: '50-800 RON'
+    suprem: 'variabil'
   };
 
-  const supremPackages = {
-    '1': { price: '50 RON', label: '1 Oră' },
-    '12': { price: '450 RON', label: '12 Ore' },
-    '24': { price: '800 RON', label: '24 Ore' }
+  // Calculate Suprem price with discounts
+  const calculateSupremPrice = (hours) => {
+    const h = parseInt(hours) || 1;
+    const basePrice = h * 50;
+    let discount = 0;
+    if (h >= 24) discount = 20;
+    else if (h >= 12) discount = 10;
+    return Math.round(basePrice * (1 - discount / 100));
+  };
+
+  const getSupremPriceLabel = () => {
+    const hours = parseInt(formData.supremHours) || 1;
+    const price = calculateSupremPrice(hours);
+    return `${price} RON (${hours}h)`;
   };
 
   const generateApplicationCode = () => {
@@ -313,7 +323,7 @@ export default function ApplicationForm() {
                     <span>📱</span> 1. Plată Revolut
                   </p>
                   <p className="text-sm text-gray-700">
-                    Trimite <strong>{formData.tier === 'suprem' ? supremPackages[formData.supremHours]?.price : tierPrices[formData.tier]}</strong> la <strong>@username-revolut</strong><br/>
+                    Trimite <strong>{formData.tier === 'suprem' ? getSupremPriceLabel() : tierPrices[formData.tier]}</strong> la <strong>@username-revolut</strong><br/>
                     Mesaj: <strong>{applicationCode}</strong>
                   </p>
                 </div>
@@ -343,7 +353,7 @@ export default function ApplicationForm() {
                 <p className="text-xs font-bold text-gray-600 mb-2">Detalii cerere:</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div><span className="text-gray-600">Nume:</span> <strong>{formData.nume}</strong></div>
-                  <div><span className="text-gray-600">Tier:</span> <strong className="uppercase">{formData.tier}{formData.tier === 'suprem' ? ` (${supremPackages[formData.supremHours]?.label})` : ''}</strong></div>
+                  <div><span className="text-gray-600">Tier:</span> <strong className="uppercase">{formData.tier}{formData.tier === 'suprem' ? ` (${formData.supremHours}h)` : ''}</strong></div>
                   <div className="col-span-2"><span className="text-gray-600">Email:</span> <strong className="break-all">{formData.email}</strong></div>
                   <div className="col-span-2"><span className="text-gray-600">Motto:</span> <em>"{formData.motto}"</em></div>
                 </div>
@@ -504,34 +514,24 @@ export default function ApplicationForm() {
               ))}
             </div>
 
-            {/* Suprem Hours Selection */}
+            {/* Suprem Hours Display */}
             {formData.tier === 'suprem' && (
               <div className="mt-4 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
-                <p className="text-sm font-bold text-purple-300 mb-3">👑 Alege durata Suprem:</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {Object.entries(supremPackages).map(([hours, pkg]) => (
-                    <label
-                      key={hours}
-                      className={`flex flex-col items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
-                        formData.supremHours === hours
-                          ? 'border-yellow-500 bg-yellow-500/20'
-                          : 'border-purple-500/30 hover:border-yellow-400 bg-white/5'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="supremHours"
-                        value={hours}
-                        checked={formData.supremHours === hours}
-                        onChange={handleChange}
-                        className="sr-only"
-                      />
-                      <span className="text-lg">{hours === '1' ? '⏰' : hours === '12' ? '🌅' : '👑'}</span>
-                      <span className="font-bold text-sm text-white">{pkg.label}</span>
-                      <span className="text-xs font-bold text-purple-300">{pkg.price}</span>
-                    </label>
-                  ))}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-purple-300">👑 Barosanul Suprem</p>
+                    <p className="text-white text-lg font-bold">{formData.supremHours} {parseInt(formData.supremHours) === 1 ? 'oră' : 'ore'}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-white/60 text-xs">Total</p>
+                    <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                      {calculateSupremPrice(formData.supremHours)} RON
+                    </p>
+                  </div>
                 </div>
+                <p className="text-white/50 text-xs mt-2">
+                  Pentru a schimba durata, <a href="#pricing" className="text-purple-400 hover:underline">mergi la selecția pachetului</a>
+                </p>
               </div>
             )}
           </div>

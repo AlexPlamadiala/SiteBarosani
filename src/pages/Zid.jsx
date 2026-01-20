@@ -168,12 +168,12 @@ export default function Zid() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8F4EF]">
-        <div className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm py-2 px-4">
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <div className="sticky top-16 z-40 bg-[#111] border-b border-white/10 py-3 px-4">
           <div className="container mx-auto">
             <div className="flex gap-2">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="h-8 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className="h-10 w-24 bg-white/10 rounded-full animate-pulse"></div>
               ))}
             </div>
           </div>
@@ -194,13 +194,13 @@ export default function Zid() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F8F4EF] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">⚠️</div>
-          <p className="text-xl font-bold text-red-600 mb-4">{error}</p>
+          <p className="text-xl font-bold text-red-400 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700"
           >
             Reîncearcă
           </button>
@@ -226,7 +226,7 @@ export default function Zid() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F4EF]">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Refresh indicator */}
       {isRefreshing && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
@@ -235,11 +235,11 @@ export default function Zid() {
       )}
 
       {/* Filter Bar - Visible on scroll */}
-      <div className="sticky top-16 z-40 bg-gradient-to-r from-[#1a365d] to-[#2d5986] shadow-lg">
+      <div className="sticky top-16 z-40 bg-[#111] border-b border-white/10">
         <div className="container mx-auto px-4">
           {/* Tier Tabs - Main element */}
           <div className="flex items-center justify-between py-3">
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -263,7 +263,7 @@ export default function Zid() {
               ))}
             </div>
 
-            {/* Search & Sort */}
+            {/* Search only */}
             <div className="flex items-center gap-2 flex-shrink-0 ml-2">
               <div className="relative">
                 <input
@@ -277,16 +277,6 @@ export default function Zid() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 text-sm rounded-full bg-white/10 border border-white/20 text-white focus:outline-none focus:bg-white/20 cursor-pointer"
-              >
-                <option value="tier" className="text-gray-800">Tier</option>
-                <option value="date-desc" className="text-gray-800">Noi</option>
-                <option value="date-asc" className="text-gray-800">Vechi</option>
-                <option value="name-asc" className="text-gray-800">A-Z</option>
-              </select>
             </div>
           </div>
         </div>
@@ -294,10 +284,10 @@ export default function Zid() {
 
       {/* Results count - only when filtered */}
       {(searchTerm || activeTab !== 'all') && (
-        <div className="bg-gray-50 py-1.5 px-4 text-center text-xs text-gray-500">
+        <div className="bg-white/5 py-1.5 px-4 text-center text-xs text-white/50">
           {filteredBarosani.length} rezultat{filteredBarosani.length !== 1 ? 'e' : ''}
           {searchTerm && (
-            <button onClick={() => setSearchTerm('')} className="ml-2 text-blue-600 hover:underline">
+            <button onClick={() => setSearchTerm('')} className="ml-2 text-purple-400 hover:underline">
               Șterge căutarea
             </button>
           )}
@@ -310,12 +300,12 @@ export default function Zid() {
           {filteredBarosani.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
-              <p className="text-xl text-gray-600 font-medium">
+              <p className="text-xl text-white/70 font-medium">
                 {searchTerm ? `Niciun barosan găsit pentru "${searchTerm}"` : 'Niciun barosan în această categorie'}
               </p>
               <button
                 onClick={() => { setSearchTerm(''); setActiveTab('all'); }}
-                className="mt-4 text-[#1a365d] font-semibold hover:underline"
+                className="mt-4 text-purple-400 font-semibold hover:underline"
               >
                 Resetează filtrele
               </button>
@@ -335,14 +325,14 @@ export default function Zid() {
       </section>
 
       {/* Compact CTA */}
-      <section className="py-8 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+      <section className="py-8 bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-t border-white/10">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-lg mb-4">
-            <span className="font-bold">Vrei să apari în registru?</span> Certificare instant!
+          <p className="text-lg mb-4 text-white/80">
+            <span className="font-bold text-white">Vrei să apari în registru?</span> Certificare instant!
           </p>
           <a
             href="/cum-devin-barosan"
-            className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform shadow-lg"
+            className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform shadow-lg"
           >
             Devino Barosan 🚀
           </a>

@@ -197,11 +197,11 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
         )}
 
-        {/* Certificate Button - Enhanced */}
-        <div className={`transition-all duration-300 overflow-hidden ${
-          showButton ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
-        }`}>
-          <div className="relative group/btn mt-3">
+        {/* Certificate Button - Fixed height to prevent layout shift */}
+        <div className="h-12 mt-3">
+          <div className={`relative group/btn transition-opacity duration-300 ${
+            showButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}>
             <div className={`absolute inset-0 ${colors.blurColor} rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity`}></div>
             <button
               onClick={() => onViewCertificate(barosan)}

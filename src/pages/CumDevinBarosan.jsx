@@ -30,16 +30,7 @@ export default function CumDevinBarosan() {
 
       {/* Pricing Section - Dark Theme */}
       <section className="py-12 md:py-16 px-4" id="pricing">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-3">
-              Alege Pachetul Tău
-            </h2>
-            <p className="text-white/50 max-w-xl mx-auto">
-              De la Basic la Suprem - fiecare tier îți oferă beneficii unice
-            </p>
-          </div>
-
+        <div className="container mx-auto max-w-4xl">
           <PricingTiers />
         </div>
       </section>
