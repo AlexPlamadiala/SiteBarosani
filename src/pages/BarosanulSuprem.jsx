@@ -2,16 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 
+const API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
+
 export default function BarosanulSuprem() {
-  // Mock data - în producție ar veni din API
-  const [supremeBarosan, setSupremeBarosan] = useState({
-    nume: 'NICIUN BAROSAN',
-    motto: 'Locul este liber! Fii primul Barosan Suprem!',
-    poza: null,
-    tier: 'suprem',
-    timeRemaining: 0,
-    link: null
-  });
+  const [supremeBarosan, setSupremeBarosan] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isAvailable, setIsAvailable] = useState(true);
 
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
@@ -19,14 +16,45 @@ export default function BarosanulSuprem() {
     seconds: 0
   });
 
-  const [isAvailable, setIsAvailable] = useState(true);
-
   // Prețuri pe pachete
   const packages = [
     { hours: 1, price: 50, discount: 0, label: '1 Oră', emoji: '⏰' },
     { hours: 12, price: 450, discount: 25, label: '12 Ore', emoji: '🌅', popular: true },
     { hours: 24, price: 800, discount: 33, label: '24 Ore', emoji: '👑', best: true }
   ];
+
+  // Fetch barosan suprem from API
+  useEffect(() => {
+    async function fetchSuprem() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.available) {
+            setIsAvailable(true);
+            setSupremeBarosan(null);
+          } else {
+            setIsAvailable(false);
+            setSupremeBarosan(data.suprem);
+          }
+        } else {
+          setError(data.error || 'Eroare la încărcare');
+        }
+      } catch (err) {
+        console.error('Error fetching suprem:', err);
+        setError('Nu s-a putut încărca');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSuprem();
+
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchSuprem, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Confetti on mount
   useEffect(() => {
@@ -54,15 +82,14 @@ export default function BarosanulSuprem() {
     return () => clearInterval(interval);
   }, []);
 
-  // Countdown timer
+  // Countdown timer based on API data
   useEffect(() => {
-    if (supremeBarosan.timeRemaining <= 0) {
-      setIsAvailable(true);
+    if (!supremeBarosan || !supremeBarosan.secondsRemaining) {
       return;
     }
 
-    setIsAvailable(false);
-    const endTime = Date.now() + supremeBarosan.timeRemaining * 1000;
+    // Calculate end time based on seconds remaining from API
+    const endTime = Date.now() + (supremeBarosan.secondsRemaining * 1000);
 
     const timer = setInterval(() => {
       const now = Date.now();
@@ -71,6 +98,7 @@ export default function BarosanulSuprem() {
       if (diff <= 0) {
         setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
         setIsAvailable(true);
+        setSupremeBarosan(null);
         clearInterval(timer);
         // Big celebration when time ends
         confetti({
@@ -89,9 +117,20 @@ export default function BarosanulSuprem() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [supremeBarosan.timeRemaining]);
+  }, [supremeBarosan]);
 
   const formatTime = (num) => String(num).padStart(2, '0');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-8xl animate-bounce mb-4">👑</div>
+          <p className="text-yellow-400 text-xl font-bold animate-pulse">Se încarcă Barosanul Suprem...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black relative overflow-hidden">
@@ -150,7 +189,7 @@ export default function BarosanulSuprem() {
 
               {/* Photo */}
               <div className="flex justify-center mb-6 mt-8">
-                {supremeBarosan.poza ? (
+                {supremeBarosan?.poza ? (
                   <div className="relative">
                     <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full animate-spin" style={{ animationDuration: '3s' }}></div>
                     <img
@@ -161,23 +200,46 @@ export default function BarosanulSuprem() {
                   </div>
                 ) : (
                   <div className="w-40 h-40 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-6xl animate-pulse border-4 border-yellow-300 shadow-[0_0_30px_rgba(255,215,0,0.6)]">
-                    ❓
+                    {isAvailable ? '❓' : '👑'}
                   </div>
                 )}
               </div>
 
               {/* Name */}
               <h2 className="text-3xl md:text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 mb-4 animate-pulse">
-                {supremeBarosan.nume}
+                {supremeBarosan?.nume || 'NICIUN BAROSAN'}
               </h2>
 
               {/* Motto */}
               <p className="text-center text-yellow-100 text-lg italic mb-6 px-4">
-                "{supremeBarosan.motto}"
+                "{supremeBarosan?.motto || 'Locul este liber! Fii primul Barosan Suprem!'}"
               </p>
 
+              {/* Link to social */}
+              {supremeBarosan?.link && (
+                <div className="text-center mb-4">
+                  <a
+                    href={supremeBarosan.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-full font-bold hover:scale-105 transition-transform"
+                  >
+                    📱 Urmărește-mă
+                  </a>
+                </div>
+              )}
+
+              {/* Package info */}
+              {supremeBarosan?.pachet && (
+                <div className="text-center mb-4">
+                  <span className="bg-yellow-500/30 text-yellow-200 px-4 py-1 rounded-full text-sm font-bold">
+                    Pachet: {supremeBarosan.pachet.toUpperCase()} | {supremeBarosan.sumaPlatita} RON
+                  </span>
+                </div>
+              )}
+
               {/* Countdown or Available Status */}
-              {!isAvailable ? (
+              {!isAvailable && supremeBarosan ? (
                 <div className="bg-black/50 rounded-2xl p-6 border-2 border-yellow-500/50">
                   <p className="text-center text-yellow-300 font-bold mb-4 text-lg animate-pulse">
                     ⏰ TIMP RĂMAS CA SUPREM ⏰
