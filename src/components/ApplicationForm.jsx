@@ -365,45 +365,29 @@ export default function ApplicationForm() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a365d] to-[#2d5986] rounded-2xl blur-xl opacity-20"></div>
-        <div className="relative bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-3">
-              <span className="text-3xl">📝</span>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986] mb-2">
-              Formular de Înscriere
-            </h2>
-            <p className="text-sm text-gray-600">
-              Completează datele și primești codul tău
-            </p>
-          </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-yellow-500/20 rounded-2xl blur-xl"></div>
+        <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8">
 
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-gray-600">Progres formular</span>
-              <span className="text-xs font-bold text-[#D4AF37]">{progress}%</span>
+              <span className="text-xs font-semibold text-white/60">Progres formular</span>
+              <span className="text-xs font-bold text-yellow-400">{progress}%</span>
             </div>
-            <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] transition-all duration-500 ease-out rounded-full"
+                className="absolute top-0 left-0 h-full bg-gradient-to-r from-yellow-400 to-yellow-500 transition-all duration-500 ease-out rounded-full"
                 style={{ width: `${progress}%` }}
               >
-                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
               </div>
-            </div>
-            <div className="flex justify-between mt-1">
-              <span className="text-xs text-gray-500">Start</span>
-              <span className="text-xs text-gray-500">{progress < 100 ? 'În desfășurare...' : 'Complet! 🎉'}</span>
             </div>
           </div>
 
         {/* Disclaimer Compact */}
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-3 mb-6">
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-6">
           <div className="flex items-center gap-2">
             <span className="text-lg">⚠️</span>
-            <p className="text-xs text-yellow-900">
+            <p className="text-xs text-yellow-200">
               <strong>PARODIE / UMOR</strong> - Site de divertisment. Certificatele nu au valoare oficială.
             </p>
           </div>
@@ -412,8 +396,8 @@ export default function ApplicationForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Nume */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Nume / Poreclă <span className="text-red-500">*</span>
+            <label className="block text-sm font-bold text-white/80 mb-2">
+              Nume / Poreclă <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -421,17 +405,17 @@ export default function ApplicationForm() {
               value={formData.nume}
               onChange={handleChange}
               placeholder="Cum vrei să apari în Registru"
-              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all ${
-                errors.nume ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-white placeholder-white/40 transition-all ${
+                errors.nume ? 'border-red-500' : 'border-white/20'
               }`}
             />
-            {errors.nume && <p className="text-red-500 text-sm mt-1">{errors.nume}</p>}
+            {errors.nume && <p className="text-red-400 text-sm mt-1">{errors.nume}</p>}
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Email <span className="text-red-500">*</span>
+            <label className="block text-sm font-bold text-white/80 mb-2">
+              Email <span className="text-red-400">*</span>
             </label>
             <input
               type="email"
@@ -439,38 +423,38 @@ export default function ApplicationForm() {
               value={formData.email}
               onChange={handleChange}
               placeholder="email@exemplu.ro"
-              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-white placeholder-white/40 transition-all ${
+                errors.email ? 'border-red-500' : 'border-white/20'
               }`}
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
           </div>
 
           {/* Revolut ID */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              ID Revolut <span className="text-red-500">*</span>
+            <label className="block text-sm font-bold text-white/80 mb-2">
+              ID Revolut <span className="text-red-400">*</span>
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#D4AF37] font-bold">@</span>
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-400 font-bold">@</span>
               <input
                 type="text"
                 name="revolutId"
                 value={formData.revolutId}
                 onChange={handleChange}
                 placeholder="username_revolut"
-                className={`w-full pl-9 pr-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all ${
-                  errors.revolutId ? 'border-red-500' : 'border-gray-300'
+                className={`w-full pl-9 pr-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-white placeholder-white/40 transition-all ${
+                  errors.revolutId ? 'border-red-500' : 'border-white/20'
                 }`}
               />
             </div>
-            {errors.revolutId && <p className="text-red-500 text-sm mt-1">{errors.revolutId}</p>}
+            {errors.revolutId && <p className="text-red-400 text-sm mt-1">{errors.revolutId}</p>}
           </div>
 
           {/* Tier */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-3">
-              Alege Tier-ul <span className="text-red-500">*</span>
+            <label className="block text-sm font-bold text-white/80 mb-3">
+              Alege Tier-ul <span className="text-red-400">*</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {['basic', 'gold', 'platinum', 'suprem'].map((tier) => (
@@ -479,9 +463,13 @@ export default function ApplicationForm() {
                   className={`relative flex flex-col items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${
                     formData.tier === tier
                       ? tier === 'suprem'
-                        ? 'border-purple-500 bg-gradient-to-br from-purple-900 to-black scale-105'
-                        : 'border-[#D4AF37] bg-gradient-to-br from-[#FFF9E6] to-[#FFF5CC] scale-105'
-                      : 'border-gray-300 hover:border-[#D4AF37]'
+                        ? 'border-purple-500 bg-gradient-to-br from-purple-500/20 to-pink-500/20 scale-105'
+                        : tier === 'platinum'
+                          ? 'border-gray-300 bg-gradient-to-br from-gray-200/20 to-gray-300/20 scale-105'
+                          : tier === 'gold'
+                            ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 scale-105'
+                            : 'border-gray-400 bg-white/10 scale-105'
+                      : 'border-white/20 hover:border-white/40 bg-white/5'
                   }`}
                 >
                   <input
@@ -494,7 +482,7 @@ export default function ApplicationForm() {
                   />
                   {formData.tier === tier && (
                     <div className={`absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center ${
-                      tier === 'suprem' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-[#D4AF37] to-[#FFD700]'
+                      tier === 'suprem' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-yellow-400 to-yellow-500'
                     }`}>
                       <span className="text-white text-xs">✓</span>
                     </div>
@@ -503,10 +491,12 @@ export default function ApplicationForm() {
                     {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : '👑'}
                   </span>
                   <span className={`font-bold uppercase text-xs ${
-                    formData.tier === tier && tier === 'suprem' ? 'text-yellow-400' : 'text-[#1a365d]'
+                    formData.tier === tier
+                      ? tier === 'suprem' ? 'text-purple-300' : 'text-yellow-400'
+                      : 'text-white/70'
                   }`}>{tier}</span>
                   <span className={`text-xs font-semibold ${
-                    formData.tier === tier && tier === 'suprem' ? 'text-purple-300' : 'text-gray-600'
+                    formData.tier === tier ? 'text-white/80' : 'text-white/50'
                   }`}>
                     {tier === 'suprem' ? 'TEMPORAR' : tierPrices[tier]}
                   </span>
@@ -516,8 +506,8 @@ export default function ApplicationForm() {
 
             {/* Suprem Hours Selection */}
             {formData.tier === 'suprem' && (
-              <div className="mt-4 p-4 bg-gradient-to-br from-purple-900/20 to-black/20 rounded-xl border border-purple-500/30">
-                <p className="text-sm font-bold text-purple-700 mb-3">👑 Alege durata Suprem:</p>
+              <div className="mt-4 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                <p className="text-sm font-bold text-purple-300 mb-3">👑 Alege durata Suprem:</p>
                 <div className="grid grid-cols-3 gap-2">
                   {Object.entries(supremPackages).map(([hours, pkg]) => (
                     <label
@@ -525,7 +515,7 @@ export default function ApplicationForm() {
                       className={`flex flex-col items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${
                         formData.supremHours === hours
                           ? 'border-yellow-500 bg-yellow-500/20'
-                          : 'border-purple-300/50 hover:border-yellow-400'
+                          : 'border-purple-500/30 hover:border-yellow-400 bg-white/5'
                       }`}
                     >
                       <input
@@ -537,8 +527,8 @@ export default function ApplicationForm() {
                         className="sr-only"
                       />
                       <span className="text-lg">{hours === '1' ? '⏰' : hours === '12' ? '🌅' : '👑'}</span>
-                      <span className="font-bold text-sm text-gray-800">{pkg.label}</span>
-                      <span className="text-xs font-bold text-purple-600">{pkg.price}</span>
+                      <span className="font-bold text-sm text-white">{pkg.label}</span>
+                      <span className="text-xs font-bold text-purple-300">{pkg.price}</span>
                     </label>
                   ))}
                 </div>
@@ -548,9 +538,9 @@ export default function ApplicationForm() {
 
           {/* Motto */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Motto Personal <span className="text-red-500">*</span>
-              <span className="text-xs text-gray-500 ml-2 font-normal">(max 50 caractere)</span>
+            <label className="block text-sm font-bold text-white/80 mb-2">
+              Motto Personal <span className="text-red-400">*</span>
+              <span className="text-xs text-white/50 ml-2 font-normal">(max 50 caractere)</span>
             </label>
             <input
               type="text"
@@ -559,13 +549,13 @@ export default function ApplicationForm() {
               onChange={handleChange}
               placeholder="Viața e scurtă, fii barosan"
               maxLength={50}
-              className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all ${
-                errors.motto ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-white placeholder-white/40 transition-all ${
+                errors.motto ? 'border-red-500' : 'border-white/20'
               }`}
             />
             <div className="flex justify-between mt-1">
-              {errors.motto && <p className="text-red-500 text-sm">{errors.motto}</p>}
-              <p className={`text-xs ml-auto ${formData.motto.length >= 50 ? 'text-red-500' : 'text-gray-500'}`}>
+              {errors.motto && <p className="text-red-400 text-sm">{errors.motto}</p>}
+              <p className={`text-xs ml-auto ${formData.motto.length >= 50 ? 'text-red-400' : 'text-white/50'}`}>
                 {formData.motto.length}/50
               </p>
             </div>
@@ -573,12 +563,12 @@ export default function ApplicationForm() {
 
           {/* Poză Upload */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Poza Ta <span className="text-gray-500 text-xs font-normal">(opțional)</span>
+            <label className="block text-sm font-bold text-white/80 mb-2">
+              Poza Ta <span className="text-white/50 text-xs font-normal">(opțional)</span>
             </label>
 
             {!imagePreview ? (
-              <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#D4AF37] hover:bg-[#FFF9E6]/30 transition-all cursor-pointer">
+              <div className="border-2 border-dashed border-white/20 rounded-xl p-6 text-center hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all cursor-pointer">
                 <input
                   type="file"
                   id="imageUpload"
@@ -587,15 +577,15 @@ export default function ApplicationForm() {
                   className="hidden"
                 />
                 <label htmlFor="imageUpload" className="cursor-pointer">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-100 rounded-full mb-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/10 rounded-full mb-2">
                     <span className="text-2xl">📸</span>
                   </div>
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Click pentru a uploada</p>
-                  <p className="text-xs text-gray-500">JPG, PNG sau WEBP (max 5MB)</p>
+                  <p className="text-sm font-semibold text-white/80 mb-1">Click pentru a uploada</p>
+                  <p className="text-xs text-white/50">JPG, PNG sau WEBP (max 5MB)</p>
                 </label>
               </div>
             ) : (
-              <div className="relative border-2 border-[#D4AF37] rounded-xl p-4 bg-gradient-to-br from-[#FFF9E6] to-[#FFF5CC]">
+              <div className="relative border-2 border-yellow-500/50 rounded-xl p-4 bg-yellow-500/10">
                 <img
                   src={imagePreview}
                   alt="Preview"
@@ -608,20 +598,20 @@ export default function ApplicationForm() {
                 >
                   <span className="text-sm font-bold">✕</span>
                 </button>
-                <p className="text-xs text-gray-700 text-center">
+                <p className="text-xs text-white/70 text-center">
                   {imageFile.name} ({(imageFile.size / 1024 / 1024).toFixed(2)} MB)
                 </p>
               </div>
             )}
 
-            {errors.poza && <p className="text-red-500 text-sm mt-1">{errors.poza}</p>}
+            {errors.poza && <p className="text-red-400 text-sm mt-1">{errors.poza}</p>}
           </div>
 
           {/* Link (pentru Platinum și Suprem) */}
           {(formData.tier === 'platinum' || formData.tier === 'suprem') && (
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Link Personal <span className="text-gray-500 text-xs font-normal">(opțional)</span>
+              <label className="block text-sm font-bold text-white/80 mb-2">
+                Link Personal <span className="text-white/50 text-xs font-normal">(opțional)</span>
               </label>
               <input
                 type="url"
@@ -629,11 +619,11 @@ export default function ApplicationForm() {
                 value={formData.link}
                 onChange={handleChange}
                 placeholder="https://instagram.com/username"
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#D4AF37] transition-all ${
-                  errors.link ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 bg-white/5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 text-white placeholder-white/40 transition-all ${
+                  errors.link ? 'border-red-500' : 'border-white/20'
                 }`}
               />
-              {errors.link && <p className="text-red-500 text-sm mt-1">{errors.link}</p>}
+              {errors.link && <p className="text-red-400 text-sm mt-1">{errors.link}</p>}
             </div>
           )}
 
@@ -643,8 +633,8 @@ export default function ApplicationForm() {
             disabled={uploading}
             className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
               uploading
-                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                : 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] hover:scale-105 active:scale-95 shadow-lg'
+                ? 'bg-white/20 text-white/50 cursor-not-allowed'
+                : 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-yellow-500/20'
             }`}
           >
             {uploading ? (
@@ -660,7 +650,7 @@ export default function ApplicationForm() {
             )}
           </button>
 
-          <p className="text-xs text-gray-600 text-center bg-gray-50 rounded-lg p-3">
+          <p className="text-xs text-white/50 text-center bg-white/5 rounded-lg p-3 border border-white/10">
             După trimitere vei primi un cod unic pentru plată și email.
           </p>
         </form>

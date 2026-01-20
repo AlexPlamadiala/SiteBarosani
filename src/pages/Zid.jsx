@@ -234,55 +234,58 @@ export default function Zid() {
         </div>
       )}
 
-      {/* Minimal Filter Bar */}
-      <div className="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm">
+      {/* Filter Bar - Visible on scroll */}
+      <div className="sticky top-16 z-40 bg-gradient-to-r from-[#1a365d] to-[#2d5986] shadow-lg">
         <div className="container mx-auto px-4">
           {/* Tier Tabs - Main element */}
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-1 overflow-x-auto">
+          <div className="flex items-center justify-between py-3">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? tab.id === 'suprem' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' :
-                        tab.id === 'platinum' ? 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-800' :
-                        tab.id === 'gold' ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900' :
-                        tab.id === 'basic' ? 'bg-gray-500 text-white' :
-                        'bg-[#1a365d] text-white'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? tab.id === 'suprem' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30' :
+                        tab.id === 'platinum' ? 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#1a365d] shadow-lg' :
+                        tab.id === 'gold' ? 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] shadow-lg shadow-yellow-500/30' :
+                        tab.id === 'basic' ? 'bg-gray-500 text-white shadow-lg' :
+                        'bg-white text-[#1a365d] shadow-lg'
+                      : 'bg-white/10 text-white/80 hover:bg-white/20'
                   }`}
                 >
-                  <span className="text-sm">{tab.icon}</span>
-                  <span>{tab.count}</span>
+                  <span className="text-base">{tab.icon}</span>
+                  <span>{tab.label}</span>
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                    activeTab === tab.id ? 'bg-black/10' : 'bg-white/10'
+                  }`}>{tab.count}</span>
                 </button>
               ))}
             </div>
 
             {/* Search & Sort */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0 ml-2">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Caută..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-32 sm:w-40 px-3 py-1 pl-7 text-sm rounded-full border border-gray-300 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  className="w-32 sm:w-44 px-3 py-2 pl-8 text-sm rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:bg-white/20 focus:border-white/40"
                 />
-                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-2 py-1 text-xs rounded-full border border-gray-300 text-gray-600 focus:outline-none focus:border-[#D4AF37] cursor-pointer bg-white"
+                className="px-3 py-2 text-sm rounded-full bg-white/10 border border-white/20 text-white focus:outline-none focus:bg-white/20 cursor-pointer"
               >
-                <option value="tier">Tier</option>
-                <option value="date-desc">Noi</option>
-                <option value="date-asc">Vechi</option>
-                <option value="name-asc">A-Z</option>
+                <option value="tier" className="text-gray-800">Tier</option>
+                <option value="date-desc" className="text-gray-800">Noi</option>
+                <option value="date-asc" className="text-gray-800">Vechi</option>
+                <option value="name-asc" className="text-gray-800">A-Z</option>
               </select>
             </div>
           </div>
