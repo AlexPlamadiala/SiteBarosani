@@ -18,71 +18,57 @@ export default function Zid() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sseConnected, setSseConnected] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTierFilter, setSelectedTierFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('tier'); // 'tier', 'date-desc', 'date-asc', 'name-asc', 'name-desc'
+  const [activeTab, setActiveTab] = useState('all'); // 'all', 'platinum', 'gold', 'basic'
+  const [sortBy, setSortBy] = useState('tier');
 
-  // Debounce search term to avoid filtering on every keystroke
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // Detectează și deschide certificatul din URL query params
+  // Handle URL params for certificate and tier
   useEffect(() => {
     const certificatId = searchParams.get('certificat');
     const tierParam = searchParams.get('tier');
 
-    // Handle tier filter from URL
-    if (tierParam && ['platinum', 'gold', 'basic'].includes(tierParam)) {
-      setSelectedTierFilter(tierParam);
-      // Clear the tier param from URL
+    if (tierParam && ['platinum', 'gold', 'basic', 'all'].includes(tierParam)) {
+      setActiveTab(tierParam);
       const newParams = new URLSearchParams(searchParams);
       newParams.delete('tier');
       setSearchParams(newParams, { replace: true });
     }
 
-    // Handle certificate ID from URL
     if (certificatId && barosani.length > 0 && !selectedBarosan) {
       const barosan = barosani.find(b => b.certificatId === certificatId);
       if (barosan) {
         setSelectedBarosan(barosan);
-        // Elimină query param din URL după ce certificatul e deschis
         setSearchParams({}, { replace: true });
       }
     }
   }, [searchParams, barosani, selectedBarosan, setSearchParams]);
 
-  // Load preferences from localStorage
+  // Load preferences
   useEffect(() => {
     const savedPreferences = localStorage.getItem('zidPreferences');
     if (savedPreferences) {
       try {
         const prefs = JSON.parse(savedPreferences);
         if (prefs.sortBy) setSortBy(prefs.sortBy);
-        if (prefs.tierFilter) setSelectedTierFilter(prefs.tierFilter);
+        if (prefs.activeTab) setActiveTab(prefs.activeTab);
       } catch (e) {
         console.error('Failed to load preferences:', e);
       }
     }
   }, []);
 
-  // Save preferences to localStorage
+  // Save preferences
   useEffect(() => {
-    const preferences = {
-      sortBy,
-      tierFilter: selectedTierFilter
-    };
-    localStorage.setItem('zidPreferences', JSON.stringify(preferences));
-  }, [sortBy, selectedTierFilter]);
+    localStorage.setItem('zidPreferences', JSON.stringify({ sortBy, activeTab }));
+  }, [sortBy, activeTab]);
 
-  // Încarcă barosanii din API
+  // Fetch barosani
   useEffect(() => {
     async function fetchBarosani(isInitialLoad = false) {
       try {
-        // Pentru refresh-uri silențioase (nu la primul load)
-        if (!isInitialLoad) {
-          setIsRefreshing(true);
-        }
-
+        if (!isInitialLoad) setIsRefreshing(true);
         const data = await fetchJSONWithRetry(API_URL, {}, 3);
-
         if (data.success) {
           setBarosani(data.barosani);
           setError(null);
@@ -91,77 +77,54 @@ export default function Zid() {
         }
       } catch (err) {
         console.error('Error fetching barosani:', err);
-        // Nu afișăm eroare la refresh-uri silențioase
-        if (isInitialLoad) {
-          setError(getErrorMessage(err));
-        }
+        if (isInitialLoad) setError(getErrorMessage(err));
       } finally {
         setLoading(false);
         setIsRefreshing(false);
       }
     }
 
-    // Fetch inițial
     fetchBarosani(true);
 
-    // SSE pentru real-time updates
     let eventSource;
     try {
       eventSource = new EventSource(SSE_URL);
-
-      eventSource.addEventListener('connected', (e) => {
-        console.log('SSE Connected:', e.data);
-        setSseConnected(true);
-      });
-
-      eventSource.addEventListener('barosani-updated', (e) => {
-        console.log('Barosani updated:', e.data);
-        fetchBarosani(false); // Refresh instant când se modifică barosanii
-      });
-
-      eventSource.addEventListener('heartbeat', (e) => {
-        // Keep-alive heartbeat, no action needed
-      });
-
-      eventSource.onerror = (err) => {
-        console.error('SSE Error:', err);
-        setSseConnected(false);
-        // SSE va încerca automat să reconecteze
-      };
+      eventSource.addEventListener('connected', () => setSseConnected(true));
+      eventSource.addEventListener('barosani-updated', () => fetchBarosani(false));
+      eventSource.onerror = () => setSseConnected(false);
     } catch (err) {
       console.error('Failed to establish SSE connection:', err);
     }
 
-    // Fallback: Polling la 30 secunde (backup dacă SSE nu funcționează)
     const pollInterval = setInterval(() => {
-      if (!sseConnected) {
-        fetchBarosani(false);
-      }
+      if (!sseConnected) fetchBarosani(false);
     }, 30000);
 
-    // Refresh când tab-ul devine vizibil
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchBarosani(false);
-      }
+      if (document.visibilityState === 'visible') fetchBarosani(false);
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Cleanup
     return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
+      if (eventSource) eventSource.close();
       clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
-  // Filtrare și sortare
+  // Count by tier
+  const tierCounts = useMemo(() => ({
+    all: barosani.length,
+    platinum: barosani.filter(b => b.tier === 'platinum').length,
+    gold: barosani.filter(b => b.tier === 'gold').length,
+    basic: barosani.filter(b => b.tier === 'basic').length
+  }), [barosani]);
+
+  // Filter and sort
   const filteredBarosani = useMemo(() => {
     let filtered = [...barosani];
 
-    // Apply search term (debounced)
+    // Search filter
     if (debouncedSearchTerm.trim()) {
       const search = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(b =>
@@ -171,92 +134,49 @@ export default function Zid() {
       );
     }
 
-    // Apply tier filter
-    if (selectedTierFilter !== 'all') {
-      filtered = filtered.filter(b => b.tier === selectedTierFilter);
+    // Tab filter
+    if (activeTab !== 'all') {
+      filtered = filtered.filter(b => b.tier === activeTab);
     }
 
-    // Apply sorting
+    // Sort
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'tier':
-          // Platinum > Gold > Basic
           const tierOrder = { platinum: 1, gold: 2, basic: 3 };
           return tierOrder[a.tier] - tierOrder[b.tier];
-
         case 'date-desc':
-          // Newest first
           return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
-
         case 'date-asc':
-          // Oldest first
           return new Date(a.dataInregistrare) - new Date(b.dataInregistrare);
-
         case 'name-asc':
-          // A-Z
           return a.nume.localeCompare(b.nume, 'ro');
-
         case 'name-desc':
-          // Z-A
           return b.nume.localeCompare(a.nume, 'ro');
-
         default:
           return 0;
       }
     });
 
     return filtered;
-  }, [barosani, debouncedSearchTerm, selectedTierFilter, sortBy]);
+  }, [barosani, debouncedSearchTerm, activeTab, sortBy]);
 
-  // Organizăm barosanii filtrați pe tier-uri
-  const barosaniByTier = useMemo(() => {
-    return {
-      platinum: filteredBarosani.filter(b => b.tier === 'platinum'),
-      gold: filteredBarosani.filter(b => b.tier === 'gold'),
-      basic: filteredBarosani.filter(b => b.tier === 'basic')
-    };
-  }, [filteredBarosani]);
+  const handleViewCertificate = (barosan) => setSelectedBarosan(barosan);
+  const handleCloseCertificate = () => setSelectedBarosan(null);
 
-  const handleViewCertificate = (barosan) => {
-    setSelectedBarosan(barosan);
-  };
-
-  const handleCloseCertificate = () => {
-    setSelectedBarosan(null);
-  };
-
-  const scrollToZone = (zoneId) => {
-    const element = document.getElementById(zoneId);
-    if (element) {
-      const headerOffset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  // Loading state with skeleton cards
+  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-        {/* Hero Section Skeleton */}
-        <section className="py-16 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
-          <div className="container mx-auto text-center">
-            <div className="text-6xl mb-6 animate-pulse">🏆</div>
-            <div className="h-12 bg-white/20 rounded w-96 mx-auto mb-4 animate-pulse"></div>
-            <div className="h-6 bg-white/20 rounded w-2/3 mx-auto mb-8 animate-pulse"></div>
-            <div className="h-12 bg-white/20 rounded w-full max-w-4xl mx-auto animate-pulse"></div>
+        <section className="py-4 px-4 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+          <div className="container mx-auto">
+            <div className="h-8 bg-white/20 rounded w-64 mx-auto animate-pulse"></div>
           </div>
         </section>
-
-        {/* Skeleton Cards Grid */}
-        <section className="py-16 px-4">
+        <section className="py-8 px-4">
           <div className="container mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-              {[...Array(12)].map((_, index) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {[...Array(18)].map((_, index) => (
                 <SkeletonCard key={index} />
               ))}
             </div>
@@ -271,11 +191,11 @@ export default function Zid() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
-          <div className="text-6xl mb-4">⚠️</div>
-          <p className="text-2xl font-bold text-red-600 mb-4">{error}</p>
+          <div className="text-5xl mb-4">⚠️</div>
+          <p className="text-xl font-bold text-red-600 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
           >
             Reîncearcă
           </button>
@@ -284,292 +204,148 @@ export default function Zid() {
     );
   }
 
+  const tabs = [
+    { id: 'all', label: 'Toți', icon: '🎯', count: tierCounts.all, color: 'from-[#1a365d] to-[#2d5986]' },
+    { id: 'platinum', label: 'Platinum', icon: '💎', count: tierCounts.platinum, color: 'from-[#E5E4E2] to-[#BCC6CC]', textColor: 'text-[#1a365d]' },
+    { id: 'gold', label: 'Gold', icon: '🏆', count: tierCounts.gold, color: 'from-[#D4AF37] to-[#FFD700]', textColor: 'text-[#1a365d]' },
+    { id: 'basic', label: 'Basic', icon: '⭐', count: tierCounts.basic, color: 'from-gray-400 to-gray-500' }
+  ];
+
+  // Grid columns based on active tab
+  const getGridClass = () => {
+    if (activeTab === 'platinum') return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+    if (activeTab === 'gold') return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5';
+    return 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7]">
-      {/* Hero Section - Modern Design */}
-      <section className="py-6 md:py-8 px-4 bg-gradient-to-br from-[#1a365d] via-[#2d5986] to-[#1a365d] text-white relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="container mx-auto text-center relative z-10">
-          {/* Refresh Indicator Only (moved from top-right) */}
+      {/* Compact Header */}
+      <section className="py-3 px-4 bg-gradient-to-br from-[#1a365d] via-[#2d5986] to-[#1a365d] text-white sticky top-16 z-40 shadow-lg">
+        <div className="container mx-auto">
+          {/* Refresh indicator */}
           {isRefreshing && (
-            <div className="fixed top-20 right-4 z-50 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 animate-bounce">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              <span className="text-xs font-semibold">Actualizare...</span>
+            <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
+              Actualizare...
             </div>
           )}
 
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-4 shadow-2xl">
-            <span className="text-4xl">🏆</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-3 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent drop-shadow-lg">
-            Registrul Oficial al Barosanilor
-          </h1>
-          <p className="text-sm md:text-lg max-w-2xl mx-auto opacity-95 mb-6 leading-relaxed">
-            Descoperă barosanii verificați și certificați oficial, organizați după nivelul lor de elită
-          </p>
+          {/* Search and Sort Row */}
+          <div className="flex flex-col sm:flex-row gap-2 items-center justify-between mb-3">
+            <h1 className="text-lg md:text-xl font-bold whitespace-nowrap">
+              🏆 Registrul Barosanilor
+            </h1>
 
-          {/* Search, Filter and Sort - Compact Design */}
-          <div className="max-w-4xl mx-auto mb-4">
-            <div className="backdrop-blur-md bg-white/10 rounded-xl p-3 shadow-lg border border-white/20">
-              <div className="flex flex-col md:flex-row gap-2 md:gap-3 items-stretch">
-                {/* Search Bar - Compact */}
-                <div className="relative flex-grow md:max-w-xs">
-                  <input
-                    type="text"
-                    placeholder="Caută..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-3 py-2 pl-9 rounded-lg bg-white text-gray-900 font-medium border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all placeholder:text-gray-400 text-sm shadow-md"
-                  />
-                  <svg
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  {searchTerm && (
-                    <button
-                      onClick={() => setSearchTerm('')}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center font-bold text-xs transition-colors"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-
-                {/* Filters Row - Compact */}
-                <div className="flex gap-2 flex-grow md:flex-grow-0">
-                  {/* Tier Filter */}
-                  <select
-                    value={selectedTierFilter}
-                    onChange={(e) => setSelectedTierFilter(e.target.value)}
-                    className="flex-1 md:flex-none px-3 py-2 rounded-lg bg-white text-gray-800 border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all cursor-pointer font-medium text-sm shadow-md"
-                  >
-                    <option value="all">🎯 Toate</option>
-                    <option value="platinum">💎 Platinum</option>
-                    <option value="gold">🏆 Gold</option>
-                    <option value="basic">⭐ Basic</option>
-                  </select>
-
-                  {/* Sort */}
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="flex-1 md:flex-none px-3 py-2 rounded-lg bg-white text-gray-800 border border-transparent focus:outline-none focus:border-[#D4AF37] transition-all cursor-pointer font-medium text-sm shadow-md"
-                  >
-                    <option value="tier">🏅 Tier</option>
-                    <option value="date-desc">📅 Noi</option>
-                    <option value="date-asc">📅 Vechi</option>
-                    <option value="name-asc">A-Z</option>
-                    <option value="name-desc">Z-A</option>
-                  </select>
-                </div>
-
-                {/* Results Count - Inline */}
-                {(searchTerm || selectedTierFilter !== 'all') && (
-                  <div className="flex items-center justify-center md:justify-start">
-                    <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold text-white whitespace-nowrap">
-                      {filteredBarosani.length} {filteredBarosani.length === 1 ? 'găsit' : 'găsiți'}
-                    </span>
-                  </div>
+            <div className="flex gap-2 items-center w-full sm:w-auto">
+              {/* Search */}
+              <div className="relative flex-grow sm:w-48">
+                <input
+                  type="text"
+                  placeholder="Caută..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-1.5 pl-8 rounded-lg bg-white/90 text-gray-900 text-sm border-0 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                />
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchTerm && (
+                  <button onClick={() => setSearchTerm('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    ✕
+                  </button>
                 )}
               </div>
+
+              {/* Sort */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-2 py-1.5 rounded-lg bg-white/90 text-gray-800 text-sm border-0 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] cursor-pointer"
+              >
+                <option value="tier">🏅 Tier</option>
+                <option value="date-desc">📅 Noi</option>
+                <option value="date-asc">📅 Vechi</option>
+                <option value="name-asc">A-Z</option>
+                <option value="name-desc">Z-A</option>
+              </select>
             </div>
           </div>
 
-          {/* Quick Links - Modern Pills */}
-          <div className="flex flex-wrap gap-3 justify-center">
-            {barosaniByTier.platinum.length > 0 && (
+          {/* Tier Tabs */}
+          <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 -mx-2 px-2">
+            {tabs.map((tab) => (
               <button
-                onClick={() => scrollToZone('platinum-zone')}
-                className="group relative overflow-hidden bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#E5E4E2] text-[#1a365d] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? `bg-gradient-to-r ${tab.color} ${tab.textColor || 'text-white'} shadow-lg scale-105`
+                    : 'bg-white/20 text-white/80 hover:bg-white/30'
+                }`}
               >
-                <span className="relative z-10">💎 Zona Platinum ({barosaniByTier.platinum.length})</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span>{tab.icon}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                  activeTab === tab.id ? 'bg-black/20' : 'bg-white/20'
+                }`}>
+                  {tab.count}
+                </span>
               </button>
-            )}
-            {barosaniByTier.gold.length > 0 && (
-              <button
-                onClick={() => scrollToZone('gold-zone')}
-                className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
-              >
-                🏆 Zona Gold ({barosaniByTier.gold.length})
-              </button>
-            )}
-            {barosaniByTier.basic.length > 0 && (
-              <button
-                onClick={() => scrollToZone('basic-zone')}
-                className="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
-              >
-                ⭐ Zona Basic ({barosaniByTier.basic.length})
-              </button>
-            )}
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Platinum Zone - Most Prominent */}
-      {barosaniByTier.platinum.length > 0 && (
-        <section id="platinum-zone" className="py-12 md:py-16 px-4 scroll-mt-24 relative overflow-hidden">
-          {/* Background gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent pointer-events-none"></div>
-
-          <div className="container mx-auto relative z-10">
-            <div className="text-center mb-12">
-              <div className="inline-block relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] blur-2xl opacity-30 animate-pulse"></div>
-                <div className="relative bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#E5E4E2] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-white">
-                  <h2 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986]">
-                    💎 ZONA PLATINUM 💎
-                  </h2>
-                </div>
-              </div>
-              <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
-                Elita absolută. Carduri mari, glow auriu, link personal.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.platinum.length} membr{barosaniByTier.platinum.length === 1 ? 'u' : 'i'} Platinum</span>
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.platinum.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Gold Zone - Medium Prominence */}
-      {barosaniByTier.gold.length > 0 && (
-        <section id="gold-zone" className="py-12 md:py-16 px-4 bg-gradient-to-br from-white via-[#FFF9E6] to-white scroll-mt-24 relative overflow-hidden">
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
-          </div>
-
-          <div className="container mx-auto relative z-10">
-            <div className="text-center mb-12">
-              <div className="inline-block relative">
-                <div className="absolute inset-0 bg-[#D4AF37] blur-xl opacity-40"></div>
-                <div className="relative bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#FFD700]">
-                  <h2 className="text-2xl md:text-4xl font-extrabold text-white drop-shadow-lg">
-                    🏆 ZONA GOLD 🏆
-                  </h2>
-                </div>
-              </div>
-              <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
-                Membrii Gold. Border auriu, prioritate în grid.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.gold.length} membr{barosaniByTier.gold.length === 1 ? 'u' : 'i'} Gold</span>
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.gold.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Basic Zone - Standard Size */}
-      {barosaniByTier.basic.length > 0 && (
-        <section id="basic-zone" className="py-12 md:py-16 px-4 bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] scroll-mt-24">
-          <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <div className="inline-block relative">
-                <div className="absolute inset-0 bg-gray-500 blur-lg opacity-20"></div>
-                <div className="relative bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400 px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-gray-300">
-                  <h2 className="text-xl md:text-3xl font-extrabold text-white drop-shadow-md">
-                    ⭐ ZONA BASIC ⭐
-                  </h2>
-                </div>
-              </div>
-              <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
-                Barosani verificați oficial. Fundația comunității.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.basic.length} membr{barosaniByTier.basic.length === 1 ? 'u' : 'i'} Basic</span>
-              </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.basic.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* CTA Section - Enhanced */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-[#1a365d] via-[#2d5986] to-[#1a365d] text-white relative overflow-hidden">
-        {/* Animated background elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse delay-1000"></div>
+      {/* Results Info */}
+      {(searchTerm || activeTab !== 'all') && (
+        <div className="bg-white/50 py-2 px-4 text-center text-sm text-gray-700 border-b border-gray-200">
+          {filteredBarosani.length} {filteredBarosani.length === 1 ? 'barosan' : 'barosani'}
+          {searchTerm && ` pentru "${searchTerm}"`}
+          {activeTab !== 'all' && ` în categoria ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
         </div>
+      )}
 
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full mb-6 shadow-2xl">
-            <span className="text-3xl">👑</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
-            Vrei să Apari În Registru?
-          </h2>
-          <p className="text-base md:text-xl mb-10 max-w-2xl mx-auto opacity-95 leading-relaxed">
-            Alege tier-ul tău și fă parte din comunitatea oficială de barosani verificați.
-            Certificare instant, vizibilitate garantată în Registrul Oficial!
+      {/* Barosani Grid */}
+      <section className="py-6 px-4">
+        <div className="container mx-auto">
+          {filteredBarosani.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-6xl mb-4">🔍</div>
+              <p className="text-xl text-gray-600 font-medium">
+                {searchTerm ? `Niciun barosan găsit pentru "${searchTerm}"` : 'Niciun barosan în această categorie'}
+              </p>
+              <button
+                onClick={() => { setSearchTerm(''); setActiveTab('all'); }}
+                className="mt-4 text-[#1a365d] font-semibold hover:underline"
+              >
+                Resetează filtrele
+              </button>
+            </div>
+          ) : (
+            <div className={`grid ${getGridClass()}`}>
+              {filteredBarosani.map((barosan) => (
+                <BarosanCard
+                  key={barosan.id}
+                  barosan={barosan}
+                  onViewCertificate={handleViewCertificate}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Compact CTA */}
+      <section className="py-8 bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-lg mb-4">
+            <span className="font-bold">Vrei să apari în registru?</span> Certificare instant!
           </p>
           <a
             href="/cum-devin-barosan"
-            className="group relative inline-block"
+            className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform shadow-lg"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#D4AF37] rounded-2xl blur-lg group-hover:blur-xl transition-all opacity-75"></div>
-            <span className="relative block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-10 py-4 rounded-2xl font-extrabold text-lg hover:scale-105 transition-transform shadow-2xl">
-              Devino Barosan Acum 🚀
-            </span>
+            Devino Barosan 🚀
           </a>
         </div>
       </section>
