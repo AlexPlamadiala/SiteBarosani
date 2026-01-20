@@ -1,4 +1,20 @@
+import { useNavigate } from 'react-router-dom';
+
 export default function PricingTiers() {
+  const navigate = useNavigate();
+
+  const handleSelectTier = (tierName) => {
+    // Navigate with tier param, which will auto-select the tier in the form
+    navigate(`/cum-devin-barosan?tier=${tierName.toLowerCase()}`, { replace: true });
+
+    // Scroll to form section
+    setTimeout(() => {
+      const formElement = document.querySelector('form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
   const tiers = [
     {
       name: 'BASIC',
@@ -100,12 +116,12 @@ export default function PricingTiers() {
                 ))}
               </ul>
 
-              <a
-                href="/cum-devin-barosan"
-                className={`block text-center bg-gradient-to-r ${tier.gradient} text-white px-6 py-3 rounded-xl font-bold text-base hover:scale-105 transition-transform shadow-lg`}
+              <button
+                onClick={() => handleSelectTier(tier.name)}
+                className={`w-full text-center bg-gradient-to-r ${tier.gradient} text-white px-6 py-3 rounded-xl font-bold text-base hover:scale-105 transition-transform shadow-lg`}
               >
                 Devino Barosan {tier.name} 🚀
-              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Leaderboard({ barosani }) {
   const [topBarosani, setTopBarosani] = useState([]);
@@ -81,12 +82,13 @@ export default function Leaderboard({ barosani }) {
             const isPodium = index < 3;
 
             return (
-              <div
+              <Link
+                to={`/zid?certificat=${barosan.certificatId}`}
                 key={barosan.id}
-                className={`group relative flex items-center gap-3 p-3 rounded-xl transition-all ${
+                className={`group relative flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer ${
                   isPodium
-                    ? 'bg-gradient-to-r from-[#FFF9E6] to-white border-2 border-[#D4AF37] shadow-md hover:shadow-lg'
-                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                    ? 'bg-gradient-to-r from-[#FFF9E6] to-white border-2 border-[#D4AF37] shadow-md hover:shadow-lg hover:scale-[1.02]'
+                    : 'bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:scale-[1.01]'
                 }`}
               >
                 {/* Medal/Rank */}
@@ -136,7 +138,7 @@ export default function Leaderboard({ barosani }) {
                 {isPodium && (
                   <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/10 to-[#FFD700]/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                 )}
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -148,12 +150,12 @@ export default function Leaderboard({ barosani }) {
           Vrei să ajungi în Top 10?
         </p>
         <div className="text-center">
-          <a
-            href="/cum-devin-barosan"
+          <Link
+            to="/cum-devin-barosan?tier=platinum"
             className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
           >
             Upgrade la Platinum 💎
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,18 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useToast } from '../contexts/ToastContext';
 import { fetchWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
 
 export default function ApplicationForm() {
   const toast = useToast();
+  const [searchParams] = useSearchParams();
+
+  // Get tier from URL params (e.g., ?tier=gold)
+  const initialTier = ['basic', 'gold', 'platinum'].includes(searchParams.get('tier'))
+    ? searchParams.get('tier')
+    : 'basic';
+
   const [formData, setFormData] = useState({
     nume: '',
     email: '',
     revolutId: '',
     motto: '',
-    tier: 'basic',
+    tier: initialTier,
     poza: '',
     link: ''
   });
+
+  // Update tier if URL param changes
+  useEffect(() => {
+    const tierParam = searchParams.get('tier');
+    if (tierParam && ['basic', 'gold', 'platinum'].includes(tierParam)) {
+      setFormData(prev => ({ ...prev, tier: tierParam }));
+    }
+  }, [searchParams]);
 
   const [submitted, setSubmitted] = useState(false);
   const [applicationCode, setApplicationCode] = useState('');
@@ -219,18 +235,32 @@ export default function ApplicationForm() {
 
   // Calculate form progress
   const calculateProgress = () => {
-    const fields = {
+    const requiredFields = {
       nume: formData.nume.trim(),
       email: formData.email.trim(),
       revolutId: formData.revolutId.trim(),
       motto: formData.motto.trim(),
-      tierSelected: formData.tier !== 'basic', // bonus for selecting premium tier
-      poza: imagePreview || formData.poza
+      tierSelected: true // tier is always selected (default is basic)
     };
 
-    const completedFields = Object.values(fields).filter(Boolean).length;
-    const totalFields = Object.keys(fields).length;
-    return Math.round((completedFields / totalFields) * 100);
+    // Bonus points for optional fields
+    const optionalFields = {
+      poza: imagePreview || formData.poza,
+      link: formData.tier === 'platinum' ? formData.link.trim() : null
+    };
+
+    const completedRequired = Object.values(requiredFields).filter(Boolean).length;
+    const totalRequired = Object.keys(requiredFields).length;
+
+    // Base progress from required fields (80%)
+    const baseProgress = (completedRequired / totalRequired) * 80;
+
+    // Bonus progress from optional fields (20%)
+    const optionalComplete = Object.values(optionalFields).filter(v => v !== null && v).length;
+    const optionalTotal = Object.values(optionalFields).filter(v => v !== null).length || 1;
+    const bonusProgress = (optionalComplete / optionalTotal) * 20;
+
+    return Math.round(baseProgress + bonusProgress);
   };
 
   const progress = calculateProgress();

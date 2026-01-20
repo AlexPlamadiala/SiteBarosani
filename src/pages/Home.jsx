@@ -211,24 +211,24 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Stats Cards - Compact with Animation */}
+          {/* Stats Cards - Compact with Animation - Clickable */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
+            <Link to="/zid" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform cursor-pointer">
               <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedTotal}</div>
               <div className="text-gray-700 font-semibold text-sm">Barosani Verificați</div>
-            </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2] hover:scale-105 transition-transform">
+            </Link>
+            <Link to="/zid?tier=platinum" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2] hover:scale-105 transition-transform cursor-pointer">
               <div className="text-4xl font-extrabold text-[#1a365d] tabular-nums">{animatedPlatinum}</div>
               <div className="text-gray-700 font-semibold text-sm">💎 Platinum</div>
-            </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
+            </Link>
+            <Link to="/zid?tier=gold" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform cursor-pointer">
               <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedGold}</div>
               <div className="text-gray-700 font-semibold text-sm">🏆 Gold</div>
-            </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform">
+            </Link>
+            <Link to="/zid?tier=basic" className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform cursor-pointer">
               <div className="text-4xl font-extrabold text-gray-600 tabular-nums">{animatedBasic}</div>
               <div className="text-gray-700 font-semibold text-sm">⭐ Basic</div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

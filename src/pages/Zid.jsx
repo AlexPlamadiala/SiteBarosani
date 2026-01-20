@@ -27,12 +27,24 @@ export default function Zid() {
   // Detectează și deschide certificatul din URL query params
   useEffect(() => {
     const certificatId = searchParams.get('certificat');
+    const tierParam = searchParams.get('tier');
+
+    // Handle tier filter from URL
+    if (tierParam && ['platinum', 'gold', 'basic'].includes(tierParam)) {
+      setSelectedTierFilter(tierParam);
+      // Clear the tier param from URL
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('tier');
+      setSearchParams(newParams, { replace: true });
+    }
+
+    // Handle certificate ID from URL
     if (certificatId && barosani.length > 0 && !selectedBarosan) {
       const barosan = barosani.find(b => b.certificatId === certificatId);
       if (barosan) {
         setSelectedBarosan(barosan);
         // Elimină query param din URL după ce certificatul e deschis
-        setSearchParams({});
+        setSearchParams({}, { replace: true });
       }
     }
   }, [searchParams, barosani, selectedBarosan, setSearchParams]);
