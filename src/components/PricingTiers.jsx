@@ -12,7 +12,13 @@ export default function PricingTiers() {
 
   const [selectedTier, setSelectedTier] = useState(initialTier);
   const [supremHours, setSupremHours] = useState(parseInt(searchParams.get('hours')) || 1);
+  const [inputValue, setInputValue] = useState((parseInt(searchParams.get('hours')) || 1).toString());
   const BASE_PRICE_PER_HOUR = 50;
+
+  // Sync inputValue when supremHours changes from slider or presets
+  useEffect(() => {
+    setInputValue(supremHours.toString());
+  }, [supremHours]);
 
   // Update tier when URL changes
   useEffect(() => {
@@ -58,12 +64,28 @@ export default function PricingTiers() {
     navigate(`/cum-devin-barosan?${params.toString()}`, { replace: true });
   };
 
-  const handleHoursChange = (value) => {
+  const handleInputChange = (value) => {
+    // Always update the input display value
+    setInputValue(value);
+
+    // Only update supremHours if valid
+    if (value === '') return;
+
     const hours = parseInt(value);
     if (!isNaN(hours) && hours >= 1 && hours <= 168) {
       setSupremHours(hours);
-    } else if (value === '' || isNaN(hours)) {
-      // Allow empty input temporarily while typing
+    }
+  };
+
+  const handleInputBlur = () => {
+    // On blur, ensure we have a valid value
+    const hours = parseInt(inputValue);
+    if (isNaN(hours) || hours < 1) {
+      setSupremHours(1);
+      setInputValue('1');
+    } else if (hours > 168) {
+      setSupremHours(168);
+      setInputValue('168');
     }
   };
 
@@ -174,8 +196,9 @@ export default function PricingTiers() {
                         min="1"
                         max="168"
                         placeholder="ex: 33"
-                        value={supremHours}
-                        onChange={(e) => handleHoursChange(e.target.value)}
+                        value={inputValue}
+                        onChange={(e) => handleInputChange(e.target.value)}
+                        onBlur={handleInputBlur}
                         className="w-32 px-4 py-3 rounded-xl bg-white/10 border-2 border-purple-400/50 text-white text-xl font-bold text-center placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
                       />
                       <span className="text-white/70 font-semibold">ore</span>
