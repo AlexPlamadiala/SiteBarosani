@@ -25,12 +25,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 // PUT - Aprobare cerere (transformă în barosan)
 elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    $inTransaction = false;
     try {
         $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['action']) || !isset($data['id'])) {
+            throw new Exception('Date lipsă: action sau id');
+        }
 
         if ($data['action'] === 'approve') {
             // Begin transaction
             $conn->beginTransaction();
+            $inTransaction = true;
 
             // Generare certificat ID
             $certificatId = generateCertificatId();
@@ -71,29 +77,35 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $stmt->execute([$data['id']]);
 
             $conn->commit();
+            $inTransaction = false;
 
             logAdminAction($adminId, 'approve_application', "Aprobată cerere: {$app['code']}");
 
             // Notifică SSE că s-a creat un barosan nou ȘI s-a modificat cererea
-            $tracker->notifyChange('barosani', 'created');
-            $tracker->notifyChange('applications', 'approved');
-
-            // Send approval email
-            // Email will be sent via SMTP if configured in .env, or fallback to mail()
             try {
-                require_once '../helpers/EmailSender.php';
-                $emailSender = new EmailSender();
-                $barosanData = [
-                    'nume' => $app['nume'],
-                    'email' => $app['email'],
-                    'tier' => $app['tier'],
-                    'certificat_id' => $certificatId,
-                    'data_inregistrare' => $dataInregistrare,
-                    'data_expirare' => $dataExpirare
-                ];
-                $emailSender->sendApprovalEmail($barosanData);
+                $tracker->notifyChange('barosani', 'created');
+                $tracker->notifyChange('applications', 'approved');
             } catch(Exception $e) {
-                // Silent fail pentru email - nu blochează procesul
+                // Silent fail pentru SSE
+            }
+
+            // Send approval email (optional)
+            try {
+                if (file_exists('../helpers/EmailSender.php')) {
+                    require_once '../helpers/EmailSender.php';
+                    $emailSender = new EmailSender();
+                    $barosanData = [
+                        'nume' => $app['nume'],
+                        'email' => $app['email'],
+                        'tier' => $app['tier'],
+                        'certificat_id' => $certificatId,
+                        'data_inregistrare' => $dataInregistrare,
+                        'data_expirare' => $dataExpirare
+                    ];
+                    $emailSender->sendApprovalEmail($barosanData);
+                }
+            } catch(Exception $e) {
+                // Silent fail pentru email
                 error_log("Email error: " . $e->getMessage());
             }
 
@@ -113,22 +125,36 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             logAdminAction($adminId, 'reject_application', "Respinsă cerere ID: {$data['id']}");
 
-            // Notifică SSE că s-a modificat cererea
-            $tracker->notifyChange('applications', 'rejected');
+            try {
+                $tracker->notifyChange('applications', 'rejected');
+            } catch(Exception $e) {}
 
             echo json_encode(['success' => true, 'message' => 'Cerere respinsă']);
 
         } elseif ($data['action'] === 'payment_confirmed') {
-            $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed' WHERE id = ?");
-            $stmt->execute([$data['id']]);
+            // Actualizează status și salvează dovada plății (dacă există)
+            $paymentProof = $data['payment_proof'] ?? null;
+
+            if ($paymentProof) {
+                $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed', payment_proof = ? WHERE id = ?");
+                $stmt->execute([$paymentProof, $data['id']]);
+            } else {
+                $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed' WHERE id = ?");
+                $stmt->execute([$data['id']]);
+            }
 
             logAdminAction($adminId, 'confirm_payment', "Confirmat plata pentru cerere ID: {$data['id']}");
 
             echo json_encode(['success' => true, 'message' => 'Plată confirmată']);
+
+        } else {
+            throw new Exception('Acțiune necunoscută: ' . $data['action']);
         }
 
     } catch(Exception $e) {
-        $conn->rollBack();
+        if ($inTransaction) {
+            $conn->rollBack();
+        }
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }

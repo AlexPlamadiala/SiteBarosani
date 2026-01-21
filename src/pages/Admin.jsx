@@ -24,6 +24,10 @@ export default function Admin() {
   const [appFilter, setAppFilter] = useState('all');
   const [barosanFilter, setBarosanFilter] = useState('all');
 
+  // Payment proof modal state
+  const [paymentProofModal, setPaymentProofModal] = useState({ show: false, appId: null, appName: '' });
+  const [paymentProofUrl, setPaymentProofUrl] = useState('');
+
   // Check authentication on mount
   useEffect(() => {
     checkAuth();
@@ -114,23 +118,45 @@ export default function Admin() {
   };
 
   // Application actions
-  const handleApplicationAction = async (id, action, notes = '') => {
+  const handleApplicationAction = async (id, action, notes = '', paymentProof = null) => {
     try {
+      const bodyData = { id, action, notes };
+      if (paymentProof) {
+        bodyData.payment_proof = paymentProof;
+      }
+
       const res = await fetch(`${API_BASE}/admin/applications.php`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ id, action, notes })
+        body: JSON.stringify(bodyData)
       });
       const data = await res.json();
       if (data.success) {
         toast.success(data.message);
         loadData();
+        // Close payment proof modal if open
+        setPaymentProofModal({ show: false, appId: null, appName: '' });
+        setPaymentProofUrl('');
       } else {
-        toast.error(data.error);
+        toast.error(data.error || 'Eroare necunoscută');
       }
     } catch (err) {
-      toast.error('Eroare la procesarea cererii');
+      console.error('Error:', err);
+      toast.error('Eroare la procesarea cererii: ' + err.message);
+    }
+  };
+
+  // Open payment proof modal
+  const openPaymentProofModal = (appId, appName) => {
+    setPaymentProofModal({ show: true, appId, appName });
+    setPaymentProofUrl('');
+  };
+
+  // Confirm payment with proof
+  const confirmPaymentWithProof = () => {
+    if (paymentProofModal.appId) {
+      handleApplicationAction(paymentProofModal.appId, 'payment_confirmed', '', paymentProofUrl || null);
     }
   };
 
@@ -450,6 +476,21 @@ export default function Admin() {
                         <p className="text-white/50 text-sm">Email: {app.email}</p>
                         <p className="text-white/50 text-sm">Revolut: @{app.revolut_id}</p>
                         <p className="text-white/60 italic mt-1">"{app.motto}"</p>
+
+                        {/* Payment proof display */}
+                        {app.payment_proof && (
+                          <div className="mt-2 p-2 bg-green-500/10 rounded-lg border border-green-500/30">
+                            <p className="text-green-400 text-xs font-semibold mb-1">📎 Dovadă plată:</p>
+                            <a
+                              href={app.payment_proof}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-300 text-xs hover:underline break-all"
+                            >
+                              {app.payment_proof}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -466,13 +507,13 @@ export default function Admin() {
                       </div>
 
                       {(app.status === 'pending' || app.status === 'payment_confirmed') && (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                           {app.status === 'pending' && (
                             <button
-                              onClick={() => handleApplicationAction(app.id, 'payment_confirmed')}
+                              onClick={() => openPaymentProofModal(app.id, app.nume)}
                               className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-semibold hover:bg-blue-500/30"
                             >
-                              💳 Plată OK
+                              💳 Confirmă Plată
                             </button>
                           )}
                           <button
@@ -675,6 +716,49 @@ export default function Admin() {
           </div>
         )}
       </div>
+
+      {/* Payment Proof Modal */}
+      {paymentProofModal.show && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1a1a1a] rounded-2xl p-6 max-w-md w-full border border-white/10">
+            <h3 className="text-xl font-bold text-white mb-4">💳 Confirmă Plata</h3>
+            <p className="text-white/60 mb-4">
+              Confirmi plata pentru <span className="text-purple-400 font-semibold">{paymentProofModal.appName}</span>?
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-white/80 text-sm font-semibold mb-2">
+                Link dovadă plată (opțional)
+              </label>
+              <input
+                type="url"
+                value={paymentProofUrl}
+                onChange={(e) => setPaymentProofUrl(e.target.value)}
+                placeholder="https://... (screenshot, link Revolut, etc.)"
+                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+              <p className="text-white/40 text-xs mt-1">
+                Poți adăuga un link către screenshot-ul plății sau confirmarea Revolut
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPaymentProofModal({ show: false, appId: null, appName: '' })}
+                className="flex-1 px-4 py-3 bg-white/10 text-white rounded-xl font-semibold hover:bg-white/20 transition-colors"
+              >
+                Anulează
+              </button>
+              <button
+                onClick={confirmPaymentWithProof}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:scale-[1.02] transition-transform"
+              >
+                ✓ Confirmă Plata
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
