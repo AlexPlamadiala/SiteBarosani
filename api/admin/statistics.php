@@ -34,10 +34,19 @@ try {
     ");
     $expiring = $stmt->fetch();
 
+    // Suprem count (din tabela separată)
+    $stmt = $conn->query("
+        SELECT COUNT(*) as suprem_count
+        FROM barosani_suprem
+        WHERE status = 'active' AND data_expirare > NOW()
+    ");
+    $supremCount = $stmt->fetch();
+
     echo json_encode([
         'success' => true,
         'statistics' => [
             'total_barosani' => $stats['total_barosani'],
+            'suprem_count' => $supremCount['suprem_count'] ?? 0,
             'platinum_count' => $stats['platinum_count'],
             'gold_count' => $stats['gold_count'],
             'basic_count' => $stats['basic_count'],
