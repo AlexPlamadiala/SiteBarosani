@@ -12,7 +12,6 @@ export default function PricingTiers() {
 
   const [selectedTier, setSelectedTier] = useState(initialTier);
   const [supremHours, setSupremHours] = useState(parseInt(searchParams.get('hours')) || 1);
-  const [customHours, setCustomHours] = useState('');
   const BASE_PRICE_PER_HOUR = 50;
 
   // Update tier when URL changes
@@ -59,13 +58,12 @@ export default function PricingTiers() {
     navigate(`/cum-devin-barosan?${params.toString()}`, { replace: true });
   };
 
-  const handleCustomHoursChange = (value) => {
+  const handleHoursChange = (value) => {
     const hours = parseInt(value);
     if (!isNaN(hours) && hours >= 1 && hours <= 168) {
       setSupremHours(hours);
-      setCustomHours(value);
-    } else if (value === '') {
-      setCustomHours('');
+    } else if (value === '' || isNaN(hours)) {
+      // Allow empty input temporarily while typing
     }
   };
 
@@ -151,9 +149,9 @@ export default function PricingTiers() {
                     {hourPresets.map((hours) => (
                       <button
                         key={hours}
-                        onClick={() => { setSupremHours(hours); setCustomHours(''); }}
+                        onClick={() => setSupremHours(hours)}
                         className={`px-4 py-2 rounded-xl font-bold text-sm transition-all ${
-                          supremHours === hours && customHours === ''
+                          supremHours === hours
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
                             : 'bg-white/10 text-white/70 hover:bg-white/20'
                         }`}
@@ -165,7 +163,7 @@ export default function PricingTiers() {
                     ))}
                   </div>
 
-                  {/* Custom hours input - more visible */}
+                  {/* Custom hours input - synced with slider */}
                   <div className="mt-4 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
                     <label className="text-purple-200 text-sm font-semibold mb-2 block">
                       Sau introdu numărul exact de ore:
@@ -176,27 +174,27 @@ export default function PricingTiers() {
                         min="1"
                         max="168"
                         placeholder="ex: 33"
-                        value={customHours}
-                        onChange={(e) => handleCustomHoursChange(e.target.value)}
+                        value={supremHours}
+                        onChange={(e) => handleHoursChange(e.target.value)}
                         className="w-32 px-4 py-3 rounded-xl bg-white/10 border-2 border-purple-400/50 text-white text-xl font-bold text-center placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
                       />
                       <span className="text-white/70 font-semibold">ore</span>
-                      {customHours && parseInt(customHours) >= 12 && (
+                      {supremHours >= 12 && (
                         <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-lg">
-                          {parseInt(customHours) >= 24 ? '-20%' : '-10%'} DISCOUNT
+                          {supremHours >= 24 ? '-20%' : '-10%'} DISCOUNT
                         </span>
                       )}
                     </div>
                     <p className="text-purple-300/50 text-xs mt-2">Minim 1 oră, maxim 168 ore (1 săptămână)</p>
                   </div>
 
-                  {/* Slider */}
+                  {/* Slider - synced with input */}
                   <input
                     type="range"
                     min="1"
                     max="72"
                     value={Math.min(supremHours, 72)}
-                    onChange={(e) => { setSupremHours(parseInt(e.target.value)); setCustomHours(''); }}
+                    onChange={(e) => setSupremHours(parseInt(e.target.value))}
                     className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
                     style={{
                       background: `linear-gradient(to right, #a855f7 0%, #ec4899 ${(Math.min(supremHours, 72) / 72) * 100}%, rgba(255,255,255,0.1) ${(Math.min(supremHours, 72) / 72) * 100}%)`
