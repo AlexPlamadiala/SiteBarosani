@@ -163,20 +163,31 @@ export default function PricingTiers() {
                         {hours >= 12 && hours < 24 && <span className="ml-1 text-xs text-green-400">-10%</span>}
                       </button>
                     ))}
+                  </div>
 
-                    {/* Custom hours input */}
-                    <div className="relative">
+                  {/* Custom hours input - more visible */}
+                  <div className="mt-4 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
+                    <label className="text-purple-200 text-sm font-semibold mb-2 block">
+                      Sau introdu numărul exact de ore:
+                    </label>
+                    <div className="flex items-center gap-3">
                       <input
                         type="number"
                         min="1"
                         max="168"
-                        placeholder="Altă valoare"
+                        placeholder="ex: 33"
                         value={customHours}
                         onChange={(e) => handleCustomHoursChange(e.target.value)}
-                        className="w-28 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-sm placeholder-white/40 focus:outline-none focus:border-purple-500"
+                        className="w-32 px-4 py-3 rounded-xl bg-white/10 border-2 border-purple-400/50 text-white text-xl font-bold text-center placeholder-white/30 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs">ore</span>
+                      <span className="text-white/70 font-semibold">ore</span>
+                      {customHours && parseInt(customHours) >= 12 && (
+                        <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-lg">
+                          {parseInt(customHours) >= 24 ? '-20%' : '-10%'} DISCOUNT
+                        </span>
+                      )}
                     </div>
+                    <p className="text-purple-300/50 text-xs mt-2">Minim 1 oră, maxim 168 ore (1 săptămână)</p>
                   </div>
 
                   {/* Slider */}
