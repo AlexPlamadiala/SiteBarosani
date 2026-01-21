@@ -13,7 +13,9 @@ export default function CertificateGenerator({ barosan, onClose }) {
   // Confetti effect when certificate opens
   useEffect(() => {
     // Gold confetti for platinum/gold tiers, regular for basic
-    const colors = barosan.tier === 'platinum'
+    const colors = barosan.tier === 'suprem'
+      ? ['#9333EA', '#EC4899', '#FFD700', '#A855F7']
+      : barosan.tier === 'platinum'
       ? ['#E5E4E2', '#BCC6CC', '#D4AF37', '#FFD700']
       : barosan.tier === 'gold'
       ? ['#D4AF37', '#FFD700', '#FFA500']
@@ -74,12 +76,14 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
   // Tier symbols for HTML preview (matching PDF)
   const tierSymbols = {
+    suprem: '👑',
     platinum: '◆',
     gold: '★',
     basic: '●'
   };
 
   const tierLabels = {
+    suprem: 'SUPREM',
     platinum: 'PLATINUM',
     gold: 'GOLD',
     basic: 'BASIC'
@@ -141,6 +145,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
     // Tier-based colors
     const tierColors = {
+      suprem: { primary: '#9333EA', secondary: '#EC4899', accent: '#A855F7', glow: '#F3E8FF' },
       platinum: { primary: '#E5E4E2', secondary: '#BCC6CC', accent: '#C0C0C0', glow: '#FFFFFF' },
       gold: { primary: '#FFD700', secondary: '#DAA520', accent: '#B8860B', glow: '#FFF8DC' },
       basic: { primary: '#4169E1', secondary: '#1E90FF', accent: '#00CED1', glow: '#E6F3FF' }
@@ -241,12 +246,13 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.shadowBlur = 0;
 
     // Tier badge with special styling (using text symbols for PDF compatibility)
-    const tierSymbols = {
+    const tierSymbolsCanvas = {
+      suprem: '♛',
       platinum: '◆',
       gold: '★',
       basic: '●'
     };
-    const tierBadgeText = `${tierSymbols[barosan.tier]} ${tierLabels[barosan.tier]} ${tierSymbols[barosan.tier]}`;
+    const tierBadgeText = `${tierSymbolsCanvas[barosan.tier]} ${tierLabels[barosan.tier]} ${tierSymbolsCanvas[barosan.tier]}`;
 
     // Badge background
     ctx.fillStyle = colors.primary;
@@ -264,6 +270,60 @@ export default function CertificateGenerator({ barosan, onClose }) {
     // Decorative separator
     ctx.fillStyle = '#DAA520';
     ctx.fillRect(450, 315, 300, 2);
+
+    // Photo (if exists) - draw on the left side
+    let photoOffset = 0;
+    if (barosan.poza) {
+      try {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = barosan.poza;
+        });
+
+        // Draw circular photo frame on the left
+        const photoX = 180;
+        const photoY = 435;
+        const photoRadius = 70;
+
+        // Photo border glow
+        ctx.save();
+        ctx.shadowColor = colors.primary;
+        ctx.shadowBlur = 15;
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius + 5, 0, Math.PI * 2);
+        ctx.fillStyle = colors.primary;
+        ctx.fill();
+        ctx.restore();
+
+        // White border
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius + 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+
+        // Clip to circle and draw image
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(img, photoX - photoRadius, photoY - photoRadius, photoRadius * 2, photoRadius * 2);
+        ctx.restore();
+
+        // Decorative border
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius + 4, 0, Math.PI * 2);
+        ctx.strokeStyle = colors.primary;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        photoOffset = 100; // Shift text to the right to accommodate photo
+      } catch (error) {
+        console.log('Could not load photo for certificate');
+      }
+    }
 
     // Body intro text
     ctx.font = '20px Georgia, serif';
@@ -503,7 +563,8 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   const handleShareWhatsApp = () => {
-    const text = `🏆 Tocmai am devenit Barosan ${tierLabels[barosan.tier]}! 🎉\nCertificat ID: ${barosan.certificatId}\nVerifică Registrul Oficial: ${window.location.origin}/zid`;
+    const tierEmoji = barosan.tier === 'suprem' ? '👑' : '🏆';
+    const text = `${tierEmoji} Tocmai am devenit Barosan ${tierLabels[barosan.tier]}! 🎉\nCertificat ID: ${barosan.certificatId}\nVerifică Registrul Oficial: ${window.location.origin}/zid`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
     toast.success('Se deschide WhatsApp...');
@@ -715,7 +776,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                   <div className="absolute inset-[45px] border-8" style={{ borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1' }}></div>
 
                   {/* Decorative dashed border */}
-                  <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
+                  <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'suprem' ? '#9333EA' : barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
 
                   {/* Watermarks */}
                   <div className="absolute inset-0 flex items-center justify-around opacity-[0.05] pointer-events-none">
@@ -757,11 +818,12 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     {/* Tier Badge */}
                     <div className="mb-3">
                       <div className={`px-6 py-2 rounded-lg ${
+                        barosan.tier === 'suprem' ? 'bg-gradient-to-r from-purple-500 via-pink-400 to-purple-500' :
                         barosan.tier === 'platinum' ? 'bg-gradient-to-r from-gray-300 via-white to-gray-300' :
                         barosan.tier === 'gold' ? 'bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400' :
                         'bg-gradient-to-r from-blue-400 via-blue-200 to-blue-400'
                       } bg-opacity-30`}>
-                        <span className="text-2xl font-bold" style={{ fontFamily: 'Georgia, serif', color: barosan.tier === 'platinum' ? '#666' : barosan.tier === 'gold' ? '#B8860B' : '#1E90FF' }}>
+                        <span className="text-2xl font-bold" style={{ fontFamily: 'Georgia, serif', color: barosan.tier === 'suprem' ? '#9333EA' : barosan.tier === 'platinum' ? '#666' : barosan.tier === 'gold' ? '#B8860B' : '#1E90FF' }}>
                           {tierSymbols[barosan.tier]} {tierLabels[barosan.tier]} {tierSymbols[barosan.tier]}
                         </span>
                       </div>
@@ -770,8 +832,29 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     {/* Separator */}
                     <div className="w-64 h-[2px] bg-[#DAA520] mb-3"></div>
 
-                    {/* Body Text */}
-                    <div className="max-w-3xl text-center space-y-2 flex-grow flex flex-col justify-center">
+                    {/* Photo and Body Text */}
+                    <div className="max-w-3xl text-center space-y-2 flex-grow flex flex-col justify-center relative">
+                      {/* Photo (if exists) */}
+                      {barosan.poza && (
+                        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-32">
+                          <div className="relative">
+                            <div className={`absolute inset-0 rounded-full blur-md opacity-50 ${
+                              barosan.tier === 'suprem' ? 'bg-purple-500' :
+                              barosan.tier === 'platinum' ? 'bg-gray-400' :
+                              barosan.tier === 'gold' ? 'bg-yellow-500' : 'bg-blue-500'
+                            }`}></div>
+                            <img
+                              src={barosan.poza}
+                              alt={barosan.nume}
+                              className={`relative w-28 h-28 rounded-full object-cover border-4 ${
+                                barosan.tier === 'suprem' ? 'border-purple-500' :
+                                barosan.tier === 'platinum' ? 'border-gray-400' :
+                                barosan.tier === 'gold' ? 'border-yellow-500' : 'border-blue-500'
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <p className="text-lg text-gray-700" style={{ fontFamily: 'Georgia, serif' }}>
                         Se certifică prin prezenta că distinsul/a
                       </p>
@@ -812,7 +895,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                               })}
                             </p>
                           </div>
-                          <div className="bg-white p-2 rounded-lg border-2" style={{ borderColor: barosan.tier === 'gold' ? '#FFD700' : barosan.tier === 'platinum' ? '#C0C0C0' : '#4169E1' }}>
+                          <div className="bg-white p-2 rounded-lg border-2" style={{ borderColor: barosan.tier === 'suprem' ? '#9333EA' : barosan.tier === 'gold' ? '#FFD700' : barosan.tier === 'platinum' ? '#C0C0C0' : '#4169E1' }}>
                             <QRCodeSVG
                               value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
                               size={60}
