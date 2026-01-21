@@ -545,24 +545,85 @@ export default function ApplicationForm() {
               ))}
             </div>
 
-            {/* Suprem Hours Display */}
+            {/* Suprem Hours Input */}
             {formData.tier === 'suprem' && (
-              <div className="mt-4 p-4 bg-purple-500/10 rounded-xl border border-purple-500/30">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-bold text-purple-300">👑 Barosanul Suprem</p>
-                    <p className="text-white text-lg font-bold">{formData.supremHours} {parseInt(formData.supremHours) === 1 ? 'oră' : 'ore'}</p>
+              <div className="mt-4 p-5 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border-2 border-purple-500/50">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-2xl">👑</span>
+                  <h4 className="text-lg font-bold text-white">Alege numărul de ore</h4>
+                </div>
+
+                {/* Hours Input */}
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-purple-200 mb-2">
+                    Câte ore vrei să fii Barosanul Suprem?
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      name="supremHours"
+                      value={formData.supremHours}
+                      onChange={handleChange}
+                      min="1"
+                      max="168"
+                      className="w-24 px-4 py-3 bg-white/10 border-2 border-purple-400/50 rounded-xl text-white text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                    />
+                    <span className="text-white/80 font-semibold">
+                      {parseInt(formData.supremHours) === 1 ? 'oră' : 'ore'}
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <p className="text-white/60 text-xs">Total</p>
-                    <p className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                      {calculateSupremPrice(formData.supremHours)} RON
-                    </p>
+                  <p className="text-purple-300/60 text-xs mt-2">Minim 1 oră, maxim 168 ore (1 săptămână)</p>
+                </div>
+
+                {/* Quick Select Buttons */}
+                <div className="mb-4">
+                  <p className="text-sm text-purple-200/80 mb-2">Selectare rapidă:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {[1, 6, 12, 24, 48, 72].map(hours => (
+                      <button
+                        key={hours}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, supremHours: hours.toString() }))}
+                        className={`px-3 py-2 rounded-lg text-sm font-bold transition-all ${
+                          parseInt(formData.supremHours) === hours
+                            ? 'bg-purple-500 text-white scale-105'
+                            : 'bg-white/10 text-white/70 hover:bg-white/20'
+                        }`}
+                      >
+                        {hours}h
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <p className="text-white/50 text-xs mt-2">
-                  Pentru a schimba durata, <a href="#pricing" className="text-purple-400 hover:underline">mergi la selecția pachetului</a>
-                </p>
+
+                {/* Price Display */}
+                <div className="bg-black/20 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-200/60 text-xs">Preț per oră</p>
+                      <p className="text-white font-semibold">50 RON</p>
+                    </div>
+                    {parseInt(formData.supremHours) >= 12 && (
+                      <div className="text-center">
+                        <p className="text-green-400 text-xs font-bold">DISCOUNT</p>
+                        <p className="text-green-300 font-bold text-lg">
+                          -{parseInt(formData.supremHours) >= 24 ? '20%' : '10%'}
+                        </p>
+                      </div>
+                    )}
+                    <div className="text-right">
+                      <p className="text-purple-200/60 text-xs">Total de plată</p>
+                      <p className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                        {calculateSupremPrice(formData.supremHours)} RON
+                      </p>
+                    </div>
+                  </div>
+                  {parseInt(formData.supremHours) < 12 && (
+                    <p className="text-yellow-400/80 text-xs mt-2 text-center">
+                      💡 Comandă 12+ ore pentru 10% discount sau 24+ ore pentru 20% discount!
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>
