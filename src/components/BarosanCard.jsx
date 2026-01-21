@@ -63,7 +63,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
     basic: '⭐ BASIC'
   };
 
-  const colors = tierColors[barosan.tier];
+  const tier = barosan.tier && tierColors[barosan.tier] ? barosan.tier : 'basic';
+  const colors = tierColors[tier];
   const formattedDate = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
     month: 'short',
     year: 'numeric'
@@ -98,7 +99,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   return (
     <div className="group relative">
       {/* Glow Effect - Always visible for suprem/platinum/gold */}
-      {(barosan.tier === 'suprem' || barosan.tier === 'platinum' || barosan.tier === 'gold') && (
+      {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
       )}
 
@@ -115,7 +116,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
             <div className="absolute top-0 right-0 w-20 h-20 bg-white rounded-full blur-2xl"></div>
           </div>
           <span className={`relative ${colors.badgeText} drop-shadow-sm`}>
-            {tierLabels[barosan.tier]}
+            {tierLabels[tier]}
           </span>
         </div>
 
@@ -179,14 +180,14 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
         </div>
 
         {/* Link for Suprem/Platinum - Enhanced */}
-        {(barosan.tier === 'suprem' || barosan.tier === 'platinum') && barosan.link && (
+        {(tier === 'suprem' || tier === 'platinum') && barosan.link && (
           <div className="pt-2 text-center">
             <a
               href={barosan.link}
               target="_blank"
               rel="noopener noreferrer"
               className={`inline-flex items-center gap-1.5 transition-colors text-sm font-bold px-4 py-2 rounded-lg shadow-sm ${
-                barosan.tier === 'suprem'
+                tier === 'suprem'
                   ? 'text-purple-500 hover:text-purple-400 bg-gradient-to-r from-purple-100 to-pink-50 hover:from-purple-200 hover:to-pink-100'
                   : 'text-[#BCC6CC] hover:text-[#E5E4E2] bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100'
               }`}
