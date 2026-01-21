@@ -16,12 +16,9 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group focus:outline-none focus:ring-4 focus:ring-[#D4AF37] rounded-lg" onClick={() => setMobileMenuOpen(false)} aria-label="Registrul Oficial al Barosanilor - Pagina principală">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full blur-md opacity-50"></div>
-              <div className="relative w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                <span className="text-2xl md:text-3xl">👑</span>
-              </div>
+          <Link to="/" className="flex items-center space-x-3 group focus:outline-none rounded-lg" onClick={() => setMobileMenuOpen(false)} aria-label="Registrul Oficial al Barosanilor - Pagina principală">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+              <span className="text-2xl md:text-3xl">👑</span>
             </div>
             <div>
               <h1 className="text-sm md:text-lg font-extrabold text-white">

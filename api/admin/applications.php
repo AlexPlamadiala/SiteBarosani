@@ -1,4 +1,8 @@
 <?php
+// Suppress PHP errors/warnings from breaking JSON output
+error_reporting(0);
+ini_set('display_errors', 0);
+
 require_once '../config.php';
 require_once '../helpers/ChangeTracker.php';
 
@@ -135,15 +139,26 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             // Actualizează status și salvează dovada plății (dacă există)
             $paymentProof = $data['payment_proof'] ?? null;
 
+            // Update status first
+            $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed' WHERE id = ?");
+            $stmt->execute([$data['id']]);
+
+            // Try to update payment_proof if provided (column might not exist yet)
             if ($paymentProof) {
-                $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed', payment_proof = ? WHERE id = ?");
-                $stmt->execute([$paymentProof, $data['id']]);
-            } else {
-                $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed' WHERE id = ?");
-                $stmt->execute([$data['id']]);
+                try {
+                    $stmt = $conn->prepare("UPDATE applications SET payment_proof = ? WHERE id = ?");
+                    $stmt->execute([$paymentProof, $data['id']]);
+                } catch(PDOException $e) {
+                    // Column might not exist, log but continue
+                    error_log("payment_proof column might not exist: " . $e->getMessage());
+                }
             }
 
             logAdminAction($adminId, 'confirm_payment', "Confirmat plata pentru cerere ID: {$data['id']}");
+
+            try {
+                $tracker->notifyChange('applications', 'payment_confirmed');
+            } catch(Exception $e) {}
 
             echo json_encode(['success' => true, 'message' => 'Plată confirmată']);
 

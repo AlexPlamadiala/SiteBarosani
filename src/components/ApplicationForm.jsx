@@ -176,6 +176,11 @@ export default function ApplicationForm() {
         setSubmitted(true);
         toast.success('Cerere trimisă cu succes! Codul tău: ' + data.code);
 
+        // Scroll to top to show the code
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+
         // Backup în localStorage (opțional)
         const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
         existingApps.push({
@@ -305,13 +310,33 @@ export default function ApplicationForm() {
             </div>
 
             <div className="p-6">
+              {/* Warning - Don't leave page */}
+              <div className="bg-red-50 border-2 border-red-400 rounded-xl p-4 mb-4 animate-pulse">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">⚠️</span>
+                  <div>
+                    <p className="text-red-700 font-bold text-sm">ATENȚIE! NU ÎNCHIDE PAGINA!</p>
+                    <p className="text-red-600 text-xs">Copiază codul de mai jos înainte de a pleca de pe această pagină!</p>
+                  </div>
+                </div>
+              </div>
+
               {/* Application Code */}
               <div className="bg-gradient-to-br from-[#FFF9E6] to-[#FFF5CC] border-2 border-[#D4AF37] rounded-xl p-6 mb-6 text-center">
                 <p className="text-xs font-bold text-[#D4AF37] mb-2 uppercase">Codul Tău</p>
-                <div className="text-3xl md:text-4xl font-extrabold text-[#1a365d] mb-2 tracking-wider">
+                <div className="text-3xl md:text-4xl font-extrabold text-[#1a365d] mb-2 tracking-wider select-all">
                   {applicationCode}
                 </div>
-                <p className="text-xs text-gray-700">Salvează acest cod pentru plată și email!</p>
+                <p className="text-xs text-gray-700 mb-2">Salvează acest cod pentru plată și email!</p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(applicationCode);
+                    toast.success('Cod copiat în clipboard!');
+                  }}
+                  className="px-4 py-2 bg-[#D4AF37] text-white rounded-lg text-sm font-bold hover:bg-[#B8960B] transition-colors"
+                >
+                  📋 Copiază Codul
+                </button>
               </div>
 
               {/* Simple Steps */}
