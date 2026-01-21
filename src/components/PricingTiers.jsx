@@ -211,23 +211,24 @@ export default function PricingTiers() {
                     <p className="text-purple-300/50 text-xs mt-2">Minim 1 oră, maxim 168 ore (1 săptămână)</p>
                   </div>
 
-                  {/* Slider - synced with input */}
+                  {/* Slider - synced with input, max 168h (1 week) */}
                   <input
                     type="range"
                     min="1"
-                    max="72"
-                    value={Math.min(supremHours, 72)}
+                    max="168"
+                    value={supremHours}
                     onChange={(e) => setSupremHours(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500 mt-4"
                     style={{
-                      background: `linear-gradient(to right, #a855f7 0%, #ec4899 ${(Math.min(supremHours, 72) / 72) * 100}%, rgba(255,255,255,0.1) ${(Math.min(supremHours, 72) / 72) * 100}%)`
+                      background: `linear-gradient(to right, #a855f7 0%, #ec4899 ${(supremHours / 168) * 100}%, rgba(255,255,255,0.1) ${(supremHours / 168) * 100}%)`
                     }}
                   />
                   <div className="flex justify-between text-xs text-white/40 mt-1">
                     <span>1h</span>
-                    <span>12h (-10%)</span>
-                    <span>24h (-20%)</span>
-                    <span>72h+</span>
+                    <span>12h</span>
+                    <span>24h</span>
+                    <span>72h</span>
+                    <span>168h (max)</span>
                   </div>
                 </div>
 
