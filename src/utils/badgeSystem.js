@@ -72,7 +72,8 @@ export function calculateBadges(barosan, totalBarosani = 0) {
   const badges = [];
 
   // Early Adopter - primii 100
-  const barosanNumber = parseInt(barosan.certificat_id?.match(/\d+$/)?.[0] || 9999);
+  const certId = barosan.certificatId || barosan.certificat_id || '';
+  const barosanNumber = parseInt(certId.match(/\d+$/)?.[0] || 9999);
   if (barosanNumber <= 100) {
     badges.push(BADGES.EARLY_ADOPTER);
   }
