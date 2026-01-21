@@ -76,9 +76,12 @@ export default function PricingTiers() {
     if (hours) params.set('hours', hours.toString());
     navigate(`/cum-devin-barosan?${params.toString()}`, { replace: true });
 
-    // Scroll to the top of the page so the user sees the form from the beginning
+    // Scroll to the application form section
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const formSection = document.getElementById('application-form');
+      if (formSection) {
+        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }, 100);
   };
 

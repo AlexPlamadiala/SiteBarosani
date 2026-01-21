@@ -301,7 +301,7 @@ export default function BarosanulSuprem() {
         {/* CTA - Compact */}
         <div className="text-center">
           <Link
-            to="/cum-devin-barosan"
+            to="/cum-devin-barosan?tier=suprem"
             className="inline-block bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 text-black px-8 py-2 rounded-full font-black text-base hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,215,0,0.5)] animate-pulse"
           >
             🔥 DEVINO SUPREM! 🔥

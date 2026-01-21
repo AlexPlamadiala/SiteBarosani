@@ -36,7 +36,7 @@ export default function CumDevinBarosan() {
       </section>
 
       {/* Application Form Section - Slightly lighter */}
-      <section className="py-12 px-4 bg-[#111]">
+      <section className="py-12 px-4 bg-[#111]" id="application-form">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-black text-white mb-2">

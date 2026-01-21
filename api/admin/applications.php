@@ -1,14 +1,39 @@
 <?php
-// Suppress PHP errors/warnings from breaking JSON output
-error_reporting(0);
-ini_set('display_errors', 0);
+// Start output buffering to capture any unexpected output
+ob_start();
 
-require_once '../config.php';
-require_once '../helpers/ChangeTracker.php';
+// Custom error handler to convert errors to JSON responses
+set_error_handler(function($severity, $message, $file, $line) {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
 
-$tracker = new ChangeTracker();
-$adminId = checkAdminAuth();
-$conn = getDBConnection();
+// Shutdown handler to ensure we always output valid JSON
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        // Clear any output
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Server error: ' . $error['message']]);
+    }
+});
+
+try {
+    require_once '../config.php';
+    require_once '../helpers/ChangeTracker.php';
+
+    $tracker = new ChangeTracker();
+    $adminId = checkAdminAuth();
+    $conn = getDBConnection();
+} catch (Exception $e) {
+    ob_end_clean();
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => 'Init error: ' . $e->getMessage()]);
+    exit;
+}
 
 // GET - Listare toate cererile
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -196,5 +221,14 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
+} else {
+    // Unknown request method
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+}
+
+// Flush output buffer
+if (ob_get_level() > 0) {
+    ob_end_flush();
 }
 ?>

@@ -176,9 +176,14 @@ export default function ApplicationForm() {
         setSubmitted(true);
         toast.success('Cerere trimisă cu succes! Codul tău: ' + data.code);
 
-        // Scroll to top to show the code
+        // Scroll to the form section to show the code
         setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          const formSection = document.getElementById('application-form');
+          if (formSection) {
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
         }, 100);
 
         // Backup în localStorage (opțional)
