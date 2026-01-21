@@ -218,6 +218,29 @@ export default function Admin() {
     }
   };
 
+  const handleDeactivateSuprem = async (id) => {
+    if (!confirm('Sigur vrei să dezactivezi Barosanul Suprem?')) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/suprem.php`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Barosanul Suprem a fost dezactivat!');
+        setSuprem(null);
+        loadData();
+      } else {
+        toast.error(data.error || 'Eroare la dezactivare');
+      }
+    } catch (err) {
+      toast.error('Eroare la dezactivare');
+    }
+  };
+
   // Tier colors and icons
   const tierConfig = {
     suprem: { color: 'from-purple-500 to-pink-500', icon: '👑', textColor: 'text-purple-400' },
@@ -465,10 +488,15 @@ export default function Admin() {
                         <img src={app.poza} alt={app.nume} className="w-16 h-16 rounded-full object-cover border-2 border-white/20" />
                       )}
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="text-xl">{tierConfig[app.tier]?.icon || '⭐'}</span>
                           <h3 className="text-white font-bold text-lg">{app.nume}</h3>
-                          <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${tierConfig[app.tier]?.textColor || 'text-white'}`}>
+                          <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${
+                            app.tier === 'suprem' ? 'bg-purple-500/30 text-purple-300 border border-purple-500/50' :
+                            app.tier === 'platinum' ? 'bg-gray-500/30 text-gray-200 border border-gray-400/50' :
+                            app.tier === 'gold' ? 'bg-yellow-500/30 text-yellow-300 border border-yellow-500/50' :
+                            'bg-blue-500/30 text-blue-300 border border-blue-500/50'
+                          }`}>
                             {app.tier}
                           </span>
                         </div>
@@ -701,13 +729,20 @@ export default function Admin() {
                       </div>
                     )}
 
-                    <div className="pt-4">
+                    <div className="pt-4 flex flex-col gap-4">
                       <div className="bg-purple-500/20 rounded-lg p-4">
                         <p className="text-white/60 text-sm mb-1">Timp rămas</p>
                         <p className="text-2xl font-bold text-purple-300">
                           {Math.max(0, Math.floor(suprem.secondsRemaining / 3600))}h {Math.max(0, Math.floor((suprem.secondsRemaining % 3600) / 60))}m
                         </p>
                       </div>
+
+                      <button
+                        onClick={() => handleDeactivateSuprem(suprem.id)}
+                        className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg font-semibold hover:bg-red-500/30 transition-colors"
+                      >
+                        🗑️ Dezactivează Suprem
+                      </button>
                     </div>
                   </div>
                 </div>
