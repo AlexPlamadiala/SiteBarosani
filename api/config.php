@@ -20,6 +20,19 @@ define('ADMIN_URL', EnvLoader::get('ADMIN_URL', 'http://localhost/SiteBarosani/a
 // Timezone
 date_default_timezone_set('Europe/Bucharest');
 
+// Session configuration - must be set before session_start()
+if (session_status() === PHP_SESSION_NONE) {
+    // Configure session cookie for cross-origin requests
+    session_set_cookie_params([
+        'lifetime' => 86400, // 24 hours
+        'path' => '/',
+        'domain' => '',
+        'secure' => false, // Set to true in production with HTTPS
+        'httponly' => true,
+        'samesite' => 'Lax' // Use 'None' with secure:true for cross-origin
+    ]);
+}
+
 // CORS headers pentru React (din .env)
 header('Access-Control-Allow-Origin: ' . SITE_URL);
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -56,7 +69,9 @@ function getDBConnection() {
 
 // Funcție pentru verificare admin session
 function checkAdminAuth() {
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     if (!isset($_SESSION['admin_id'])) {
         http_response_code(401);
         echo json_encode(['error' => 'Unauthorized']);

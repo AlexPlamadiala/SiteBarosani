@@ -1,7 +1,10 @@
 <?php
 require_once 'config.php';
 
-session_start();
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // POST - Login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -32,12 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
         $revolutId = sanitizeInput($data['revolutId']);
         $motto = sanitizeInput($data['motto']);
-        $tier = in_array($data['tier'], ['basic', 'gold', 'platinum']) ? $data['tier'] : 'basic';
+        $tier = in_array($data['tier'], ['basic', 'gold', 'platinum', 'suprem']) ? $data['tier'] : 'basic';
         $poza = !empty($data['poza']) ? filter_var($data['poza'], FILTER_SANITIZE_URL) : null;
         $link = !empty($data['link']) ? filter_var($data['link'], FILTER_SANITIZE_URL) : null;
 
-        // Preț bazat pe tier
-        $prices = ['basic' => 20, 'gold' => 50, 'platinum' => 100];
+        // Preț bazat pe tier (suprem are preț variabil, se va seta manual)
+        $prices = ['basic' => 20, 'gold' => 50, 'platinum' => 100, 'suprem' => 50];
         $suma = $prices[$tier];
 
         // Generare cod unic
