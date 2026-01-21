@@ -158,6 +158,7 @@ export default function ApplicationForm() {
             revolutId: formData.revolutId,
             motto: formData.motto,
             tier: formData.tier,
+            supremHours: formData.tier === 'suprem' ? parseInt(formData.supremHours) || 1 : null,
             poza: uploadedImageUrl,
             link: formData.link
           })

@@ -475,6 +475,12 @@ export default function Admin() {
                         <p className="text-white/50 text-sm">Cod: <span className="text-purple-400 font-mono">{app.code}</span></p>
                         <p className="text-white/50 text-sm">Email: {app.email}</p>
                         <p className="text-white/50 text-sm">Revolut: @{app.revolut_id}</p>
+                        {app.tier === 'suprem' && app.suprem_hours && (
+                          <p className="text-purple-400 text-sm font-semibold">👑 Suprem: {app.suprem_hours} ore - {app.suma} RON</p>
+                        )}
+                        {app.tier !== 'suprem' && (
+                          <p className="text-white/50 text-sm">Sumă: {app.suma} RON</p>
+                        )}
                         <p className="text-white/60 italic mt-1">"{app.motto}"</p>
 
                         {/* Payment proof display */}

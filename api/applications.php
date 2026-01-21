@@ -35,10 +35,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tier = in_array($data['tier'], ['basic', 'gold', 'platinum', 'suprem']) ? $data['tier'] : 'basic';
         $poza = !empty($data['poza']) ? filter_var($data['poza'], FILTER_SANITIZE_URL) : null;
         $link = !empty($data['link']) ? filter_var($data['link'], FILTER_SANITIZE_URL) : null;
+        $supremHours = ($tier === 'suprem' && !empty($data['supremHours'])) ? (int)$data['supremHours'] : null;
 
-        // Preț bazat pe tier (suprem are preț variabil, se va seta manual)
-        $prices = ['basic' => 20, 'gold' => 50, 'platinum' => 100, 'suprem' => 50];
-        $suma = $prices[$tier];
+        // Preț bazat pe tier
+        if ($tier === 'suprem' && $supremHours) {
+            // Calcul preț suprem cu discount
+            $basePrice = $supremHours * 50;
+            $discount = 0;
+            if ($supremHours >= 24) $discount = 20;
+            elseif ($supremHours >= 12) $discount = 10;
+            $suma = round($basePrice * (1 - $discount / 100));
+        } else {
+            $prices = ['basic' => 20, 'gold' => 50, 'platinum' => 100, 'suprem' => 50];
+            $suma = $prices[$tier];
+        }
 
         // Generare cod unic
         $year = date('Y');
@@ -51,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert în DB
         $stmt = $conn->prepare("
             INSERT INTO applications
-            (code, nume, email, revolut_id, motto, tier, poza, link, suma, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            (code, nume, email, revolut_id, motto, tier, suprem_hours, poza, link, suma, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
         ");
 
         $stmt->execute([
-            $code, $nume, $email, $revolutId, $motto, $tier, $poza, $link, $suma
+            $code, $nume, $email, $revolutId, $motto, $tier, $supremHours, $poza, $link, $suma
         ]);
 
         // Notifică SSE că s-a creat o cerere nouă

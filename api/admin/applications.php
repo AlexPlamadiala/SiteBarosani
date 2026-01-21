@@ -67,11 +67,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $conn->beginTransaction();
             $inTransaction = true;
 
-            // Generare certificat ID
-            $certificatId = generateCertificatId();
-            $dataInregistrare = date('Y-m-d');
-            $dataExpirare = date('Y-m-d', strtotime('+1 month'));
-
             // Get application data
             $stmt = $conn->prepare("SELECT * FROM applications WHERE id = ?");
             $stmt->execute([$data['id']]);
@@ -81,25 +76,65 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 throw new Exception('Cerere nu există');
             }
 
-            // Insert în barosani
-            $stmt = $conn->prepare("
-                INSERT INTO barosani
-                (nume, email, revolut_id, motto, tier, poza, link, certificat_id, data_inregistrare, data_expirare, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
-            ");
+            // Different handling for suprem tier
+            if ($app['tier'] === 'suprem') {
+                // Suprem goes to barosani_suprem table
+                $hours = $app['suprem_hours'] ?? 1;
+                $dataStart = date('Y-m-d H:i:s');
+                $dataExpirare = date('Y-m-d H:i:s', strtotime("+{$hours} hours"));
 
-            $stmt->execute([
-                $app['nume'],
-                $app['email'],
-                $app['revolut_id'],
-                $app['motto'],
-                $app['tier'],
-                $app['poza'],
-                $app['link'],
-                $certificatId,
-                $dataInregistrare,
-                $dataExpirare
-            ]);
+                // Determine package name
+                $pachet = $hours . 'h';
+
+                $stmt = $conn->prepare("
+                    INSERT INTO barosani_suprem
+                    (nume, email, revolut_id, motto, poza, link, pachet, suma_platita, data_start, data_expirare, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
+                ");
+
+                $stmt->execute([
+                    $app['nume'],
+                    $app['email'],
+                    $app['revolut_id'],
+                    $app['motto'],
+                    $app['poza'],
+                    $app['link'],
+                    $pachet,
+                    $app['suma'],
+                    $dataStart,
+                    $dataExpirare
+                ]);
+
+                $message = "Cerere aprobată! Barosanul Suprem a fost activat pentru {$hours} ore!";
+                $certificatId = 'SUPREM-' . date('Y') . '-' . str_pad($conn->lastInsertId(), 4, '0', STR_PAD_LEFT);
+
+            } else {
+                // Regular tiers go to barosani table
+                $certificatId = generateCertificatId();
+                $dataInregistrare = date('Y-m-d');
+                $dataExpirare = date('Y-m-d', strtotime('+1 month'));
+
+                $stmt = $conn->prepare("
+                    INSERT INTO barosani
+                    (nume, email, revolut_id, motto, tier, poza, link, certificat_id, data_inregistrare, data_expirare, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')
+                ");
+
+                $stmt->execute([
+                    $app['nume'],
+                    $app['email'],
+                    $app['revolut_id'],
+                    $app['motto'],
+                    $app['tier'],
+                    $app['poza'],
+                    $app['link'],
+                    $certificatId,
+                    $dataInregistrare,
+                    $dataExpirare
+                ]);
+
+                $message = 'Cerere aprobată și barosan adăugat pe zid!';
+            }
 
             // Update application status
             $stmt = $conn->prepare("UPDATE applications SET status = 'approved' WHERE id = ?");
@@ -108,11 +143,15 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $conn->commit();
             $inTransaction = false;
 
-            logAdminAction($adminId, 'approve_application', "Aprobată cerere: {$app['code']}");
+            logAdminAction($adminId, 'approve_application', "Aprobată cerere: {$app['code']} (tier: {$app['tier']})");
 
-            // Notifică SSE că s-a creat un barosan nou ȘI s-a modificat cererea
+            // Notifică SSE
             try {
-                $tracker->notifyChange('barosani', 'created');
+                if ($app['tier'] === 'suprem') {
+                    $tracker->notifyChange('suprem', 'created');
+                } else {
+                    $tracker->notifyChange('barosani', 'created');
+                }
                 $tracker->notifyChange('applications', 'approved');
             } catch(Exception $e) {
                 // Silent fail pentru SSE
@@ -127,9 +166,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                         'nume' => $app['nume'],
                         'email' => $app['email'],
                         'tier' => $app['tier'],
-                        'certificat_id' => $certificatId,
-                        'data_inregistrare' => $dataInregistrare,
-                        'data_expirare' => $dataExpirare
+                        'certificat_id' => $certificatId
                     ];
                     $emailSender->sendApprovalEmail($barosanData);
                 }
@@ -140,7 +177,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             echo json_encode([
                 'success' => true,
-                'message' => 'Cerere aprobată și barosan adăugat pe zid!',
+                'message' => $message,
                 'certificatId' => $certificatId
             ]);
 
