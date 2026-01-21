@@ -1,7 +1,7 @@
 <?php
 // Script pentru a genera hash pentru parola admin
 
-$password = "Barosan2025!";
+$password = "112112";
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 echo "Parola: " . $password . "\n";

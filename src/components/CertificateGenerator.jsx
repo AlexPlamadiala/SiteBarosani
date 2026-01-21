@@ -373,26 +373,26 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = 'rgba(139, 69, 19, 0.05)';
     ctx.fillRect(70, 615, 1060, 155);
 
-    // Footer - Certificate ID (left)
+    // Footer - Certificate ID (left) - IMPROVED LEGIBILITY
     ctx.textAlign = 'left';
-    ctx.font = 'bold 12px Arial, sans-serif';
-    ctx.fillStyle = '#666666';
-    ctx.fillText('NUMĂR CERTIFICAT:', 100, 660);
-    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.font = 'bold 14px Georgia, serif';
+    ctx.fillStyle = '#555555';
+    ctx.fillText('NUMĂR CERTIFICAT:', 100, 655);
+    ctx.font = 'bold 22px Georgia, serif';
     ctx.fillStyle = '#8B0000';
-    ctx.fillText(barosan.certificatId, 100, 685);
+    ctx.fillText(barosan.certificatId, 100, 682);
 
-    ctx.font = '12px Arial, sans-serif';
-    ctx.fillStyle = '#666666';
+    ctx.font = 'bold 14px Georgia, serif';
+    ctx.fillStyle = '#555555';
     ctx.fillText('DATA EMITERII:', 100, 715);
-    ctx.font = 'bold 14px Arial, sans-serif';
-    ctx.fillStyle = '#333333';
+    ctx.font = 'bold 18px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
     const dateStr = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     });
-    ctx.fillText(dateStr, 100, 735);
+    ctx.fillText(dateStr, 100, 742);
 
     // QR Code
     try {
@@ -418,102 +418,143 @@ export default function CertificateGenerator({ barosan, onClose }) {
       ctx.stroke();
 
       ctx.drawImage(qrImage, 295, 650, 80, 80);
-      ctx.font = '9px Arial, sans-serif';
+      ctx.font = 'bold 10px Georgia, serif';
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#666666';
+      ctx.fillStyle = '#555555';
       ctx.fillText('Scanează pentru', 335, 745);
       ctx.fillText('verificare online', 335, 757);
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
 
-    // Official Stamp (center) - more elaborate
+    // PROFESSIONAL OFFICIAL STAMP
     ctx.save();
-    ctx.translate(580, 700);
-    ctx.rotate(-0.15);
+    ctx.translate(580, 695);
+    ctx.rotate(-0.12);
 
-    // Stamp outer glow (reduced for speed)
-    ctx.shadowColor = '#DC143C';
-    ctx.shadowBlur = 5;
+    // Stamp background (slight transparency for realistic look)
+    ctx.globalAlpha = 0.95;
 
-    // Outer circle
-    ctx.strokeStyle = '#DC143C';
-    ctx.lineWidth = 5;
+    // Outer decorative ring
+    ctx.strokeStyle = '#1a365d';
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.arc(0, 0, 55, 0, Math.PI * 2);
+    ctx.arc(0, 0, 62, 0, Math.PI * 2);
     ctx.stroke();
-    ctx.shadowBlur = 0;
 
-    // Inner circle
+    // Second ring
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, 45, 0, Math.PI * 2);
+    ctx.arc(0, 0, 56, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Checkmark
-    ctx.font = 'bold 40px sans-serif';
-    ctx.fillStyle = '#DC143C';
+    // Inner ring
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, 38, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Stars between rings (decorative)
+    ctx.font = 'bold 8px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('✓', 0, -5);
-
-    // Text
-    ctx.font = 'bold 11px Arial, sans-serif';
-    ctx.fillText('VERIFICAT', 0, 25);
-    ctx.font = 'bold 8px Arial, sans-serif';
-    ctx.fillText('OFICIAL', 0, 38);
-
-    // Arc text
-    ctx.font = 'bold 8px Arial, sans-serif';
-    const stampText = 'REPUBLICA BAROSANILOR';
-    const angleStep = (Math.PI * 1.1) / stampText.length;
-    const startAngle = -Math.PI * 0.55 - Math.PI / 2;
-
-    for (let i = 0; i < stampText.length; i++) {
+    for (let i = 0; i < 12; i++) {
       ctx.save();
-      const angle = startAngle + i * angleStep;
-      ctx.rotate(angle);
-      ctx.textAlign = 'center';
-      ctx.fillText(stampText[i], 0, -40);
+      ctx.rotate((i * Math.PI * 2) / 12);
+      ctx.fillText('★', 0, -47);
       ctx.restore();
     }
 
+    // Center emblem - Crown
+    ctx.font = 'bold 28px Georgia, serif';
+    ctx.fillStyle = '#D4AF37';
+    ctx.shadowColor = '#B8860B';
+    ctx.shadowBlur = 2;
+    ctx.fillText('♛', 0, -8);
+    ctx.shadowBlur = 0;
+
+    // VERIFICAT text
+    ctx.font = 'bold 12px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
+    ctx.fillText('VERIFICAT', 0, 18);
+
+    // OFICIAL text
+    ctx.font = 'bold 9px Georgia, serif';
+    ctx.fillStyle = '#8B0000';
+    ctx.fillText('OFICIAL', 0, 32);
+
+    // Top arc text - REPUBLICA BAROSANILOR
+    ctx.font = 'bold 7px Georgia, serif';
+    ctx.fillStyle = '#1a365d';
+    const topText = '★ REPUBLICA BAROSANILOR ★';
+    const topRadius = 48;
+    const topAngleStep = (Math.PI * 0.85) / topText.length;
+    const topStartAngle = -Math.PI / 2 - (topAngleStep * topText.length) / 2;
+
+    for (let i = 0; i < topText.length; i++) {
+      ctx.save();
+      const angle = topStartAngle + i * topAngleStep;
+      ctx.rotate(angle);
+      ctx.translate(0, -topRadius);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillText(topText[i], 0, 0);
+      ctx.restore();
+    }
+
+    // Bottom arc text - OFICIUL DE CERTIFICARE
+    const bottomText = '★ OFICIUL DE CERTIFICARE ★';
+    const bottomRadius = 48;
+    const bottomAngleStep = (Math.PI * 0.85) / bottomText.length;
+    const bottomStartAngle = Math.PI / 2 + (bottomAngleStep * bottomText.length) / 2;
+
+    for (let i = 0; i < bottomText.length; i++) {
+      ctx.save();
+      const angle = bottomStartAngle - i * bottomAngleStep;
+      ctx.rotate(angle);
+      ctx.translate(0, bottomRadius);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(bottomText[i], 0, 0);
+      ctx.restore();
+    }
+
+    ctx.globalAlpha = 1;
     ctx.restore();
 
-    // Signatures (right side) - more fancy
+    // Signatures (right side) - IMPROVED LEGIBILITY
     ctx.textAlign = 'right';
 
     // First signature
-    ctx.font = 'italic 22px Georgia, serif';
+    ctx.font = 'italic 24px Georgia, serif';
     ctx.fillStyle = '#1a365d';
-    ctx.fillText('Ion Barosan', 1100, 665);
-    ctx.strokeStyle = '#999999';
+    ctx.fillText('Ion Barosan', 1100, 662);
+    ctx.strokeStyle = '#888888';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(970, 672);
-    ctx.lineTo(1100, 672);
+    ctx.moveTo(960, 670);
+    ctx.lineTo(1100, 670);
     ctx.stroke();
-    ctx.font = '10px Arial, sans-serif';
-    ctx.fillStyle = '#666666';
-    ctx.fillText('Mare Barosan Șef', 1100, 685);
-    ctx.font = '8px Arial, sans-serif';
-    ctx.fillStyle = '#888888';
-    ctx.fillText('& Expert în Bășcălie', 1100, 697);
+    ctx.font = 'bold 12px Georgia, serif';
+    ctx.fillStyle = '#555555';
+    ctx.fillText('Mare Barosan Șef', 1100, 686);
+    ctx.font = 'italic 10px Georgia, serif';
+    ctx.fillStyle = '#777777';
+    ctx.fillText('& Expert în Bășcălie', 1100, 700);
 
     // Second signature
-    ctx.font = 'italic 22px Georgia, serif';
+    ctx.font = 'italic 24px Georgia, serif';
     ctx.fillStyle = '#1a365d';
-    ctx.fillText('Maria Șmechera', 1100, 725);
+    ctx.fillText('Maria Șmechera', 1100, 728);
     ctx.beginPath();
-    ctx.moveTo(970, 732);
-    ctx.lineTo(1100, 732);
+    ctx.moveTo(960, 736);
+    ctx.lineTo(1100, 736);
     ctx.stroke();
-    ctx.font = '10px Arial, sans-serif';
-    ctx.fillStyle = '#666666';
-    ctx.fillText('Director Dept. Bășcălie', 1100, 745);
-    ctx.font = '8px Arial, sans-serif';
-    ctx.fillStyle = '#888888';
-    ctx.fillText('& Ministru al Flexării', 1100, 757);
+    ctx.font = 'bold 12px Georgia, serif';
+    ctx.fillStyle = '#555555';
+    ctx.fillText('Director Dept. Bășcălie', 1100, 752);
+    ctx.font = 'italic 10px Georgia, serif';
+    ctx.fillStyle = '#777777';
+    ctx.fillText('& Ministru al Flexării', 1100, 766);
 
     // Bottom decorative line
     ctx.fillStyle = '#DAA520';

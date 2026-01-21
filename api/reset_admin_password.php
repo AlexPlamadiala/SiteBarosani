@@ -2,7 +2,7 @@
 require_once 'config.php';
 
 // Parola nouă dorită
-$newPassword = "Barosan2025!";
+$newPassword = "112112";
 
 try {
     // Generează hash
