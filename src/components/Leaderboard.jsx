@@ -173,12 +173,18 @@ export default function Leaderboard({ barosani }) {
         <p className="text-center text-sm text-gray-600 mb-2">
           Vrei să ajungi în Top 10?
         </p>
-        <div className="text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <Link
+            to="/upgrade"
+            className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-5 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
+          >
+            ⬆️ Upgrade Tier
+          </Link>
           <Link
             to="/cum-devin-barosan?tier=platinum"
-            className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
+            className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-5 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
           >
-            Upgrade la Platinum 💎
+            💎 Înscrie-te Platinum
           </Link>
         </div>
       </div>

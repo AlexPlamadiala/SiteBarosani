@@ -148,6 +148,77 @@ class EmailSender {
     }
 
     /**
+     * Send upgrade verification email
+     */
+    public function sendUpgradeVerification($email, $name, $verificationLink, $expiresAt) {
+        $subject = "🔐 Verificare pentru upgrade tier - Zidul Barosanilor";
+
+        $html = $this->getUpgradeVerificationTemplate($name, $verificationLink, $expiresAt);
+
+        return $this->sendSimple($email, $subject, $html);
+    }
+
+    /**
+     * Get upgrade verification email template
+     */
+    private function getUpgradeVerificationTemplate($name, $verificationLink, $expiresAt) {
+        $expiresFormatted = date('d.m.Y H:i', strtotime($expiresAt));
+
+        return "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset='utf-8'>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+                .button { display: inline-block; background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+                .info-box { background: white; border-left: 4px solid #9333ea; padding: 15px; margin: 20px 0; }
+                .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 5px; margin: 15px 0; font-size: 12px; }
+                .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>🔐 Verificare Upgrade Tier</h1>
+                    <p>Confirmă că tu vrei să faci upgrade</p>
+                </div>
+
+                <div class='content'>
+                    <p>Bună <strong>{$name}</strong>,</p>
+
+                    <p>Ai solicitat un upgrade de tier pentru contul tău pe Zidul Barosanilor. Pentru a confirma că această cerere vine de la tine, te rugăm să dai click pe butonul de mai jos:</p>
+
+                    <p style='text-align: center;'>
+                        <a href='{$verificationLink}' class='button'>✨ Confirmă și Upgrade</a>
+                    </p>
+
+                    <div class='info-box'>
+                        <p><strong>Link:</strong> {$verificationLink}</p>
+                        <p><strong>Expiră:</strong> {$expiresFormatted}</p>
+                    </div>
+
+                    <div class='warning'>
+                        ⚠️ Dacă nu ai solicitat acest upgrade, ignoră acest email. Link-ul va expira automat.
+                    </div>
+
+                    <p>După verificare, vei putea alege noul tier și finaliza plata.</p>
+                </div>
+
+                <div class='footer'>
+                    <p>© 2025 Zidul Barosanilor - Toate drepturile rezervate</p>
+                    <p>Acest email a fost trimis automat. Nu răspunde la acest email.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        ";
+    }
+
+    /**
      * Get approval email HTML template
      */
     private function getApprovalEmailTemplate($barosan) {

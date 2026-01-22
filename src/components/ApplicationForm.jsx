@@ -13,9 +13,15 @@ export default function ApplicationForm() {
     : 'basic';
   const initialHours = searchParams.get('hours') || '1';
 
+  // Upgrade mode params
+  const isUpgradeMode = searchParams.get('upgrade') === 'true';
+  const existingBarosanId = searchParams.get('barosanId');
+  const existingEmail = searchParams.get('email');
+  const currentTier = searchParams.get('currentTier') || 'basic';
+
   const [formData, setFormData] = useState({
     nume: '',
-    email: '',
+    email: existingEmail || '',
     revolutId: '',
     motto: '',
     tier: initialTier,
@@ -28,14 +34,32 @@ export default function ApplicationForm() {
   useEffect(() => {
     const tierParam = searchParams.get('tier');
     const hoursParam = searchParams.get('hours');
+    const emailParam = searchParams.get('email');
     if (tierParam && ['basic', 'gold', 'platinum', 'suprem'].includes(tierParam)) {
       setFormData(prev => ({
         ...prev,
         tier: tierParam,
-        supremHours: hoursParam || prev.supremHours
+        supremHours: hoursParam || prev.supremHours,
+        email: emailParam || prev.email
       }));
     }
   }, [searchParams]);
+
+  // Tier order for upgrade validation
+  const tierOrder = { basic: 1, gold: 2, platinum: 3, suprem: 4 };
+  const canSelectTier = (tier) => {
+    if (!isUpgradeMode) return true;
+    return tierOrder[tier] > tierOrder[currentTier];
+  };
+
+  // Calculate upgrade price (difference)
+  const tierPricesNumeric = { basic: 0, gold: 49, platinum: 149 };
+  const getUpgradePrice = (newTier) => {
+    if (!isUpgradeMode) return tierPricesNumeric[newTier] || 0;
+    const currentPrice = tierPricesNumeric[currentTier] || 0;
+    const newPrice = tierPricesNumeric[newTier] || 0;
+    return Math.max(0, newPrice - currentPrice);
+  };
 
   const [submitted, setSubmitted] = useState(false);
   const [applicationCode, setApplicationCode] = useState('');
@@ -160,7 +184,11 @@ export default function ApplicationForm() {
             tier: formData.tier,
             supremHours: formData.tier === 'suprem' ? parseInt(formData.supremHours) || 1 : null,
             poza: uploadedImageUrl,
-            link: formData.link
+            link: formData.link,
+            // Upgrade info
+            isUpgrade: isUpgradeMode,
+            existingBarosanId: isUpgradeMode ? existingBarosanId : null,
+            previousTier: isUpgradeMode ? currentTier : null
           })
         },
         3,
@@ -424,6 +452,21 @@ export default function ApplicationForm() {
             </div>
           </div>
 
+        {/* Upgrade Mode Banner */}
+        {isUpgradeMode && (
+          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/50 rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">⬆️</div>
+              <div>
+                <p className="text-purple-200 font-bold">Mod Upgrade</p>
+                <p className="text-purple-300/80 text-sm">
+                  Upgrade de la <span className="font-bold uppercase">{currentTier}</span> - plătești doar diferența de preț!
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Disclaimer Compact */}
         <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-6">
           <div className="flex items-center gap-2">
@@ -498,51 +541,69 @@ export default function ApplicationForm() {
               Alege Tier-ul <span className="text-red-400">*</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {['basic', 'gold', 'platinum', 'suprem'].map((tier) => (
-                <label
-                  key={tier}
-                  className={`relative flex flex-col items-center p-3 border-2 rounded-xl cursor-pointer transition-all ${
-                    formData.tier === tier
-                      ? tier === 'suprem'
-                        ? 'border-purple-500 bg-gradient-to-br from-purple-500/20 to-pink-500/20 scale-105'
-                        : tier === 'platinum'
-                          ? 'border-gray-300 bg-gradient-to-br from-gray-200/20 to-gray-300/20 scale-105'
-                          : tier === 'gold'
-                            ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 scale-105'
-                            : 'border-gray-400 bg-white/10 scale-105'
-                      : 'border-white/20 hover:border-white/40 bg-white/5'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="tier"
-                    value={tier}
-                    checked={formData.tier === tier}
-                    onChange={handleChange}
-                    className="sr-only"
-                  />
-                  {formData.tier === tier && (
-                    <div className={`absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center ${
-                      tier === 'suprem' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-yellow-400 to-yellow-500'
+              {['basic', 'gold', 'platinum', 'suprem'].map((tier) => {
+                const canSelect = canSelectTier(tier);
+                return (
+                  <label
+                    key={tier}
+                    className={`relative flex flex-col items-center p-3 border-2 rounded-xl transition-all ${
+                      !canSelect
+                        ? 'opacity-40 cursor-not-allowed border-white/10 bg-white/5'
+                        : formData.tier === tier
+                          ? tier === 'suprem'
+                            ? 'border-purple-500 bg-gradient-to-br from-purple-500/20 to-pink-500/20 scale-105 cursor-pointer'
+                            : tier === 'platinum'
+                              ? 'border-gray-300 bg-gradient-to-br from-gray-200/20 to-gray-300/20 scale-105 cursor-pointer'
+                              : tier === 'gold'
+                                ? 'border-yellow-500 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 scale-105 cursor-pointer'
+                                : 'border-gray-400 bg-white/10 scale-105 cursor-pointer'
+                          : 'border-white/20 hover:border-white/40 bg-white/5 cursor-pointer'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="tier"
+                      value={tier}
+                      checked={formData.tier === tier}
+                      onChange={canSelect ? handleChange : undefined}
+                      disabled={!canSelect}
+                      className="sr-only"
+                    />
+                    {formData.tier === tier && canSelect && (
+                      <div className={`absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center ${
+                        tier === 'suprem' ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-yellow-400 to-yellow-500'
+                      }`}>
+                        <span className="text-white text-xs">✓</span>
+                      </div>
+                    )}
+                    {!canSelect && isUpgradeMode && (
+                      <div className="absolute -top-2 -right-2 w-5 h-5 bg-gray-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">✗</span>
+                      </div>
+                    )}
+                    <span className="text-2xl mb-1">
+                      {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : '👑'}
+                    </span>
+                    <span className={`font-bold uppercase text-xs ${
+                      !canSelect
+                        ? 'text-white/40'
+                        : formData.tier === tier
+                          ? tier === 'suprem' ? 'text-purple-300' : 'text-yellow-400'
+                          : 'text-white/70'
+                    }`}>{tier}</span>
+                    <span className={`text-xs font-semibold ${
+                      !canSelect ? 'text-white/30' : formData.tier === tier ? 'text-white/80' : 'text-white/50'
                     }`}>
-                      <span className="text-white text-xs">✓</span>
-                    </div>
-                  )}
-                  <span className="text-2xl mb-1">
-                    {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : '👑'}
-                  </span>
-                  <span className={`font-bold uppercase text-xs ${
-                    formData.tier === tier
-                      ? tier === 'suprem' ? 'text-purple-300' : 'text-yellow-400'
-                      : 'text-white/70'
-                  }`}>{tier}</span>
-                  <span className={`text-xs font-semibold ${
-                    formData.tier === tier ? 'text-white/80' : 'text-white/50'
-                  }`}>
-                    {tier === 'suprem' ? 'TEMPORAR' : tierPrices[tier]}
-                  </span>
-                </label>
-              ))}
+                      {tier === 'suprem'
+                        ? 'TEMPORAR'
+                        : isUpgradeMode && canSelect
+                          ? `+${getUpgradePrice(tier)} RON`
+                          : tierPrices[tier]
+                      }
+                    </span>
+                  </label>
+                );
+              })}
             </div>
 
             {/* Suprem Hours Input */}

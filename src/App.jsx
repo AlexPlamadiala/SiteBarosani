@@ -11,6 +11,7 @@ import Termeni from './pages/Termeni';
 import Confidentialitate from './pages/Confidentialitate';
 import BarosanulSuprem from './pages/BarosanulSuprem';
 import Admin from './pages/Admin';
+import Upgrade from './pages/Upgrade';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/confidentialitate" element={<Confidentialitate />} />
               <Route path="/barosanul-suprem" element={<BarosanulSuprem />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/upgrade" element={<Upgrade />} />
             </Routes>
           </main>
           <Footer />

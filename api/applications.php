@@ -37,7 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $link = !empty($data['link']) ? filter_var($data['link'], FILTER_SANITIZE_URL) : null;
         $supremHours = ($tier === 'suprem' && !empty($data['supremHours'])) ? (int)$data['supremHours'] : null;
 
+        // Upgrade parameters
+        $isUpgrade = !empty($data['isUpgrade']);
+        $existingBarosanId = $isUpgrade && !empty($data['existingBarosanId']) ? (int)$data['existingBarosanId'] : null;
+        $previousTier = $isUpgrade && !empty($data['previousTier']) ? $data['previousTier'] : null;
+
         // Preț bazat pe tier
+        $prices = ['basic' => 0, 'gold' => 49, 'platinum' => 149, 'suprem' => 50];
+
         if ($tier === 'suprem' && $supremHours) {
             // Calcul preț suprem cu discount
             $basePrice = $supremHours * 50;
@@ -46,8 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             elseif ($supremHours >= 12) $discount = 10;
             $suma = round($basePrice * (1 - $discount / 100));
         } else {
-            $prices = ['basic' => 20, 'gold' => 50, 'platinum' => 100, 'suprem' => 50];
             $suma = $prices[$tier];
+            // For upgrades, calculate the price difference
+            if ($isUpgrade && $previousTier && $tier !== 'suprem') {
+                $previousPrice = $prices[$previousTier] ?? 0;
+                $suma = max(0, $suma - $previousPrice);
+            }
         }
 
         // Generare cod unic
@@ -61,12 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert în DB
         $stmt = $conn->prepare("
             INSERT INTO applications
-            (code, nume, email, revolut_id, motto, tier, suprem_hours, poza, link, suma, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            (code, nume, email, revolut_id, motto, tier, suprem_hours, poza, link, suma, status, is_upgrade, existing_barosan_id, previous_tier)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)
         ");
 
         $stmt->execute([
-            $code, $nume, $email, $revolutId, $motto, $tier, $supremHours, $poza, $link, $suma
+            $code, $nume, $email, $revolutId, $motto, $tier, $supremHours, $poza, $link, $suma,
+            $isUpgrade ? 1 : 0, $existingBarosanId, $previousTier
         ]);
 
         // Notifică SSE că s-a creat o cerere nouă
