@@ -249,8 +249,8 @@ export default function Zid() {
         </div>
       )}
 
-      {/* Filter Bar - Visible on scroll */}
-      <div className="sticky top-16 z-40 bg-[#111] border-b border-white/10">
+      {/* Filter Bar - Sticky on scroll */}
+      <div className="sticky top-[64px] z-40 bg-[#111]/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
         <div className="container mx-auto px-4">
           {/* Tier Tabs - Main element */}
           <div className="flex items-center justify-between py-3">
@@ -384,8 +384,25 @@ export default function Zid() {
                   )}
                 </div>
 
-                {/* View full page link */}
-                <div className="mt-4 pt-4 border-t border-white/10 text-center">
+                {/* Actions */}
+                <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-4">
+                  {/* Certificate Button */}
+                  <button
+                    onClick={() => {
+                      // Map suprem data to certificate format
+                      const supremCertData = {
+                        ...activeSuprem,
+                        tier: 'suprem',
+                        dataInregistrare: activeSuprem.dataStart
+                      };
+                      handleViewCertificate(supremCertData);
+                    }}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:scale-105 transition-transform shadow-lg"
+                  >
+                    📜 Vezi Certificat
+                  </button>
+
+                  {/* View full page link */}
                   <a
                     href="/barosanul-suprem"
                     className="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 font-semibold text-sm transition-colors"

@@ -77,6 +77,27 @@ export default function Leaderboard({ barosani }) {
         </div>
       </div>
 
+      {/* Points Explanation */}
+      <div className="bg-gradient-to-r from-gray-50 to-white px-4 py-3 border-b border-gray-100">
+        <details className="group">
+          <summary className="flex items-center gap-2 cursor-pointer text-sm text-gray-600 hover:text-[#1a365d] transition-colors">
+            <span>ℹ️</span>
+            <span className="font-semibold">Cum se calculează punctele?</span>
+            <span className="ml-auto text-xs group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="mt-3 space-y-1 text-xs text-gray-500 pl-6">
+            <p>• <span className="font-semibold text-purple-500">Suprem:</span> 2000 puncte</p>
+            <p>• <span className="font-semibold text-gray-400">Platinum:</span> 1000 puncte</p>
+            <p>• <span className="font-semibold text-yellow-600">Gold:</span> 500 puncte</p>
+            <p>• <span className="font-semibold text-gray-500">Basic:</span> 100 puncte</p>
+            <p>• <span className="font-semibold">Senioritate:</span> +2 puncte/zi de când ești barosan</p>
+            <p>• <span className="font-semibold">Poză:</span> +50 puncte</p>
+            <p>• <span className="font-semibold">Link personal:</span> +100 puncte (Platinum/Suprem)</p>
+            <p>• <span className="font-semibold">Motto creativ:</span> +1 punct/caracter</p>
+          </div>
+        </details>
+      </div>
+
       {/* Leaderboard List */}
       <div className="p-4">
         <div className="space-y-2">

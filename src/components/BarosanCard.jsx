@@ -97,14 +97,14 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   }, []);
 
   return (
-    <div className="group relative">
+    <div className="group relative h-full">
       {/* Glow Effect - Always visible for suprem/platinum/gold */}
       {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
       )}
 
       <div
-        className={`relative bg-white rounded-2xl overflow-hidden transition-all duration-300 border-2 ${colors.border} shadow-lg ${
+        className={`relative bg-white rounded-2xl overflow-hidden transition-all duration-300 border-2 ${colors.border} shadow-lg h-full flex flex-col ${
           isHovered && !isTouchDevice ? 'scale-105 ' + colors.glow : 'hover:shadow-xl'
         }`}
         onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
@@ -159,13 +159,13 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
       </div>
 
       {/* Content - Enhanced */}
-      <div className="p-5 space-y-3">
+      <div className="p-5 space-y-3 flex-1 flex flex-col">
         <h3 className="font-extrabold text-xl text-center text-[#1a365d] leading-tight">
           {barosan.nume}
         </h3>
 
         {/* Badges */}
-        <div className="flex justify-center">
+        <div className="flex justify-center min-h-[28px]">
           <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
         </div>
 
@@ -179,9 +179,12 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
         </div>
 
-        {/* Link for Suprem/Platinum - Enhanced */}
-        {(tier === 'suprem' || tier === 'platinum') && barosan.link && (
-          <div className="pt-2 text-center">
+        {/* Spacer to push button to bottom */}
+        <div className="flex-1"></div>
+
+        {/* Link for Suprem/Platinum - Fixed height container */}
+        <div className="min-h-[44px] pt-2 text-center">
+          {(tier === 'suprem' || tier === 'platinum') && barosan.link ? (
             <a
               href={barosan.link}
               target="_blank"
@@ -195,11 +198,11 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
               <span>🔗</span>
               <span>Link Personal</span>
             </a>
-          </div>
-        )}
+          ) : null}
+        </div>
 
         {/* Certificate Button - Fixed height to prevent layout shift */}
-        <div className="h-12 mt-3">
+        <div className="h-12">
           <div className={`relative group/btn transition-opacity duration-300 ${
             showButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}>

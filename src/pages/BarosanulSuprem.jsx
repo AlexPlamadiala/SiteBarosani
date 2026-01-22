@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import CertificateGenerator from '../components/CertificateGenerator';
 
 const API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
 
@@ -9,6 +10,7 @@ export default function BarosanulSuprem() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAvailable, setIsAvailable] = useState(true);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
@@ -162,45 +164,48 @@ export default function BarosanulSuprem() {
           </p>
         </div>
 
-        {/* Current Supreme Barosan Card - Compact */}
-        <div className="max-w-lg mx-auto mb-6">
+        {/* Current Supreme Barosan Card - BIGGER */}
+        <div className="max-w-2xl mx-auto mb-8">
           <div className="relative group">
             {/* Glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400 rounded-3xl blur-xl opacity-75 animate-pulse"></div>
 
-            <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 rounded-2xl p-4 border-2 border-yellow-500 shadow-[0_0_30px_rgba(255,215,0,0.5)]">
-              {/* Photo and Info Row */}
-              <div className="flex items-center gap-4 mb-3">
-                {/* Photo */}
+            <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 rounded-3xl p-6 md:p-8 border-4 border-yellow-500 shadow-[0_0_50px_rgba(255,215,0,0.6)]">
+              {/* Photo and Info - Stacked on mobile, side by side on desktop */}
+              <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
+                {/* Photo - BIGGER */}
                 {supremeBarosan?.poza ? (
                   <div className="relative flex-shrink-0">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full animate-spin" style={{ animationDuration: '3s' }}></div>
+                    <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-pink-500 to-yellow-400 rounded-full animate-spin" style={{ animationDuration: '4s' }}></div>
                     <img
                       src={supremeBarosan.poza}
                       alt={supremeBarosan.nume}
-                      className="relative w-24 h-24 rounded-full object-cover border-3 border-yellow-400 shadow-lg"
+                      className="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
                     />
+                    <div className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-2xl shadow-lg animate-bounce">
+                      👑
+                    </div>
                   </div>
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-4xl animate-pulse border-3 border-yellow-300 flex-shrink-0">
+                  <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-7xl animate-pulse border-4 border-yellow-300 flex-shrink-0 shadow-2xl">
                     {isAvailable ? '❓' : '👑'}
                   </div>
                 )}
 
-                {/* Name and Motto */}
-                <div className="flex-grow min-w-0">
-                  <h2 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse truncate">
+                {/* Name and Motto - BIGGER */}
+                <div className="flex-grow text-center md:text-left">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200 animate-pulse mb-2">
                     {supremeBarosan?.nume || 'NICIUN BAROSAN'}
                   </h2>
-                  <p className="text-yellow-100 text-sm italic line-clamp-2">
+                  <p className="text-yellow-100 text-lg md:text-xl italic mb-4">
                     "{supremeBarosan?.motto || 'Locul este liber!'}"
                   </p>
 
-                  {/* Package info + Social link inline */}
-                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                  {/* Package info + Social link */}
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
                     {supremeBarosan?.pachet && (
-                      <span className="bg-yellow-500/30 text-yellow-200 px-2 py-0.5 rounded-full text-xs font-bold">
-                        {supremeBarosan.pachet.toUpperCase()} | {supremeBarosan.sumaPlatita} RON
+                      <span className="bg-yellow-500/30 text-yellow-200 px-4 py-1.5 rounded-full text-sm font-bold">
+                        ⏱️ {supremeBarosan.pachet.toUpperCase()} | 💰 {supremeBarosan.sumaPlatita} RON
                       </span>
                     )}
                     {supremeBarosan?.link && (
@@ -208,29 +213,62 @@ export default function BarosanulSuprem() {
                         href={supremeBarosan.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-2 py-0.5 rounded-full text-xs font-bold hover:scale-105 transition-transform"
+                        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-1.5 rounded-full text-sm font-bold hover:scale-105 transition-transform"
                       >
-                        📱 Link
+                        📱 Link Personal
                       </a>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Countdown or Available Status - Inline small */}
+              {/* Countdown or Available Status - BIGGER */}
               {!isAvailable && supremeBarosan ? (
-                <div className="bg-black/40 rounded-lg px-3 py-2 flex items-center justify-center gap-2">
-                  <span className="text-yellow-300 text-xs">⏰</span>
-                  <span className="text-yellow-100 font-mono font-bold text-sm tabular-nums">
-                    {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
-                  </span>
-                  <span className="text-yellow-300/60 text-xs">rămas</span>
+                <div className="bg-black/50 rounded-2xl px-6 py-4 mb-4">
+                  <p className="text-yellow-300/80 text-sm text-center mb-2">⏰ Timp rămas până expiră titlul</p>
+                  <div className="flex items-center justify-center gap-4">
+                    <div className="text-center">
+                      <span className="text-yellow-100 font-mono font-black text-4xl md:text-5xl tabular-nums">
+                        {formatTime(timeLeft.hours)}
+                      </span>
+                      <p className="text-yellow-300/60 text-xs">ORE</p>
+                    </div>
+                    <span className="text-yellow-400 text-3xl">:</span>
+                    <div className="text-center">
+                      <span className="text-yellow-100 font-mono font-black text-4xl md:text-5xl tabular-nums">
+                        {formatTime(timeLeft.minutes)}
+                      </span>
+                      <p className="text-yellow-300/60 text-xs">MIN</p>
+                    </div>
+                    <span className="text-yellow-400 text-3xl">:</span>
+                    <div className="text-center">
+                      <span className="text-yellow-100 font-mono font-black text-4xl md:text-5xl tabular-nums">
+                        {formatTime(timeLeft.seconds)}
+                      </span>
+                      <p className="text-yellow-300/60 text-xs">SEC</p>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg px-3 py-2">
-                  <p className="text-center text-white font-bold text-sm">
+                <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl px-6 py-4 mb-4">
+                  <p className="text-center text-white font-black text-xl">
                     🎉 LOCUL ESTE LIBER! 🎉
                   </p>
+                  <p className="text-center text-white/80 text-sm mt-1">
+                    Fii tu următorul Barosan Suprem!
+                  </p>
+                </div>
+              )}
+
+              {/* Certificate Button - NEW */}
+              {!isAvailable && supremeBarosan && (
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowCertificate(true)}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-black text-lg hover:scale-105 transition-transform shadow-lg"
+                  >
+                    📜 Vezi Certificatul Suprem
+                  </button>
                 </div>
               )}
             </div>
@@ -308,6 +346,18 @@ export default function BarosanulSuprem() {
           </Link>
         </div>
       </div>
+
+      {/* Certificate Modal */}
+      {showCertificate && supremeBarosan && (
+        <CertificateGenerator
+          barosan={{
+            ...supremeBarosan,
+            tier: 'suprem',
+            dataInregistrare: supremeBarosan.dataStart
+          }}
+          onClose={() => setShowCertificate(false)}
+        />
+      )}
     </div>
   );
 }

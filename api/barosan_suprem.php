@@ -27,7 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 data_start as dataStart,
                 data_expirare as dataExpirare,
                 TIMESTAMPDIFF(SECOND, NOW(), data_expirare) as secondsRemaining,
-                status
+                status,
+                CONCAT('SUP-', LPAD(id, 6, '0')) as certificatId
             FROM barosani_suprem
             WHERE status = 'active'
             AND data_expirare > NOW()

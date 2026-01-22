@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function RecentActivity({ barosani }) {
   const [recentBarosani, setRecentBarosani] = useState([]);
@@ -65,9 +66,10 @@ export default function RecentActivity({ barosani }) {
 
       <div className="space-y-3" key={animationKey}>
         {recentBarosani.map((barosan, index) => (
-          <div
+          <Link
             key={barosan.id}
-            className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-white hover:from-[#FFF9E6] hover:to-white transition-all border border-gray-100 animate-fadeIn"
+            to={`/zid?certificat=${barosan.certificatId || barosan.certificat_id}`}
+            className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-white hover:from-[#FFF9E6] hover:to-white transition-all border border-gray-100 animate-fadeIn cursor-pointer group"
             style={{
               animationDelay: `${index * 100}ms`
             }}
@@ -78,10 +80,10 @@ export default function RecentActivity({ barosani }) {
                 <img
                   src={barosan.poza}
                   alt={barosan.nume}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-[#D4AF37]"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-[#D4AF37] group-hover:scale-110 transition-transform"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#FFD700] flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#FFD700] flex items-center justify-center text-white font-bold group-hover:scale-110 transition-transform">
                   {barosan.nume.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -90,7 +92,7 @@ export default function RecentActivity({ barosani }) {
             {/* Info */}
             <div className="flex-grow min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-semibold text-sm text-gray-800 truncate">
+                <p className="font-semibold text-sm text-gray-800 truncate group-hover:text-[#D4AF37] transition-colors">
                   {barosan.nume}
                 </p>
                 <span className={`text-sm ${getTierColor(barosan.tier)}`}>
@@ -102,13 +104,14 @@ export default function RecentActivity({ barosani }) {
               </p>
             </div>
 
-            {/* Badge */}
-            <div className="flex-shrink-0">
+            {/* Badge + Arrow */}
+            <div className="flex-shrink-0 flex items-center gap-2">
               <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
                 Nou
               </div>
+              <span className="text-gray-400 group-hover:text-[#D4AF37] group-hover:translate-x-1 transition-all">→</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
