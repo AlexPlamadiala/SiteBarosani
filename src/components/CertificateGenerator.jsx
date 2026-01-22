@@ -136,8 +136,386 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.restore();
   };
 
+  // Generate SUPREM certificate - completely different premium design
+  const generateSupremCertificateCanvas = async () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 850;
+    const ctx = canvas.getContext('2d');
+
+    // SUPREM: Dark premium background with gradient
+    const bgGradient = ctx.createRadialGradient(600, 425, 0, 600, 425, 800);
+    bgGradient.addColorStop(0, '#1a0a2e');
+    bgGradient.addColorStop(0.4, '#16082a');
+    bgGradient.addColorStop(0.7, '#0f0518');
+    bgGradient.addColorStop(1, '#0a0012');
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, 1200, 850);
+
+    // Starfield effect
+    ctx.fillStyle = '#ffffff';
+    for (let i = 0; i < 100; i++) {
+      ctx.globalAlpha = Math.random() * 0.3 + 0.1;
+      ctx.beginPath();
+      ctx.arc(Math.random() * 1200, Math.random() * 850, Math.random() * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Glowing aura effect in center
+    const auraGradient = ctx.createRadialGradient(600, 350, 0, 600, 350, 400);
+    auraGradient.addColorStop(0, 'rgba(147, 51, 234, 0.15)');
+    auraGradient.addColorStop(0.5, 'rgba(236, 72, 153, 0.08)');
+    auraGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = auraGradient;
+    ctx.fillRect(0, 0, 1200, 850);
+
+    // Outer border - gold with glow
+    ctx.shadowColor = '#FFD700';
+    ctx.shadowBlur = 20;
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(25, 25, 1150, 800);
+    ctx.shadowBlur = 0;
+
+    // Inner decorative border - purple glow
+    ctx.shadowColor = '#9333EA';
+    ctx.shadowBlur = 10;
+    ctx.strokeStyle = '#9333EA';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, 1120, 770);
+    ctx.shadowBlur = 0;
+
+    // Corner crown decorations
+    const drawCornerCrown = (x, y, rotation) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.globalAlpha = 0.3;
+      drawCrown(ctx, 0, 0, 40, '#FFD700');
+      ctx.restore();
+    };
+    drawCornerCrown(80, 80, -0.3);
+    drawCornerCrown(1120, 80, 0.3);
+    drawCornerCrown(80, 770, 0.3);
+    drawCornerCrown(1120, 770, -0.3);
+    ctx.globalAlpha = 1;
+
+    // Main crown - larger with glow
+    ctx.shadowColor = '#FFD700';
+    ctx.shadowBlur = 30;
+    drawCrown(ctx, 600, 100, 80, '#FFD700');
+    ctx.shadowBlur = 0;
+
+    // Sparkles around crown
+    ctx.fillStyle = '#FFD700';
+    ctx.font = '24px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = 0.8;
+    ctx.fillText('✦', 480, 80);
+    ctx.fillText('✦', 720, 80);
+    ctx.fillText('★', 520, 60);
+    ctx.fillText('★', 680, 60);
+    ctx.fillText('✧', 450, 100);
+    ctx.fillText('✧', 750, 100);
+    ctx.globalAlpha = 1;
+
+    // BAROSANUL SUPREM title with glow
+    ctx.shadowColor = '#FFD700';
+    ctx.shadowBlur = 15;
+    ctx.font = 'bold 56px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.fillText('BAROSANUL SUPREM', 600, 200);
+    ctx.shadowBlur = 0;
+
+    // Decorative line under title
+    const lineGradient = ctx.createLinearGradient(250, 0, 950, 0);
+    lineGradient.addColorStop(0, 'transparent');
+    lineGradient.addColorStop(0.2, '#9333EA');
+    lineGradient.addColorStop(0.5, '#FFD700');
+    lineGradient.addColorStop(0.8, '#9333EA');
+    lineGradient.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lineGradient;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(250, 220);
+    ctx.lineTo(950, 220);
+    ctx.stroke();
+
+    // Subtitle
+    ctx.font = 'italic 20px Georgia, serif';
+    ctx.fillStyle = '#EC4899';
+    ctx.fillText('Cel mai prestigios titlu din Republica Barosanilor', 600, 255);
+
+    // Photo (if exists) - premium circular frame
+    if (barosan.poza) {
+      try {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = barosan.poza;
+        });
+
+        const photoX = 180;
+        const photoY = 430;
+        const photoRadius = 80;
+
+        // Multiple glow rings
+        ctx.save();
+        ctx.shadowColor = '#9333EA';
+        ctx.shadowBlur = 25;
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius + 12, 0, Math.PI * 2);
+        ctx.strokeStyle = '#9333EA';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius + 6, 0, Math.PI * 2);
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Clip and draw image
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(photoX, photoY, photoRadius, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(img, photoX - photoRadius, photoY - photoRadius, photoRadius * 2, photoRadius * 2);
+        ctx.restore();
+
+        // Crown above photo
+        drawCrown(ctx, photoX, photoY - photoRadius - 25, 35, '#FFD700');
+      } catch (error) {
+        console.log('Could not load photo for suprem certificate');
+      }
+    }
+
+    // Main content section
+    ctx.font = '22px Georgia, serif';
+    ctx.fillStyle = '#E5E4E2';
+    ctx.fillText('Se certifică prin prezenta că legendarul/a', 600, 320);
+
+    // Name with golden glow
+    ctx.shadowColor = '#FFD700';
+    ctx.shadowBlur = 10;
+    ctx.font = 'bold 52px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    let displayName = barosan.nume;
+    if (ctx.measureText(displayName).width > 800) {
+      while (ctx.measureText(displayName + '...').width > 800 && displayName.length > 0) {
+        displayName = displayName.slice(0, -1);
+      }
+      displayName += '...';
+    }
+    ctx.fillText(displayName, 600, 385);
+    ctx.shadowBlur = 0;
+
+    // Description text
+    ctx.font = '18px Georgia, serif';
+    ctx.fillStyle = '#C0C0C0';
+    ctx.fillText('a atins cel mai înalt nivel de șmecherie și bășcălie', 600, 430);
+    ctx.fillText('și a fost încoronat ca BAROSANUL SUPREM', 600, 458);
+    ctx.font = 'italic 16px Georgia, serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('domnind glorios pe Zidul Barosanilor', 600, 486);
+
+    // Supremacy hours badge
+    if (barosan.supremHours) {
+      const hoursText = `⏱ ${barosan.supremHours} ${barosan.supremHours === 1 ? 'oră' : 'ore'} de supremație`;
+      ctx.font = 'bold 18px Georgia, serif';
+      ctx.fillStyle = '#EC4899';
+      ctx.fillText(hoursText, 600, 520);
+    }
+
+    // Motto with decorative quotes
+    ctx.font = 'italic 22px Georgia, serif';
+    ctx.fillStyle = '#A78BFA';
+    let motto = barosan.motto;
+    if (ctx.measureText(`"${motto}"`).width > 700) {
+      while (ctx.measureText(`"${motto}..."`).width > 700 && motto.length > 0) {
+        motto = motto.slice(0, -1);
+      }
+      motto += '...';
+    }
+    ctx.fillText(`"${motto}"`, 600, 565);
+
+    // Funny disclaimer
+    ctx.font = 'italic 11px Georgia, serif';
+    ctx.fillStyle = '#6B7280';
+    ctx.fillText('* Certificat de putere absolută. Toate închinările sunt obligatorii.', 600, 598);
+
+    // Footer section with dark glass effect
+    ctx.fillStyle = 'rgba(255, 215, 0, 0.05)';
+    ctx.fillRect(70, 620, 1060, 150);
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(70, 620, 1060, 150);
+
+    // Certificate ID and Date
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 14px Arial, sans-serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('NUMĂR CERTIFICAT:', 100, 660);
+    ctx.font = 'bold 24px Arial, sans-serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.fillText(barosan.certificatId, 100, 690);
+
+    ctx.font = 'bold 14px Arial, sans-serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('DATA ÎNCORONĂRII:', 100, 722);
+    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.fillStyle = '#E5E4E2';
+    const dateStr = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    ctx.fillText(dateStr, 100, 750);
+
+    // QR Code with gold border
+    try {
+      const qrDataUrl = await QRCode.toDataURL(`https://zidulbarosanilor.ro/barosan/${barosan.id}`, {
+        width: 80,
+        margin: 1,
+        color: { dark: '#1a0a2e', light: '#ffffff' }
+      });
+      const qrImage = new Image();
+      await new Promise((resolve, reject) => {
+        qrImage.onload = resolve;
+        qrImage.onerror = reject;
+        qrImage.src = qrDataUrl;
+      });
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(310, 645, 90, 90, 5);
+      ctx.fill();
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.drawImage(qrImage, 315, 650, 80, 80);
+      ctx.font = 'bold 9px Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#9CA3AF';
+      ctx.fillText('Scanează pentru', 355, 745);
+      ctx.fillText('verificare regală', 355, 757);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+
+    // Royal stamp - purple and gold
+    ctx.save();
+    ctx.translate(600, 700);
+    ctx.rotate(-0.1);
+
+    // Outer glow
+    ctx.shadowColor = '#9333EA';
+    ctx.shadowBlur = 15;
+    ctx.strokeStyle = '#9333EA';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(0, 0, 70, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Inner gold ring
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 62, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Crown in center
+    ctx.font = 'bold 40px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('♛', 0, -8);
+
+    // SUPREM text
+    ctx.font = 'bold 14px Arial, sans-serif';
+    ctx.fillStyle = '#EC4899';
+    ctx.fillText('SUPREM', 0, 25);
+
+    // Circular text
+    ctx.font = 'bold 8px Arial, sans-serif';
+    ctx.fillStyle = '#9333EA';
+    const topText = '★ REPUBLICA BAROSANILOR ★';
+    const topRadius = 52;
+    const topAngleStep = (Math.PI * 0.8) / topText.length;
+    const topStartAngle = -Math.PI / 2 - (topAngleStep * topText.length) / 2;
+    for (let i = 0; i < topText.length; i++) {
+      ctx.save();
+      const angle = topStartAngle + i * topAngleStep;
+      ctx.rotate(angle);
+      ctx.translate(0, -topRadius);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillText(topText[i], 0, 0);
+      ctx.restore();
+    }
+
+    ctx.restore();
+
+    // Signatures - right side
+    ctx.textAlign = 'right';
+    ctx.font = 'italic 24px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.fillText('Împăratul Barosan', 1100, 665);
+    ctx.strokeStyle = '#9333EA';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(920, 673);
+    ctx.lineTo(1100, 673);
+    ctx.stroke();
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('Suveran Suprem', 1100, 690);
+
+    ctx.font = 'italic 24px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.fillText('Regina Șmecheriei', 1100, 725);
+    ctx.beginPath();
+    ctx.moveTo(920, 733);
+    ctx.lineTo(1100, 733);
+    ctx.stroke();
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('Consilier Regal', 1100, 750);
+
+    // Bottom line
+    const bottomLineGradient = ctx.createLinearGradient(100, 0, 1100, 0);
+    bottomLineGradient.addColorStop(0, 'transparent');
+    bottomLineGradient.addColorStop(0.2, '#9333EA');
+    bottomLineGradient.addColorStop(0.5, '#FFD700');
+    bottomLineGradient.addColorStop(0.8, '#9333EA');
+    bottomLineGradient.addColorStop(1, 'transparent');
+    ctx.strokeStyle = bottomLineGradient;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(100, 785);
+    ctx.lineTo(1100, 785);
+    ctx.stroke();
+
+    // Footer text
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 11px Arial, sans-serif';
+    ctx.fillStyle = '#9333EA';
+    ctx.fillText('👑 CERTIFICAT DE SUPREMAȚIE • PUTERE NELIMITATĂ • TOȚI SE ÎNCHINĂ 👑', 600, 805);
+
+    return canvas;
+  };
+
   // Generate certificate as Canvas (template-based approach)
   const generateCertificateCanvas = async () => {
+    // Use special design for suprem tier
+    if (barosan.tier === 'suprem') {
+      return generateSupremCertificateCanvas();
+    }
     const canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 850;
@@ -796,29 +1174,222 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     }
                   }
                 `}</style>
-                <div
-                  ref={certificateRef}
-                  className="relative shadow-2xl overflow-hidden"
-                  style={{
-                    width: '1200px',
-                    height: '850px',
-                    background: 'radial-gradient(ellipse at center, #FFF8E7 0%, #F5E6D3 50%, #E8D5B7 100%)'
-                  }}
-                >
-                  {/* Corner decorations */}
-                  <div className="absolute top-16 left-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
-                  <div className="absolute top-16 right-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
-                  <div className="absolute bottom-16 left-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
-                  <div className="absolute bottom-16 right-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
+{barosan.tier === 'suprem' ? (
+                  /* SUPREM CERTIFICATE PREVIEW - Completely different dark premium design */
+                  <div
+                    ref={certificateRef}
+                    className="relative shadow-2xl overflow-hidden"
+                    style={{
+                      width: '1200px',
+                      height: '850px',
+                      background: 'radial-gradient(ellipse at center, #1a0a2e 0%, #16082a 40%, #0f0518 70%, #0a0012 100%)'
+                    }}
+                  >
+                    {/* Starfield effect */}
+                    <div className="absolute inset-0 opacity-30">
+                      {[...Array(50)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="absolute w-1 h-1 bg-white rounded-full"
+                          style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                            opacity: Math.random() * 0.5 + 0.2
+                          }}
+                        />
+                      ))}
+                    </div>
 
-                  {/* Outer golden border with shadow */}
-                  <div className="absolute inset-[25px] border-[20px] border-[#8B4513] shadow-lg"></div>
+                    {/* Glowing aura */}
+                    <div className="absolute inset-0 bg-gradient-radial from-purple-900/20 via-pink-900/10 to-transparent"></div>
 
-                  {/* Inner golden gradient border */}
-                  <div className="absolute inset-[45px] border-8" style={{ borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1' }}></div>
+                    {/* Gold border with glow */}
+                    <div className="absolute inset-[25px] border-4 border-[#FFD700]" style={{ boxShadow: '0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.1)' }}></div>
 
-                  {/* Decorative dashed border */}
-                  <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'suprem' ? '#9333EA' : barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
+                    {/* Purple inner border */}
+                    <div className="absolute inset-[40px] border-2 border-purple-500" style={{ boxShadow: '0 0 10px rgba(147, 51, 234, 0.5)' }}></div>
+
+                    {/* Corner crowns */}
+                    <div className="absolute top-16 left-16 text-3xl text-yellow-500 opacity-30">👑</div>
+                    <div className="absolute top-16 right-16 text-3xl text-yellow-500 opacity-30">👑</div>
+                    <div className="absolute bottom-16 left-16 text-3xl text-yellow-500 opacity-30">👑</div>
+                    <div className="absolute bottom-16 right-16 text-3xl text-yellow-500 opacity-30">👑</div>
+
+                    {/* Content */}
+                    <div className="relative z-10 h-full flex flex-col items-center pt-12 pb-6 px-16">
+                      {/* Header with crown */}
+                      <div className="text-center mb-4">
+                        <div className="flex items-center justify-center gap-4 mb-3">
+                          <span className="text-2xl text-yellow-500">✦</span>
+                          <span className="text-xl text-yellow-400">★</span>
+                          <div className="text-6xl" style={{ filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.8))' }}>
+                            👑
+                          </div>
+                          <span className="text-xl text-yellow-400">★</span>
+                          <span className="text-2xl text-yellow-500">✦</span>
+                        </div>
+
+                        {/* BAROSANUL SUPREM title */}
+                        <h1 className="text-5xl font-bold text-[#FFD700] tracking-wide" style={{ fontFamily: 'Georgia, serif', textShadow: '0 0 30px rgba(255, 215, 0, 0.5)' }}>
+                          BAROSANUL SUPREM
+                        </h1>
+
+                        {/* Decorative line */}
+                        <div className="flex items-center justify-center gap-2 mt-3">
+                          <div className="w-32 h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-[#FFD700]"></div>
+                          <span className="text-pink-400 text-sm">✦</span>
+                          <div className="w-32 h-[2px] bg-gradient-to-l from-transparent via-purple-500 to-[#FFD700]"></div>
+                        </div>
+
+                        <p className="text-pink-400 italic mt-2" style={{ fontFamily: 'Georgia, serif' }}>
+                          Cel mai prestigios titlu din Republica Barosanilor
+                        </p>
+                      </div>
+
+                      {/* Photo and Body */}
+                      <div className="max-w-3xl text-center space-y-3 flex-grow flex flex-col justify-center relative">
+                        {/* Photo */}
+                        {barosan.poza && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-36">
+                            <div className="relative">
+                              <div className="absolute inset-0 rounded-full blur-lg opacity-60 bg-purple-500"></div>
+                              <div className="absolute -inset-2 rounded-full border-2 border-purple-500" style={{ boxShadow: '0 0 15px rgba(147, 51, 234, 0.5)' }}></div>
+                              <img
+                                src={barosan.poza}
+                                alt={barosan.nume}
+                                className="relative w-32 h-32 rounded-full object-cover border-4 border-[#FFD700]"
+                              />
+                              <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-3xl">👑</div>
+                            </div>
+                          </div>
+                        )}
+
+                        <p className="text-xl text-gray-300" style={{ fontFamily: 'Georgia, serif' }}>
+                          Se certifică prin prezenta că legendarul/a
+                        </p>
+
+                        <p className="text-4xl font-bold text-[#FFD700] py-2" style={{ fontFamily: 'Georgia, serif', textShadow: '0 0 20px rgba(255, 215, 0, 0.4)' }}>
+                          {barosan.nume}
+                        </p>
+
+                        <p className="text-lg text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>
+                          a atins cel mai înalt nivel de șmecherie și bășcălie
+                        </p>
+                        <p className="text-lg text-gray-400" style={{ fontFamily: 'Georgia, serif' }}>
+                          și a fost încoronat ca <span className="text-[#FFD700] font-bold">BAROSANUL SUPREM</span>
+                        </p>
+                        <p className="text-base text-gray-500 italic" style={{ fontFamily: 'Georgia, serif' }}>
+                          domnind glorios pe Zidul Barosanilor
+                        </p>
+
+                        {/* Hours badge */}
+                        {barosan.supremHours && (
+                          <p className="text-pink-400 font-bold mt-2">
+                            ⏱ {barosan.supremHours} {barosan.supremHours === 1 ? 'oră' : 'ore'} de supremație
+                          </p>
+                        )}
+
+                        {/* Motto */}
+                        <p className="text-xl italic text-purple-300 pt-2" style={{ fontFamily: 'Georgia, serif' }}>
+                          "{barosan.motto}"
+                        </p>
+
+                        <p className="text-xs italic text-gray-600 pt-1">
+                          * Certificat de putere absolută. Toate închinările sunt obligatorii.
+                        </p>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="w-full rounded-lg p-4 mt-2" style={{ background: 'rgba(255, 215, 0, 0.05)', border: '1px solid rgba(255, 215, 0, 0.2)' }}>
+                        <div className="flex justify-between items-end">
+                          {/* Left: Certificate info + QR */}
+                          <div className="flex items-end space-x-4">
+                            <div className="text-left">
+                              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Număr certificat:</p>
+                              <p className="text-xl font-bold text-[#FFD700]">{barosan.certificatId}</p>
+                              <p className="text-xs text-gray-500 uppercase tracking-wide mt-2">Data încoronării:</p>
+                              <p className="font-semibold text-sm text-gray-300">
+                                {new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric'
+                                })}
+                              </p>
+                            </div>
+                            <div className="bg-white p-2 rounded-lg border-2 border-[#FFD700]">
+                              <QRCodeSVG
+                                value={`https://zidulbarosanilor.ro/barosan/${barosan.id}`}
+                                size={60}
+                                fgColor="#1a0a2e"
+                              />
+                              <p className="text-[8px] text-center mt-1 text-gray-500">Verificare regală</p>
+                            </div>
+                          </div>
+
+                          {/* Center: Royal Stamp */}
+                          <div className="relative flex items-center justify-center">
+                            <div className="relative w-28 h-28 transform -rotate-12">
+                              <div className="absolute inset-0 rounded-full border-4 border-purple-500" style={{ boxShadow: '0 0 15px rgba(147, 51, 234, 0.5)' }}></div>
+                              <div className="absolute inset-[8px] rounded-full border-2 border-[#FFD700]"></div>
+                              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <div className="text-3xl text-[#FFD700]">♛</div>
+                                <div className="text-[10px] font-bold text-pink-400">SUPREM</div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right: Signatures */}
+                          <div className="text-right">
+                            <div className="mb-3">
+                              <p className="text-xl text-[#FFD700] italic" style={{ fontFamily: 'Georgia, serif' }}>Împăratul Barosan</p>
+                              <div className="border-t border-purple-500 mt-1 pt-1">
+                                <p className="text-[10px] text-gray-400">Suveran Suprem</p>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-xl text-[#FFD700] italic" style={{ fontFamily: 'Georgia, serif' }}>Regina Șmecheriei</p>
+                              <div className="border-t border-purple-500 mt-1 pt-1">
+                                <p className="text-[10px] text-gray-400">Consilier Regal</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom line and footer text */}
+                      <div className="w-full mt-2">
+                        <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent mb-2"></div>
+                        <p className="text-center text-[9px] font-bold text-purple-400">
+                          👑 CERTIFICAT DE SUPREMAȚIE • PUTERE NELIMITATĂ • TOȚI SE ÎNCHINĂ 👑
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* REGULAR CERTIFICATE PREVIEW for non-suprem tiers */
+                  <div
+                    ref={certificateRef}
+                    className="relative shadow-2xl overflow-hidden"
+                    style={{
+                      width: '1200px',
+                      height: '850px',
+                      background: 'radial-gradient(ellipse at center, #FFF8E7 0%, #F5E6D3 50%, #E8D5B7 100%)'
+                    }}
+                  >
+                    {/* Corner decorations */}
+                    <div className="absolute top-16 left-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
+                    <div className="absolute top-16 right-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
+                    <div className="absolute bottom-16 left-16 text-3xl text-yellow-500 opacity-30 transform -rotate-45">★</div>
+                    <div className="absolute bottom-16 right-16 text-3xl text-yellow-500 opacity-30 transform rotate-45">★</div>
+
+                    {/* Outer golden border with shadow */}
+                    <div className="absolute inset-[25px] border-[20px] border-[#8B4513] shadow-lg"></div>
+
+                    {/* Inner golden gradient border */}
+                    <div className="absolute inset-[45px] border-8" style={{ borderImage: 'linear-gradient(135deg, #FFD700, #FFA500, #FFD700) 1' }}></div>
+
+                    {/* Decorative dashed border */}
+                    <div className="absolute inset-[60px] border-2 border-dashed" style={{ borderColor: barosan.tier === 'platinum' ? '#C0C0C0' : barosan.tier === 'gold' ? '#FFD700' : '#4169E1' }}></div>
 
                   {/* Watermarks */}
                   <div className="absolute inset-0 flex items-center justify-around opacity-[0.05] pointer-events-none">
@@ -1002,6 +1573,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     </div>
                   </div>
                 </div>
+                )}
               </div>
             </div>
           </div>

@@ -28,6 +28,11 @@ export default function Admin() {
   const [paymentProofModal, setPaymentProofModal] = useState({ show: false, appId: null, appName: '' });
   const [paymentProofUrl, setPaymentProofUrl] = useState('');
 
+  // History modal state
+  const [historyModal, setHistoryModal] = useState({ show: false, appId: null, appName: '' });
+  const [applicationHistory, setApplicationHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
   // Check authentication on mount
   useEffect(() => {
     checkAuth();
@@ -40,7 +45,10 @@ export default function Admin() {
       if (data.authenticated) {
         setIsAuthenticated(true);
         setUser(data.user);
+        sessionStorage.setItem('adminAuthenticated', 'true');
         loadData();
+      } else {
+        sessionStorage.removeItem('adminAuthenticated');
       }
     } catch (err) {
       console.error('Auth check failed:', err);
@@ -63,6 +71,7 @@ export default function Admin() {
       if (data.success) {
         setIsAuthenticated(true);
         setUser(data.user);
+        sessionStorage.setItem('adminAuthenticated', 'true');
         toast.success('Autentificare reușită!');
         loadData();
       } else {
@@ -85,6 +94,7 @@ export default function Admin() {
       });
       setIsAuthenticated(false);
       setUser(null);
+      sessionStorage.removeItem('adminAuthenticated');
       toast.success('Deconectat cu succes');
     } catch (err) {
       console.error('Logout failed:', err);
@@ -158,6 +168,37 @@ export default function Admin() {
     if (paymentProofModal.appId) {
       handleApplicationAction(paymentProofModal.appId, 'payment_confirmed', '', paymentProofUrl || null);
     }
+  };
+
+  // Fetch application history
+  const fetchApplicationHistory = async (appId, appName) => {
+    setHistoryModal({ show: true, appId, appName });
+    setHistoryLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/admin/applications.php?history=1&id=${appId}`, {
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.success) {
+        setApplicationHistory(data.history || []);
+      }
+    } catch (err) {
+      console.error('Error fetching history:', err);
+      toast.error('Eroare la încărcarea istoricului');
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  // Format history action for display
+  const formatHistoryAction = (action) => {
+    const actionMap = {
+      'payment_confirmed': { label: 'Plată Confirmată', color: 'text-blue-600', icon: '💳' },
+      'approved': { label: 'Aprobată', color: 'text-green-600', icon: '✓' },
+      'rejected': { label: 'Respinsă', color: 'text-red-600', icon: '✗' },
+      'created': { label: 'Creată', color: 'text-gray-600', icon: '📝' },
+    };
+    return actionMap[action] || { label: action, color: 'text-gray-600', icon: '•' };
   };
 
   const handleDeleteApplication = async (id) => {
@@ -565,12 +606,20 @@ export default function Admin() {
                         </div>
                       )}
 
-                      <button
-                        onClick={() => handleDeleteApplication(app.id)}
-                        className="px-3 py-1 bg-white/10 text-white/60 rounded-lg text-sm hover:bg-red-500/20 hover:text-red-400"
-                      >
-                        🗑️ Șterge
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => fetchApplicationHistory(app.id, app.nume)}
+                          className="px-3 py-1 bg-white/10 text-white/60 rounded-lg text-sm hover:bg-purple-500/20 hover:text-purple-400"
+                        >
+                          📜 Istoric {app.history_count > 0 && `(${app.history_count})`}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteApplication(app.id)}
+                          className="px-3 py-1 bg-white/10 text-white/60 rounded-lg text-sm hover:bg-red-500/20 hover:text-red-400"
+                        >
+                          🗑️ Șterge
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -795,6 +844,95 @@ export default function Admin() {
                 className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:scale-[1.02] transition-transform"
               >
                 ✓ Confirmă Plata
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Application History Modal */}
+      {historyModal.show && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1a1a1a] rounded-2xl p-6 max-w-lg w-full border border-white/10 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">📜 Istoric Cerere</h3>
+              <button
+                onClick={() => setHistoryModal({ show: false, appId: null, appName: '' })}
+                className="text-white/60 hover:text-white text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            <p className="text-white/60 mb-4">
+              Istoric pentru <span className="text-purple-400 font-semibold">{historyModal.appName}</span>
+            </p>
+
+            <div className="flex-1 overflow-y-auto">
+              {historyLoading ? (
+                <div className="text-center py-8 text-white/50">
+                  <div className="animate-spin w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                  Se încarcă...
+                </div>
+              ) : applicationHistory.length === 0 ? (
+                <div className="text-center py-8 text-white/50">
+                  <p className="text-4xl mb-2">📭</p>
+                  <p>Nu există istoric pentru această cerere.</p>
+                  <p className="text-xs mt-2">Istoricul va apărea când se vor face acțiuni asupra cererii.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {applicationHistory.map((item, index) => {
+                    const actionInfo = formatHistoryAction(item.action);
+                    return (
+                      <div
+                        key={item.id || index}
+                        className="bg-white/5 rounded-lg p-4 border border-white/10"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-lg">{actionInfo.icon}</span>
+                          <span className={`font-bold ${actionInfo.color}`}>
+                            {actionInfo.label}
+                          </span>
+                        </div>
+                        <div className="text-sm text-white/60 space-y-1">
+                          {item.old_status && item.new_status && (
+                            <p>
+                              Status: <span className="text-yellow-400">{item.old_status}</span>
+                              {' → '}
+                              <span className="text-green-400">{item.new_status}</span>
+                            </p>
+                          )}
+                          {item.notes && (
+                            <p className="italic text-white/50">"{item.notes}"</p>
+                          )}
+                          <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10">
+                            <span className="text-white/40 text-xs">
+                              {item.admin_name ? `Admin: ${item.admin_name}` : 'Sistem'}
+                            </span>
+                            <span className="text-white/40 text-xs">
+                              {new Date(item.created_at).toLocaleString('ro-RO', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <button
+                onClick={() => setHistoryModal({ show: false, appId: null, appName: '' })}
+                className="w-full px-4 py-3 bg-white/10 text-white rounded-xl font-semibold hover:bg-white/20 transition-colors"
+              >
+                Închide
               </button>
             </div>
           </div>

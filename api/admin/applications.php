@@ -28,6 +28,21 @@ try {
     $tracker = new ChangeTracker();
     $adminId = checkAdminAuth();
     $conn = getDBConnection();
+
+    // Ensure application_history table exists
+    $conn->exec("
+        CREATE TABLE IF NOT EXISTS application_history (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            application_id INT NOT NULL,
+            action VARCHAR(50) NOT NULL,
+            old_status VARCHAR(50),
+            new_status VARCHAR(50),
+            notes TEXT,
+            admin_id INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_app_id (application_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
 } catch (Exception $e) {
     ob_end_clean();
     http_response_code(500);
@@ -35,17 +50,62 @@ try {
     exit;
 }
 
-// GET - Listare toate cererile
+// Helper function to log application history
+function logApplicationHistory($conn, $appId, $action, $oldStatus, $newStatus, $notes = null, $adminId = null) {
+    try {
+        $stmt = $conn->prepare("
+            INSERT INTO application_history (application_id, action, old_status, new_status, notes, admin_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([$appId, $action, $oldStatus, $newStatus, $notes, $adminId]);
+    } catch(PDOException $e) {
+        error_log("Error logging application history: " . $e->getMessage());
+    }
+}
+
+// GET - Listare toate cererile sau istoric pentru o cerere specifică
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        $stmt = $conn->query("
-            SELECT *
-            FROM applications
-            ORDER BY created_at DESC
-        ");
-        $applications = $stmt->fetchAll();
+        // Check if requesting history for a specific application
+        if (isset($_GET['history']) && isset($_GET['id'])) {
+            $stmt = $conn->prepare("
+                SELECT h.*, a.username as admin_name
+                FROM application_history h
+                LEFT JOIN admins a ON h.admin_id = a.id
+                WHERE h.application_id = ?
+                ORDER BY h.created_at DESC
+            ");
+            $stmt->execute([$_GET['id']]);
+            $history = $stmt->fetchAll();
 
-        echo json_encode(['success' => true, 'applications' => $applications]);
+            echo json_encode(['success' => true, 'history' => $history]);
+        } else {
+            // Get all applications
+            $stmt = $conn->query("
+                SELECT *
+                FROM applications
+                ORDER BY created_at DESC
+            ");
+            $applications = $stmt->fetchAll();
+
+            // Get history counts for each application
+            $historyStmt = $conn->query("
+                SELECT application_id, COUNT(*) as history_count
+                FROM application_history
+                GROUP BY application_id
+            ");
+            $historyCounts = [];
+            while ($row = $historyStmt->fetch()) {
+                $historyCounts[$row['application_id']] = $row['history_count'];
+            }
+
+            // Add history count to each application
+            foreach ($applications as &$app) {
+                $app['history_count'] = $historyCounts[$app['id']] ?? 0;
+            }
+
+            echo json_encode(['success' => true, 'applications' => $applications]);
+        }
     } catch(PDOException $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -137,8 +197,12 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             }
 
             // Update application status
+            $oldStatus = $app['status'];
             $stmt = $conn->prepare("UPDATE applications SET status = 'approved' WHERE id = ?");
             $stmt->execute([$data['id']]);
+
+            // Log history
+            logApplicationHistory($conn, $data['id'], 'approved', $oldStatus, 'approved', 'Cerere aprobată și barosan adăugat', $adminId);
 
             $conn->commit();
             $inTransaction = false;
@@ -182,12 +246,20 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             ]);
 
         } elseif ($data['action'] === 'reject') {
+            // Get old status first
+            $stmt = $conn->prepare("SELECT status FROM applications WHERE id = ?");
+            $stmt->execute([$data['id']]);
+            $oldStatus = $stmt->fetchColumn();
+
             $stmt = $conn->prepare("
                 UPDATE applications
                 SET status = 'rejected', admin_notes = ?
                 WHERE id = ?
             ");
             $stmt->execute([$data['notes'] ?? 'Respinsă', $data['id']]);
+
+            // Log history
+            logApplicationHistory($conn, $data['id'], 'rejected', $oldStatus, 'rejected', $data['notes'] ?? 'Cerere respinsă', $adminId);
 
             logAdminAction($adminId, 'reject_application', "Respinsă cerere ID: {$data['id']}");
 
@@ -200,6 +272,11 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         } elseif ($data['action'] === 'payment_confirmed') {
             // Actualizează status și salvează dovada plății (dacă există)
             $paymentProof = $data['payment_proof'] ?? null;
+
+            // Get old status first
+            $stmt = $conn->prepare("SELECT status FROM applications WHERE id = ?");
+            $stmt->execute([$data['id']]);
+            $oldStatus = $stmt->fetchColumn();
 
             // Update status first
             $stmt = $conn->prepare("UPDATE applications SET status = 'payment_confirmed' WHERE id = ?");
@@ -215,6 +292,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                     error_log("payment_proof column might not exist: " . $e->getMessage());
                 }
             }
+
+            // Log history
+            logApplicationHistory($conn, $data['id'], 'payment_confirmed', $oldStatus, 'payment_confirmed', 'Plata a fost confirmată', $adminId);
 
             logAdminAction($adminId, 'confirm_payment', "Confirmat plata pentru cerere ID: {$data['id']}");
 

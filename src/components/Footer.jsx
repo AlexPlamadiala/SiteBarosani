@@ -68,7 +68,7 @@ export default function Footer() {
 
           {/* Social & Legal */}
           <div className="text-center md:text-left">
-            <h4 className="text-sm font-bold text-[#D4AF37] mb-3 uppercase tracking-wide">Conectare</h4>
+            <h4 className="text-sm font-bold text-[#D4AF37] mb-3 uppercase tracking-wide">Urmărește-ne</h4>
 
             {/* Social Links */}
             <div className="flex justify-center md:justify-start gap-3 mb-4" role="navigation" aria-label="Social media">

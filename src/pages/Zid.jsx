@@ -295,19 +295,19 @@ export default function Zid() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Results count - only when filtered */}
-      {(searchTerm || activeTab !== 'all') && (
-        <div className="bg-white/5 py-1.5 px-4 text-center text-xs text-white/50">
-          {filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)} rezultat{(filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)) !== 1 ? 'e' : ''}
-          {searchTerm && (
-            <button onClick={() => setSearchTerm('')} className="ml-2 text-purple-400 hover:underline">
-              Șterge căutarea
-            </button>
-          )}
-        </div>
-      )}
+        {/* Results count - inside sticky container */}
+        {(searchTerm || activeTab !== 'all') && (
+          <div className="bg-white/5 py-1.5 px-4 text-center text-xs text-white/50 border-t border-white/5">
+            {filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)} rezultat{(filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)) !== 1 ? 'e' : ''}
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className="ml-2 text-purple-400 hover:underline">
+                Șterge căutarea
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Active Suprem Banner - Only show when viewing all or suprem tab */}
       {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (

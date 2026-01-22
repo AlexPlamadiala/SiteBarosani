@@ -1,9 +1,22 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
+
+  // Check if admin is authenticated
+  useEffect(() => {
+    const checkAdmin = () => {
+      const adminAuth = sessionStorage.getItem('adminAuthenticated');
+      setIsAdmin(adminAuth === 'true');
+    };
+    checkAdmin();
+    // Re-check when returning to the page
+    window.addEventListener('focus', checkAdmin);
+    return () => window.removeEventListener('focus', checkAdmin);
+  }, [location.pathname]);
 
   // Check if we're on the Suprem page for special styling
   const isSupremPage = location.pathname === '/barosanul-suprem' || location.pathname === '/suprem';
@@ -56,6 +69,14 @@ export default function Header() {
             >
               ⭐ Înscrie-te
             </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="px-3 py-2 text-sm font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
+                🛡️ Admin
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Hamburger */}
@@ -109,6 +130,15 @@ export default function Header() {
             >
               ⭐ Înscrie-te Acum
             </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-base font-bold py-3 px-4 text-center bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
+                🛡️ Panou Admin
+              </Link>
+            )}
           </nav>
         )}
       </div>
