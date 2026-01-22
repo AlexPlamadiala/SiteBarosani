@@ -64,6 +64,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Generare cod unic
         $year = date('Y');
         $conn = getDBConnection();
+
+        // Ensure upgrade columns exist
+        try {
+            $conn->exec("ALTER TABLE applications ADD COLUMN IF NOT EXISTS is_upgrade TINYINT(1) DEFAULT 0");
+            $conn->exec("ALTER TABLE applications ADD COLUMN IF NOT EXISTS existing_barosan_id INT DEFAULT NULL");
+            $conn->exec("ALTER TABLE applications ADD COLUMN IF NOT EXISTS previous_tier VARCHAR(20) DEFAULT NULL");
+        } catch (PDOException $e) {
+            // Columns might already exist or syntax not supported, try alternative
+            try {
+                // Check if columns exist
+                $stmt = $conn->query("SHOW COLUMNS FROM applications LIKE 'is_upgrade'");
+                if ($stmt->rowCount() == 0) {
+                    $conn->exec("ALTER TABLE applications ADD COLUMN is_upgrade TINYINT(1) DEFAULT 0");
+                }
+                $stmt = $conn->query("SHOW COLUMNS FROM applications LIKE 'existing_barosan_id'");
+                if ($stmt->rowCount() == 0) {
+                    $conn->exec("ALTER TABLE applications ADD COLUMN existing_barosan_id INT DEFAULT NULL");
+                }
+                $stmt = $conn->query("SHOW COLUMNS FROM applications LIKE 'previous_tier'");
+                if ($stmt->rowCount() == 0) {
+                    $conn->exec("ALTER TABLE applications ADD COLUMN previous_tier VARCHAR(20) DEFAULT NULL");
+                }
+            } catch (PDOException $e2) {
+                // Silent fail for column addition
+            }
+        }
+
         $stmt = $conn->query("SELECT COUNT(*) as count FROM applications");
         $result = $stmt->fetch();
         $nextNumber = $result['count'] + 1;

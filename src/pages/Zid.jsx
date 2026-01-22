@@ -249,8 +249,8 @@ export default function Zid() {
         </div>
       )}
 
-      {/* Filter Bar - Sticky on scroll */}
-      <div className="sticky top-[64px] z-40 bg-[#111]/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
+      {/* Filter Bar - Sticky on scroll (top matches header height: 72px mobile, 88px desktop) */}
+      <div className="sticky top-[72px] md:top-[88px] z-40 bg-[#111]/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
         <div className="container mx-auto px-4">
           {/* Tier Tabs - Main element */}
           <div className="flex items-center justify-between py-3">
