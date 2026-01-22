@@ -137,13 +137,14 @@ export default function CertificateGenerator({ barosan, onClose }) {
   };
 
   // Generate SUPREM certificate - completely different premium design
+  // This should match the HTML preview exactly
   const generateSupremCertificateCanvas = async () => {
     const canvas = document.createElement('canvas');
     canvas.width = 1200;
     canvas.height = 850;
     const ctx = canvas.getContext('2d');
 
-    // SUPREM: Dark premium background with gradient
+    // SUPREM: Dark premium background with gradient (matching HTML)
     const bgGradient = ctx.createRadialGradient(600, 425, 0, 600, 425, 800);
     bgGradient.addColorStop(0, '#1a0a2e');
     bgGradient.addColorStop(0.4, '#16082a');
@@ -152,12 +153,12 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, 1200, 850);
 
-    // Starfield effect
+    // Starfield effect (matching HTML opacity-30)
     ctx.fillStyle = '#ffffff';
-    for (let i = 0; i < 100; i++) {
-      ctx.globalAlpha = Math.random() * 0.3 + 0.1;
+    for (let i = 0; i < 50; i++) {
+      ctx.globalAlpha = Math.random() * 0.15 + 0.06; // Reduced opacity to match HTML
       ctx.beginPath();
-      ctx.arc(Math.random() * 1200, Math.random() * 850, Math.random() * 1.5, 0, Math.PI * 2);
+      ctx.arc(Math.random() * 1200, Math.random() * 850, Math.random() * 2 + 1, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -170,7 +171,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillStyle = auraGradient;
     ctx.fillRect(0, 0, 1200, 850);
 
-    // Outer border - gold with glow
+    // Outer border - gold with glow (matching HTML inset-[25px] border-4)
     ctx.shadowColor = '#FFD700';
     ctx.shadowBlur = 20;
     ctx.strokeStyle = '#FFD700';
@@ -178,7 +179,7 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.strokeRect(25, 25, 1150, 800);
     ctx.shadowBlur = 0;
 
-    // Inner decorative border - purple glow
+    // Inner decorative border - purple glow (matching HTML inset-[40px] border-2)
     ctx.shadowColor = '#9333EA';
     ctx.shadowBlur = 10;
     ctx.strokeStyle = '#9333EA';
@@ -186,123 +187,87 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.strokeRect(40, 40, 1120, 770);
     ctx.shadowBlur = 0;
 
-    // Corner crown decorations
-    const drawCornerCrown = (x, y, rotation) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      ctx.globalAlpha = 0.3;
-      drawCrown(ctx, 0, 0, 40, '#FFD700');
-      ctx.restore();
-    };
-    drawCornerCrown(80, 80, -0.3);
-    drawCornerCrown(1120, 80, 0.3);
-    drawCornerCrown(80, 770, 0.3);
-    drawCornerCrown(1120, 770, -0.3);
-    ctx.globalAlpha = 1;
-
-    // Main crown - larger with glow
-    ctx.shadowColor = '#FFD700';
-    ctx.shadowBlur = 30;
-    drawCrown(ctx, 600, 100, 80, '#FFD700');
-    ctx.shadowBlur = 0;
-
-    // Sparkles around crown
-    ctx.fillStyle = '#FFD700';
-    ctx.font = '24px Georgia, serif';
+    // Corner crowns using emoji (matching HTML: top-16 left-16 = 64px, opacity-30)
+    ctx.globalAlpha = 0.3;
+    ctx.font = '48px Arial';
     ctx.textAlign = 'center';
-    ctx.globalAlpha = 0.8;
-    ctx.fillText('✦', 480, 80);
-    ctx.fillText('✦', 720, 80);
-    ctx.fillText('★', 520, 60);
-    ctx.fillText('★', 680, 60);
-    ctx.fillText('✧', 450, 100);
-    ctx.fillText('✧', 750, 100);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('👑', 64, 64);
+    ctx.fillText('👑', 1136, 64);
+    ctx.fillText('👑', 64, 786);
+    ctx.fillText('👑', 1136, 786);
     ctx.globalAlpha = 1;
 
-    // BAROSANUL SUPREM title with glow
-    ctx.shadowColor = '#FFD700';
-    ctx.shadowBlur = 15;
-    ctx.font = 'bold 56px Georgia, serif';
-    ctx.fillStyle = '#FFD700';
-    ctx.fillText('BAROSANUL SUPREM', 600, 200);
+    // Header section - stars and crown (matching HTML flex layout)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Stars around crown (matching HTML gap-4 = 16px)
+    ctx.fillStyle = '#EAB308'; // text-yellow-500
+    ctx.font = '32px Arial';
+    ctx.fillText('✦', 490, 75);  // text-2xl
+    ctx.fillStyle = '#FACC15'; // text-yellow-400
+    ctx.font = '28px Arial';
+    ctx.fillText('★', 530, 75);  // text-xl
+
+    // Main crown emoji with glow (matching HTML text-6xl with drop-shadow)
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+    ctx.shadowBlur = 20;
+    ctx.font = '80px Arial';
+    ctx.fillText('👑', 600, 75);
     ctx.shadowBlur = 0;
 
-    // Decorative line under title
-    const lineGradient = ctx.createLinearGradient(250, 0, 950, 0);
+    // Stars on right side
+    ctx.fillStyle = '#FACC15';
+    ctx.font = '28px Arial';
+    ctx.fillText('★', 670, 75);
+    ctx.fillStyle = '#EAB308';
+    ctx.font = '32px Arial';
+    ctx.fillText('✦', 710, 75);
+
+    // BAROSANUL SUPREM title with glow (matching HTML text-5xl font-bold)
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+    ctx.shadowBlur = 30;
+    ctx.font = 'bold 60px Georgia, serif';
+    ctx.fillStyle = '#FFD700';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('BAROSANUL SUPREM', 600, 160);
+    ctx.shadowBlur = 0;
+
+    // Decorative line under title (matching HTML gradient)
+    const lineGradient = ctx.createLinearGradient(300, 0, 900, 0);
     lineGradient.addColorStop(0, 'transparent');
-    lineGradient.addColorStop(0.2, '#9333EA');
+    lineGradient.addColorStop(0.3, '#9333EA');
     lineGradient.addColorStop(0.5, '#FFD700');
-    lineGradient.addColorStop(0.8, '#9333EA');
+    lineGradient.addColorStop(0.7, '#9333EA');
     lineGradient.addColorStop(1, 'transparent');
     ctx.strokeStyle = lineGradient;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(250, 220);
-    ctx.lineTo(950, 220);
+    ctx.moveTo(300, 180);
+    ctx.lineTo(900, 180);
     ctx.stroke();
 
-    // Subtitle
+    // Small star in center of line
+    ctx.fillStyle = '#F472B6'; // text-pink-400
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('✦', 600, 182);
+
+    // Subtitle (matching HTML text-pink-400 italic)
     ctx.font = 'italic 20px Georgia, serif';
-    ctx.fillStyle = '#EC4899';
-    ctx.fillText('Cel mai prestigios titlu din Republica Barosanilor', 600, 255);
-
-    // Photo (if exists) - premium circular frame
-    if (barosan.poza) {
-      try {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-          img.src = barosan.poza;
-        });
-
-        const photoX = 180;
-        const photoY = 430;
-        const photoRadius = 80;
-
-        // Multiple glow rings
-        ctx.save();
-        ctx.shadowColor = '#9333EA';
-        ctx.shadowBlur = 25;
-        ctx.beginPath();
-        ctx.arc(photoX, photoY, photoRadius + 12, 0, Math.PI * 2);
-        ctx.strokeStyle = '#9333EA';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.beginPath();
-        ctx.arc(photoX, photoY, photoRadius + 6, 0, Math.PI * 2);
-        ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-
-        // Clip and draw image
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(photoX, photoY, photoRadius, 0, Math.PI * 2);
-        ctx.clip();
-        ctx.drawImage(img, photoX - photoRadius, photoY - photoRadius, photoRadius * 2, photoRadius * 2);
-        ctx.restore();
-
-        // Crown above photo
-        drawCrown(ctx, photoX, photoY - photoRadius - 25, 35, '#FFD700');
-      } catch (error) {
-        console.log('Could not load photo for suprem certificate');
-      }
-    }
+    ctx.fillStyle = '#F472B6';
+    ctx.fillText('Cel mai prestigios titlu din Republica Barosanilor', 600, 215);
 
     // Main content section
     ctx.font = '22px Georgia, serif';
-    ctx.fillStyle = '#E5E4E2';
-    ctx.fillText('Se certifică prin prezenta că legendarul/a', 600, 320);
+    ctx.fillStyle = '#D1D5DB'; // text-gray-300
+    ctx.fillText('Se certifică prin prezenta că legendarul/a', 600, 290);
 
-    // Name with golden glow
-    ctx.shadowColor = '#FFD700';
-    ctx.shadowBlur = 10;
-    ctx.font = 'bold 52px Georgia, serif';
+    // Name with golden glow (matching HTML text-4xl font-bold)
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.4)';
+    ctx.shadowBlur = 20;
+    ctx.font = 'bold 48px Georgia, serif';
     ctx.fillStyle = '#FFD700';
     let displayName = barosan.nume;
     if (ctx.measureText(displayName).width > 800) {
@@ -311,29 +276,27 @@ export default function CertificateGenerator({ barosan, onClose }) {
       }
       displayName += '...';
     }
-    ctx.fillText(displayName, 600, 385);
+    ctx.fillText(displayName, 600, 355);
     ctx.shadowBlur = 0;
 
-    // Description text
-    ctx.font = '18px Georgia, serif';
-    ctx.fillStyle = '#C0C0C0';
-    ctx.fillText('a atins cel mai înalt nivel de șmecherie și bășcălie', 600, 430);
-    ctx.fillText('și a fost încoronat ca BAROSANUL SUPREM', 600, 458);
-    ctx.font = 'italic 16px Georgia, serif';
+    // Description text (matching HTML text-lg text-gray-400)
+    ctx.font = '20px Georgia, serif';
     ctx.fillStyle = '#9CA3AF';
-    ctx.fillText('domnind glorios pe Zidul Barosanilor', 600, 486);
+    ctx.fillText('a atins cel mai înalt nivel de șmecherie și bășcălie', 600, 410);
 
-    // Supremacy hours badge
-    if (barosan.supremHours) {
-      const hoursText = `⏱ ${barosan.supremHours} ${barosan.supremHours === 1 ? 'oră' : 'ore'} de supremație`;
-      ctx.font = 'bold 18px Georgia, serif';
-      ctx.fillStyle = '#EC4899';
-      ctx.fillText(hoursText, 600, 520);
-    }
+    // "și a fost încoronat ca BAROSANUL SUPREM" with highlight
+    ctx.fillText('și a fost încoronat ca ', 480, 445);
+    ctx.fillStyle = '#FFD700';
+    ctx.font = 'bold 20px Georgia, serif';
+    ctx.fillText('BAROSANUL SUPREM', 720, 445);
 
-    // Motto with decorative quotes
-    ctx.font = 'italic 22px Georgia, serif';
-    ctx.fillStyle = '#A78BFA';
+    ctx.font = 'italic 18px Georgia, serif';
+    ctx.fillStyle = '#6B7280'; // text-gray-500
+    ctx.fillText('domnind glorios pe Zidul Barosanilor', 600, 480);
+
+    // Motto with decorative quotes (matching HTML text-xl italic text-purple-300)
+    ctx.font = 'italic 24px Georgia, serif';
+    ctx.fillStyle = '#C4B5FD'; // text-purple-300
     let motto = barosan.motto;
     if (ctx.measureText(`"${motto}"`).width > 700) {
       while (ctx.measureText(`"${motto}..."`).width > 700 && motto.length > 0) {
@@ -341,40 +304,42 @@ export default function CertificateGenerator({ barosan, onClose }) {
       }
       motto += '...';
     }
-    ctx.fillText(`"${motto}"`, 600, 565);
+    ctx.fillText(`"${motto}"`, 600, 535);
 
-    // Funny disclaimer
-    ctx.font = 'italic 11px Georgia, serif';
-    ctx.fillStyle = '#6B7280';
-    ctx.fillText('* Certificat de putere absolută. Toate închinările sunt obligatorii.', 600, 598);
+    // Disclaimer (matching HTML text-xs italic text-gray-600)
+    ctx.font = 'italic 12px Georgia, serif';
+    ctx.fillStyle = '#4B5563';
+    ctx.fillText('* Certificat de putere absolută. Toate închinările sunt obligatorii.', 600, 575);
 
-    // Footer section with dark glass effect
+    // Footer section with dark glass effect (matching HTML)
     ctx.fillStyle = 'rgba(255, 215, 0, 0.05)';
-    ctx.fillRect(70, 620, 1060, 150);
-    ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+    ctx.beginPath();
+    ctx.roundRect(70, 600, 1060, 180, 8);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(70, 620, 1060, 150);
+    ctx.stroke();
 
-    // Certificate ID and Date
+    // Certificate ID and Date (left side)
     ctx.textAlign = 'left';
-    ctx.font = 'bold 14px Arial, sans-serif';
-    ctx.fillStyle = '#9CA3AF';
-    ctx.fillText('NUMĂR CERTIFICAT:', 100, 660);
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#6B7280';
+    ctx.fillText('NUMĂR CERTIFICAT:', 100, 640);
     ctx.font = 'bold 24px Arial, sans-serif';
     ctx.fillStyle = '#FFD700';
-    ctx.fillText(barosan.certificatId, 100, 690);
+    ctx.fillText(barosan.certificatId, 100, 670);
 
-    ctx.font = 'bold 14px Arial, sans-serif';
-    ctx.fillStyle = '#9CA3AF';
-    ctx.fillText('DATA ÎNCORONĂRII:', 100, 722);
-    ctx.font = 'bold 18px Arial, sans-serif';
-    ctx.fillStyle = '#E5E4E2';
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#6B7280';
+    ctx.fillText('DATA ÎNCORONĂRII:', 100, 710);
+    ctx.font = '16px Arial, sans-serif';
+    ctx.fillStyle = '#D1D5DB';
     const dateStr = new Date(barosan.dataInregistrare).toLocaleDateString('ro-RO', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     });
-    ctx.fillText(dateStr, 100, 750);
+    ctx.fillText(dateStr, 100, 735);
 
     // QR Code with gold border
     try {
@@ -390,36 +355,39 @@ export default function CertificateGenerator({ barosan, onClose }) {
         qrImage.src = qrDataUrl;
       });
 
+      // QR background
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.roundRect(310, 645, 90, 90, 5);
+      ctx.roundRect(280, 625, 90, 90, 8);
       ctx.fill();
       ctx.strokeStyle = '#FFD700';
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      ctx.drawImage(qrImage, 315, 650, 80, 80);
-      ctx.font = 'bold 9px Georgia, serif';
+      ctx.drawImage(qrImage, 285, 630, 80, 80);
+
+      // QR label
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#9CA3AF';
-      ctx.fillText('Scanează pentru', 355, 745);
-      ctx.fillText('verificare regală', 355, 757);
+      ctx.font = '10px Arial, sans-serif';
+      ctx.fillStyle = '#6B7280';
+      ctx.fillText('Scanează pentru', 325, 730);
+      ctx.fillText('verificare regală', 325, 745);
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
 
-    // Royal stamp - purple and gold
+    // Royal stamp in center (matching HTML)
     ctx.save();
-    ctx.translate(600, 700);
-    ctx.rotate(-0.1);
+    ctx.translate(600, 690);
+    ctx.rotate(-0.2); // -rotate-12 in radians
 
-    // Outer glow
-    ctx.shadowColor = '#9333EA';
+    // Outer purple ring with glow
+    ctx.shadowColor = 'rgba(147, 51, 234, 0.5)';
     ctx.shadowBlur = 15;
     ctx.strokeStyle = '#9333EA';
     ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.arc(0, 0, 70, 0, Math.PI * 2);
+    ctx.arc(0, 0, 56, 0, Math.PI * 2);
     ctx.stroke();
     ctx.shadowBlur = 0;
 
@@ -427,85 +395,73 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.strokeStyle = '#FFD700';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, 62, 0, Math.PI * 2);
+    ctx.arc(0, 0, 48, 0, Math.PI * 2);
     ctx.stroke();
 
     // Crown in center
-    ctx.font = 'bold 40px Georgia, serif';
-    ctx.fillStyle = '#FFD700';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    ctx.font = '36px Arial';
+    ctx.fillStyle = '#FFD700';
     ctx.fillText('♛', 0, -8);
 
     // SUPREM text
-    ctx.font = 'bold 14px Arial, sans-serif';
-    ctx.fillStyle = '#EC4899';
-    ctx.fillText('SUPREM', 0, 25);
-
-    // Circular text
-    ctx.font = 'bold 8px Arial, sans-serif';
-    ctx.fillStyle = '#9333EA';
-    const topText = '★ REPUBLICA BAROSANILOR ★';
-    const topRadius = 52;
-    const topAngleStep = (Math.PI * 0.8) / topText.length;
-    const topStartAngle = -Math.PI / 2 - (topAngleStep * topText.length) / 2;
-    for (let i = 0; i < topText.length; i++) {
-      ctx.save();
-      const angle = topStartAngle + i * topAngleStep;
-      ctx.rotate(angle);
-      ctx.translate(0, -topRadius);
-      ctx.rotate(Math.PI / 2);
-      ctx.fillText(topText[i], 0, 0);
-      ctx.restore();
-    }
+    ctx.font = 'bold 12px Arial, sans-serif';
+    ctx.fillStyle = '#F472B6';
+    ctx.fillText('SUPREM', 0, 20);
 
     ctx.restore();
 
-    // Signatures - right side
+    // Signatures - right side (matching HTML)
     ctx.textAlign = 'right';
     ctx.font = 'italic 24px Georgia, serif';
     ctx.fillStyle = '#FFD700';
-    ctx.fillText('Împăratul Barosan', 1100, 665);
+    ctx.fillText('Împăratul Barosan', 1100, 650);
+
+    // Signature line
     ctx.strokeStyle = '#9333EA';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(920, 673);
-    ctx.lineTo(1100, 673);
+    ctx.moveTo(940, 658);
+    ctx.lineTo(1100, 658);
     ctx.stroke();
-    ctx.font = 'bold 12px Arial, sans-serif';
+
+    ctx.font = '12px Arial, sans-serif';
     ctx.fillStyle = '#9CA3AF';
-    ctx.fillText('Suveran Suprem', 1100, 690);
+    ctx.fillText('Suveran Suprem', 1100, 678);
 
     ctx.font = 'italic 24px Georgia, serif';
     ctx.fillStyle = '#FFD700';
-    ctx.fillText('Regina Șmecheriei', 1100, 725);
-    ctx.beginPath();
-    ctx.moveTo(920, 733);
-    ctx.lineTo(1100, 733);
-    ctx.stroke();
-    ctx.font = 'bold 12px Arial, sans-serif';
-    ctx.fillStyle = '#9CA3AF';
-    ctx.fillText('Consilier Regal', 1100, 750);
+    ctx.fillText('Regina Șmecheriei', 1100, 720);
 
-    // Bottom line
+    ctx.beginPath();
+    ctx.moveTo(940, 728);
+    ctx.lineTo(1100, 728);
+    ctx.stroke();
+
+    ctx.font = '12px Arial, sans-serif';
+    ctx.fillStyle = '#9CA3AF';
+    ctx.fillText('Consilier Regal', 1100, 748);
+
+    // Bottom decorative line (matching HTML gradient)
     const bottomLineGradient = ctx.createLinearGradient(100, 0, 1100, 0);
     bottomLineGradient.addColorStop(0, 'transparent');
-    bottomLineGradient.addColorStop(0.2, '#9333EA');
-    bottomLineGradient.addColorStop(0.5, '#FFD700');
-    bottomLineGradient.addColorStop(0.8, '#9333EA');
+    bottomLineGradient.addColorStop(0.3, '#9333EA');
+    bottomLineGradient.addColorStop(0.5, 'transparent');
+    bottomLineGradient.addColorStop(0.7, '#9333EA');
     bottomLineGradient.addColorStop(1, 'transparent');
     ctx.strokeStyle = bottomLineGradient;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(100, 785);
-    ctx.lineTo(1100, 785);
+    ctx.moveTo(100, 795);
+    ctx.lineTo(1100, 795);
     ctx.stroke();
 
-    // Footer text
+    // Footer text (matching HTML)
     ctx.textAlign = 'center';
     ctx.font = 'bold 11px Arial, sans-serif';
-    ctx.fillStyle = '#9333EA';
-    ctx.fillText('👑 CERTIFICAT DE SUPREMAȚIE • PUTERE NELIMITATĂ • TOȚI SE ÎNCHINĂ 👑', 600, 805);
+    ctx.fillStyle = '#C084FC'; // text-purple-400
+    ctx.fillText('👑 CERTIFICAT DE SUPREMAȚIE • PUTERE NELIMITATĂ • TOȚI SE ÎNCHINĂ 👑', 600, 820);
 
     return canvas;
   };
