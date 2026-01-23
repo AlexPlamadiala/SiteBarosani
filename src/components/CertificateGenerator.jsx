@@ -179,23 +179,16 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.strokeRect(25, 25, 1150, 800);
     ctx.shadowBlur = 0;
 
-    // Inner decorative border - purple glow (matching HTML inset-[40px] border-2)
-    ctx.shadowColor = '#9333EA';
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = '#9333EA';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(40, 40, 1120, 770);
-    ctx.shadowBlur = 0;
-
-    // Corner crowns using emoji (matching HTML: top-16 left-16 = 64px, opacity-30)
+    // Corner crowns using emoji (top corners at 64px, bottom corners higher to not overlap footer)
     ctx.globalAlpha = 0.3;
     ctx.font = '48px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('👑', 64, 64);
     ctx.fillText('👑', 1136, 64);
-    ctx.fillText('👑', 64, 786);
-    ctx.fillText('👑', 1136, 786);
+    // Bottom crowns positioned higher (at 560px instead of 786px to avoid footer overlap)
+    ctx.fillText('👑', 64, 560);
+    ctx.fillText('👑', 1136, 560);
     ctx.globalAlpha = 1;
 
     // Header section - stars and crown (matching HTML flex layout)
