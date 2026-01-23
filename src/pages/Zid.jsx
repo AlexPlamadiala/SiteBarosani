@@ -155,24 +155,37 @@ export default function Zid() {
       filtered = filtered.filter(b => b.tier === activeTab);
     }
 
-    // Sort
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'tier':
-          const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
-          return tierOrder[a.tier] - tierOrder[b.tier];
-        case 'date-desc':
-          return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
-        case 'date-asc':
-          return new Date(a.dataInregistrare) - new Date(b.dataInregistrare);
-        case 'name-asc':
-          return a.nume.localeCompare(b.nume, 'ro');
-        case 'name-desc':
-          return b.nume.localeCompare(a.nume, 'ro');
-        default:
-          return 0;
-      }
-    });
+    // Sort - when showing 'all', always sort by tier first, then by date desc
+    if (activeTab === 'all') {
+      // For 'all' tab: tier priority first, then date descending within each tier
+      const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
+      filtered.sort((a, b) => {
+        const tierDiff = tierOrder[a.tier] - tierOrder[b.tier];
+        if (tierDiff !== 0) return tierDiff;
+        // Within same tier, sort by date descending (newest first)
+        return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
+      });
+    } else {
+      // For specific tier tabs, use the selected sort
+      filtered.sort((a, b) => {
+        switch (sortBy) {
+          case 'tier':
+            const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
+            return tierOrder[a.tier] - tierOrder[b.tier];
+          case 'date-desc':
+            return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
+          case 'date-asc':
+            return new Date(a.dataInregistrare) - new Date(b.dataInregistrare);
+          case 'name-asc':
+            return a.nume.localeCompare(b.nume, 'ro');
+          case 'name-desc':
+            return b.nume.localeCompare(a.nume, 'ro');
+          default:
+            // Default: date descending
+            return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
+        }
+      });
+    }
 
     return filtered;
   }, [barosani, debouncedSearchTerm, activeTab, sortBy]);

@@ -68,6 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         // Check if requesting history for a specific application
         if (isset($_GET['history']) && isset($_GET['id'])) {
+            $appId = intval($_GET['id']);
+
+            // First check if this application exists
+            $checkStmt = $conn->prepare("SELECT id, code, nume FROM applications WHERE id = ?");
+            $checkStmt->execute([$appId]);
+            $app = $checkStmt->fetch();
+
             $stmt = $conn->prepare("
                 SELECT h.*, a.username as admin_name
                 FROM application_history h
@@ -75,10 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 WHERE h.application_id = ?
                 ORDER BY h.created_at DESC
             ");
-            $stmt->execute([$_GET['id']]);
+            $stmt->execute([$appId]);
             $history = $stmt->fetchAll();
 
-            echo json_encode(['success' => true, 'history' => $history]);
+            echo json_encode([
+                'success' => true,
+                'history' => $history,
+                'debug' => [
+                    'requested_id' => $appId,
+                    'app_exists' => $app ? true : false,
+                    'history_count' => count($history)
+                ]
+            ]);
         } else {
             // Get all applications
             $stmt = $conn->query("

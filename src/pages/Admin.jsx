@@ -174,13 +174,24 @@ export default function Admin() {
   const fetchApplicationHistory = async (appId, appName) => {
     setHistoryModal({ show: true, appId, appName });
     setHistoryLoading(true);
+    setApplicationHistory([]);
     try {
       const res = await fetch(`${API_BASE}/admin/applications.php?history=1&id=${appId}`, {
         credentials: 'include'
       });
       const data = await res.json();
+      console.log('History API response:', data);
+      if (data.debug) {
+        console.log('History debug:', data.debug);
+      }
       if (data.success) {
         setApplicationHistory(data.history || []);
+        if (data.history?.length === 0 && data.debug?.history_count === 0) {
+          console.log('No history records found for application ID:', appId);
+        }
+      } else {
+        console.error('History API error:', data.error);
+        toast.error(data.error || 'Eroare la încărcarea istoricului');
       }
     } catch (err) {
       console.error('Error fetching history:', err);
@@ -300,6 +311,7 @@ export default function Admin() {
   const filteredBarosani = barosani.filter(b => {
     if (barosanFilter === 'all') return true;
     if (barosanFilter === 'active') return b.status === 'active';
+    if (barosanFilter === 'inactive') return b.status === 'inactive';
     if (barosanFilter === 'expired') return b.status === 'expired';
     return b.tier === barosanFilter;
   });
@@ -655,6 +667,7 @@ export default function Admin() {
               {[
                 { id: 'all', label: 'Toți' },
                 { id: 'active', label: 'Activi' },
+                { id: 'inactive', label: 'Inactivi' },
                 { id: 'expired', label: 'Expirați' },
                 { id: 'platinum', label: '💎 Platinum' },
                 { id: 'gold', label: '🏆 Gold' },
@@ -691,9 +704,12 @@ export default function Admin() {
                       <p className="text-white/60 italic text-sm">"{barosan.motto}"</p>
                       <div className="flex items-center gap-2 mt-2">
                         <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                          barosan.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                          barosan.status === 'active' ? 'bg-green-500/20 text-green-400' :
+                          barosan.status === 'inactive' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-red-500/20 text-red-400'
                         }`}>
-                          {barosan.status === 'active' ? 'Activ' : 'Expirat'}
+                          {barosan.status === 'active' ? 'Activ' :
+                           barosan.status === 'inactive' ? 'Inactiv' : 'Expirat'}
                         </span>
                         <span className="text-white/40 text-xs">
                           Expiră: {new Date(barosan.data_expirare).toLocaleDateString('ro-RO')}
@@ -705,17 +721,17 @@ export default function Admin() {
                   <div className="flex gap-2 mt-4 pt-4 border-t border-white/10">
                     {barosan.status === 'active' ? (
                       <button
-                        onClick={() => handleUpdateBarosanStatus(barosan, 'expired')}
+                        onClick={() => handleUpdateBarosanStatus(barosan, 'inactive')}
                         className="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-lg text-sm font-semibold hover:bg-yellow-500/30"
                       >
-                        Dezactivează
+                        ⏸️ Inactivează
                       </button>
                     ) : (
                       <button
                         onClick={() => handleUpdateBarosanStatus(barosan, 'active')}
                         className="px-3 py-1 bg-green-500/20 text-green-400 rounded-lg text-sm font-semibold hover:bg-green-500/30"
                       >
-                        Reactivează
+                        ▶️ Reactivează
                       </button>
                     )}
                     <button
@@ -891,6 +907,7 @@ export default function Admin() {
                   <p className="text-4xl mb-2">📭</p>
                   <p>Nu există istoric pentru această cerere.</p>
                   <p className="text-xs mt-2">Istoricul va apărea când se vor face acțiuni asupra cererii.</p>
+                  <p className="text-xs mt-2 text-purple-400">ID cerere: {historyModal.appId}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
