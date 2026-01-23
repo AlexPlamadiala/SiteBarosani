@@ -155,12 +155,15 @@ export default function Zid() {
       filtered = filtered.filter(b => b.tier === activeTab);
     }
 
+    // Tier order mapping (lowercase for consistency)
+    const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
+    const getTierOrder = (tier) => tierOrder[tier?.toLowerCase()] ?? 99;
+
     // Sort - when showing 'all', always sort by tier first, then by date desc
     if (activeTab === 'all') {
       // For 'all' tab: tier priority first, then date descending within each tier
-      const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
       filtered.sort((a, b) => {
-        const tierDiff = tierOrder[a.tier] - tierOrder[b.tier];
+        const tierDiff = getTierOrder(a.tier) - getTierOrder(b.tier);
         if (tierDiff !== 0) return tierDiff;
         // Within same tier, sort by date descending (newest first)
         return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
@@ -170,8 +173,7 @@ export default function Zid() {
       filtered.sort((a, b) => {
         switch (sortBy) {
           case 'tier':
-            const tierOrder = { suprem: 0, platinum: 1, gold: 2, basic: 3 };
-            return tierOrder[a.tier] - tierOrder[b.tier];
+            return getTierOrder(a.tier) - getTierOrder(b.tier);
           case 'date-desc':
             return new Date(b.dataInregistrare) - new Date(a.dataInregistrare);
           case 'date-asc':

@@ -91,14 +91,43 @@ function logAdminAction($userId, $action, $description = null) {
     }
 }
 
-// Funcție pentru generare certificat ID
+// Funcție pentru generare certificat ID unic
 function generateCertificatId() {
     $year = date('Y');
     $conn = getDBConnection();
-    $stmt = $conn->query("SELECT COUNT(*) as count FROM barosani");
+    $prefix = 'BRS-' . $year . '-';
+
+    // Find the highest existing number for this year
+    $stmt = $conn->prepare("
+        SELECT certificat_id FROM barosani
+        WHERE certificat_id LIKE ?
+        ORDER BY certificat_id DESC
+        LIMIT 1
+    ");
+    $stmt->execute([$prefix . '%']);
     $result = $stmt->fetch();
-    $nextNumber = $result['count'] + 1;
-    return 'BRS-' . $year . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+    if ($result && preg_match('/BRS-\d{4}-(\d+)/', $result['certificat_id'], $matches)) {
+        $nextNumber = intval($matches[1]) + 1;
+    } else {
+        $nextNumber = 1;
+    }
+
+    // Generate ID and verify it's unique (in case of concurrent inserts)
+    $newId = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+    // Check if it exists, if so increment until we find a free one
+    $checkStmt = $conn->prepare("SELECT id FROM barosani WHERE certificat_id = ?");
+    while (true) {
+        $checkStmt->execute([$newId]);
+        if (!$checkStmt->fetch()) {
+            break; // ID is unique
+        }
+        $nextNumber++;
+        $newId = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    return $newId;
 }
 
 // Funcție pentru sanitize input
