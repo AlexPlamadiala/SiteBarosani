@@ -138,6 +138,19 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
             // Different handling for suprem tier
             if ($app['tier'] === 'suprem') {
+                // Check if there's already an active suprem
+                $checkStmt = $conn->prepare("
+                    SELECT id, nume FROM barosani_suprem
+                    WHERE status = 'active' AND data_expirare > NOW()
+                    LIMIT 1
+                ");
+                $checkStmt->execute();
+                $activeSuprem = $checkStmt->fetch();
+
+                if ($activeSuprem) {
+                    throw new Exception("Nu poți aproba o cerere de Suprem când există deja un Barosan Suprem activ ({$activeSuprem['nume']}). Dezactivează mai întâi supremul actual din tab-ul 'Suprem'.");
+                }
+
                 // Suprem goes to barosani_suprem table
                 $hours = $app['suprem_hours'] ?? 1;
                 $dataStart = date('Y-m-d H:i:s');

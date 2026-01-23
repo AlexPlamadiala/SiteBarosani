@@ -582,27 +582,40 @@ export default function Admin() {
                       </div>
 
                       {(app.status === 'pending' || app.status === 'payment_confirmed') && (
-                        <div className="flex gap-2 flex-wrap">
-                          {app.status === 'pending' && (
-                            <button
-                              onClick={() => openPaymentProofModal(app.id, app.nume)}
-                              className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-semibold hover:bg-blue-500/30"
-                            >
-                              💳 Confirmă Plată
-                            </button>
+                        <div className="flex flex-col gap-2">
+                          {/* Warning when trying to approve suprem while one is active */}
+                          {app.tier === 'suprem' && suprem && (
+                            <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-2 text-xs text-yellow-300">
+                              ⚠️ Există deja un Suprem activ ({suprem.nume}). Dezactivează-l din tab-ul "Suprem" înainte de a aproba.
+                            </div>
                           )}
-                          <button
-                            onClick={() => handleApplicationAction(app.id, 'approve')}
-                            className="px-3 py-1 bg-green-500/20 text-green-400 rounded-lg text-sm font-semibold hover:bg-green-500/30"
-                          >
-                            ✓ Aprobă
-                          </button>
-                          <button
-                            onClick={() => handleApplicationAction(app.id, 'reject', 'Respins de admin')}
-                            className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm font-semibold hover:bg-red-500/30"
-                          >
-                            ✗ Respinge
-                          </button>
+                          <div className="flex gap-2 flex-wrap">
+                            {app.status === 'pending' && (
+                              <button
+                                onClick={() => openPaymentProofModal(app.id, app.nume)}
+                                className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-semibold hover:bg-blue-500/30"
+                              >
+                                💳 Confirmă Plată
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleApplicationAction(app.id, 'approve')}
+                              disabled={app.tier === 'suprem' && suprem}
+                              className={`px-3 py-1 rounded-lg text-sm font-semibold ${
+                                app.tier === 'suprem' && suprem
+                                  ? 'bg-gray-500/20 text-gray-500 cursor-not-allowed'
+                                  : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                              }`}
+                            >
+                              ✓ Aprobă
+                            </button>
+                            <button
+                              onClick={() => handleApplicationAction(app.id, 'reject', 'Respins de admin')}
+                              className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg text-sm font-semibold hover:bg-red-500/30"
+                            >
+                              ✗ Respinge
+                            </button>
+                          </div>
                         </div>
                       )}
 

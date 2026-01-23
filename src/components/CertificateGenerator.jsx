@@ -1155,14 +1155,11 @@ export default function CertificateGenerator({ barosan, onClose }) {
                     {/* Gold border with glow */}
                     <div className="absolute inset-[25px] border-4 border-[#FFD700]" style={{ boxShadow: '0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.1)' }}></div>
 
-                    {/* Purple inner border */}
-                    <div className="absolute inset-[40px] border-2 border-purple-500" style={{ boxShadow: '0 0 10px rgba(147, 51, 234, 0.5)' }}></div>
-
-                    {/* Corner crowns */}
+                    {/* Corner crowns - top corners at 64px, bottom crowns higher to avoid footer overlap */}
                     <div className="absolute top-16 left-16 text-3xl text-yellow-500 opacity-30">👑</div>
                     <div className="absolute top-16 right-16 text-3xl text-yellow-500 opacity-30">👑</div>
-                    <div className="absolute bottom-16 left-16 text-3xl text-yellow-500 opacity-30">👑</div>
-                    <div className="absolute bottom-16 right-16 text-3xl text-yellow-500 opacity-30">👑</div>
+                    <div className="absolute left-16 text-3xl text-yellow-500 opacity-30" style={{ top: '560px' }}>👑</div>
+                    <div className="absolute right-16 text-3xl text-yellow-500 opacity-30" style={{ top: '560px' }}>👑</div>
 
                     {/* Content */}
                     <div className="relative z-10 h-full flex flex-col items-center pt-12 pb-6 px-16">
