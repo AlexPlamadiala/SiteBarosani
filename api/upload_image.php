@@ -10,9 +10,15 @@ require_once 'config.php';
 require_once 'helpers/ImageUploader.php';
 require_once 'helpers/Logger.php';
 
-// JSON & CORS headers
+// JSON & CORS headers - use same as config.php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: http://localhost:5173');
+$allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost', 'http://127.0.0.1'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    header('Access-Control-Allow-Origin: *');
+}
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Credentials: true');
