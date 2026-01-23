@@ -76,9 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $app = $checkStmt->fetch();
 
             $stmt = $conn->prepare("
-                SELECT h.*, a.username as admin_name
+                SELECT h.*
                 FROM application_history h
-                LEFT JOIN admins a ON h.admin_id = a.id
                 WHERE h.application_id = ?
                 ORDER BY h.created_at DESC
             ");
