@@ -65,10 +65,9 @@ export const BADGES = {
 /**
  * Calculează badge-urile pentru un barosan
  * @param {Object} barosan - Datele barosanului
- * @param {Number} totalBarosani - Total număr de barosani (pentru Early Adopter)
  * @returns {Array} - Array de badges câștigate
  */
-export function calculateBadges(barosan, totalBarosani = 0) {
+export function calculateBadges(barosan) {
   const badges = [];
 
   // Early Adopter - primii 100

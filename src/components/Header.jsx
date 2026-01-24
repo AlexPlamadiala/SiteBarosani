@@ -18,9 +18,6 @@ export default function Header() {
     return () => window.removeEventListener('focus', checkAdmin);
   }, [location.pathname]);
 
-  // Check if we're on the Suprem page for special styling
-  const isSupremPage = location.pathname === '/barosanul-suprem' || location.pathname === '/suprem';
-
   // All pages now use dark theme
   const headerClasses = 'sticky top-0 z-50 bg-[#0a0a0a] backdrop-blur-md text-white';
 

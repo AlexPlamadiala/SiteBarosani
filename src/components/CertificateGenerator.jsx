@@ -599,7 +599,6 @@ export default function CertificateGenerator({ barosan, onClose }) {
     ctx.fillRect(450, 315, 300, 2);
 
     // Photo (if exists) - draw on the left side
-    let photoOffset = 0;
     if (barosan.poza) {
       try {
         const img = new Image();
@@ -646,9 +645,8 @@ export default function CertificateGenerator({ barosan, onClose }) {
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        photoOffset = 100; // Shift text to the right to accommodate photo
-      } catch (error) {
-        console.log('Could not load photo for certificate');
+      } catch {
+        // Photo loading failed - continue without photo
       }
     }
 

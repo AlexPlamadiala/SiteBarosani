@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Leaderboard({ barosani }) {
-  const [topBarosani, setTopBarosani] = useState([]);
-
-  useEffect(() => {
+  // Calculate top barosani using useMemo instead of useState + useEffect
+  const topBarosani = useMemo(() => {
     // Calculate "score" pentru fiecare barosan (tier-based)
     const scored = barosani.map(barosan => {
       let score = 0;
@@ -34,11 +33,9 @@ export default function Leaderboard({ barosani }) {
     });
 
     // Sort și top 10
-    const top = scored
+    return scored
       .sort((a, b) => b.score - a.score)
       .slice(0, 10);
-
-    setTopBarosani(top);
   }, [barosani]);
 
   if (topBarosani.length === 0) return null;

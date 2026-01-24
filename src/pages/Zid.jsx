@@ -122,6 +122,7 @@ export default function Zid() {
       clearInterval(pollInterval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Count by tier (including active suprem from separate table)

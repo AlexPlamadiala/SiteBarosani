@@ -35,6 +35,7 @@ export default function Admin() {
   // Check authentication on mount
   useEffect(() => {
     checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkAuth = async () => {
@@ -76,7 +77,7 @@ export default function Admin() {
       } else {
         toast.error(data.error || 'Eroare la autentificare');
       }
-    } catch (err) {
+    } catch {
       toast.error('Eroare de conexiune');
     } finally {
       setLoginLoading(false);
@@ -179,17 +180,9 @@ export default function Admin() {
         credentials: 'include'
       });
       const data = await res.json();
-      console.log('History API response:', data);
-      if (data.debug) {
-        console.log('History debug:', data.debug);
-      }
       if (data.success) {
         setApplicationHistory(data.history || []);
-        if (data.history?.length === 0 && data.debug?.history_count === 0) {
-          console.log('No history records found for application ID:', appId);
-        }
       } else {
-        console.error('History API error:', data.error);
         toast.error(data.error || 'Eroare la încărcarea istoricului');
       }
     } catch (err) {
@@ -223,7 +216,7 @@ export default function Admin() {
         toast.success('Cerere ștearsă');
         loadData();
       }
-    } catch (err) {
+    } catch {
       toast.error('Eroare la ștergere');
     }
   };
@@ -241,7 +234,7 @@ export default function Admin() {
         toast.success('Barosan șters');
         loadData();
       }
-    } catch (err) {
+    } catch {
       toast.error('Eroare la ștergere');
     }
   };
@@ -264,7 +257,7 @@ export default function Admin() {
         toast.success('Status actualizat');
         loadData();
       }
-    } catch (err) {
+    } catch {
       toast.error('Eroare la actualizare');
     }
   };
@@ -287,7 +280,7 @@ export default function Admin() {
       } else {
         toast.error(data.error || 'Eroare la dezactivare');
       }
-    } catch (err) {
+    } catch {
       toast.error('Eroare la dezactivare');
     }
   };

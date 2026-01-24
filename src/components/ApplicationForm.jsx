@@ -92,13 +92,6 @@ export default function ApplicationForm() {
     return `${price} RON (${hours}h)`;
   };
 
-  const generateApplicationCode = () => {
-    const year = new Date().getFullYear();
-    const existingApps = JSON.parse(localStorage.getItem('barosaniApplications') || '[]');
-    const nextNumber = existingApps.length + 1;
-    return `CP-${year}-${String(nextNumber).padStart(4, '0')}`;
-  };
-
   const validateForm = () => {
     const newErrors = {};
 

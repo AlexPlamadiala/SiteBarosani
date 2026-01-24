@@ -11,7 +11,6 @@ export default function Upgrade() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [barosan, setBarosan] = useState(null);
   const [verificationSent, setVerificationSent] = useState(false);
   const [devLink, setDevLink] = useState('');
@@ -21,6 +20,7 @@ export default function Upgrade() {
     if (token) {
       verifyToken();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const verifyToken = async () => {
@@ -38,7 +38,7 @@ export default function Upgrade() {
         setError(data.error || 'Token invalid sau expirat');
         setStep('email');
       }
-    } catch (err) {
+    } catch {
       setError('Eroare la verificare. Încearcă din nou.');
       setStep('email');
     } finally {
@@ -70,7 +70,7 @@ export default function Upgrade() {
       } else {
         setError(data.error || 'Eroare la verificare');
       }
-    } catch (err) {
+    } catch {
       setError('Eroare de conexiune. Încearcă din nou.');
     } finally {
       setLoading(false);
@@ -95,7 +95,6 @@ export default function Upgrade() {
 
       if (data.success) {
         setVerificationSent(true);
-        setSuccess('Email de verificare trimis! Verifică inbox-ul.');
         // For development, show the link directly
         if (data.dev_link) {
           setDevLink(data.dev_link);
@@ -103,7 +102,7 @@ export default function Upgrade() {
       } else {
         setError(data.error || 'Eroare la trimiterea email-ului');
       }
-    } catch (err) {
+    } catch {
       setError('Eroare de conexiune');
     } finally {
       setLoading(false);

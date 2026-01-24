@@ -1,21 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function RecentActivity({ barosani }) {
-  const [recentBarosani, setRecentBarosani] = useState([]);
-  const [animationKey, setAnimationKey] = useState(0);
-
-  useEffect(() => {
-    // Get last 5 barosani sorted by date
-    const sorted = [...barosani]
+  // Get last 5 barosani sorted by date
+  const recentBarosani = useMemo(() => {
+    return [...barosani]
       .sort((a, b) => new Date(b.dataInregistrare) - new Date(a.dataInregistrare))
       .slice(0, 5);
-
-    if (JSON.stringify(sorted) !== JSON.stringify(recentBarosani)) {
-      setRecentBarosani(sorted);
-      setAnimationKey(prev => prev + 1);
-    }
   }, [barosani]);
+
+  // Generate animation key from data to trigger re-render when data changes
+  const animationKey = useMemo(() => {
+    return recentBarosani.map(b => b.id || b.certificatId).join('-');
+  }, [recentBarosani]);
 
   if (recentBarosani.length === 0) return null;
 

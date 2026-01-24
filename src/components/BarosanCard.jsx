@@ -1,25 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import BadgeDisplay from './BadgeDisplay';
 
 export default function BarosanCard({ barosan, onViewCertificate, totalBarosani = 0 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [showButton, setShowButton] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const hoverTimeoutRef = useRef(null);
 
-  // Detect touch device on mount
-  useEffect(() => {
-    const checkTouchDevice = () => {
-      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    };
-    setIsTouchDevice(checkTouchDevice());
-    // On touch devices, always show button
-    if (checkTouchDevice()) {
-      setShowButton(true);
-    }
+  // Detect touch device (computed once, stable value)
+  const isTouchDevice = useMemo(() => {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
   }, []);
+
+  // On touch devices, always show button
+  const showButton = isTouchDevice || isHovered;
 
   const tierColors = {
     suprem: {
@@ -72,29 +65,11 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
 
   const handleMouseEnter = () => {
     setIsHovered(true);
-    // Delay showing the button for smooth transition
-    hoverTimeoutRef.current = setTimeout(() => {
-      setShowButton(true);
-    }, 200); // 200ms delay
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setShowButton(false);
-    // Clear timeout if user leaves before button appears
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
   };
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <article className="group relative h-full" aria-label={`Card barosan: ${barosan.nume}, tier ${tier}`}>

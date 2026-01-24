@@ -133,6 +133,20 @@ export default function BarosanulSuprem() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">😔</div>
+          <p className="text-red-400 text-lg font-bold mb-4">{error}</p>
+          <Link to="/" className="px-6 py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition">
+            Înapoi Acasă
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black relative overflow-hidden">
       {/* Animated Background Effects */}

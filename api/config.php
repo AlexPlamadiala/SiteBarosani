@@ -20,16 +20,24 @@ define('ADMIN_URL', EnvLoader::get('ADMIN_URL', 'http://localhost/SiteBarosani/a
 // Timezone
 date_default_timezone_set('Europe/Bucharest');
 
+// Detect if running over HTTPS
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+// Production mode detection
+$isProduction = EnvLoader::get('APP_DEBUG', 'true') === 'false';
+
 // Session configuration - must be set before session_start()
 if (session_status() === PHP_SESSION_NONE) {
-    // Configure session cookie for cross-origin requests
+    // Configure session cookie with appropriate security flags
     session_set_cookie_params([
         'lifetime' => 86400, // 24 hours
         'path' => '/',
         'domain' => '',
-        'secure' => false, // Set to true in production with HTTPS
+        'secure' => $isHttps, // Auto-detect HTTPS
         'httponly' => true,
-        'samesite' => 'Lax' // Use 'None' with secure:true for cross-origin
+        'samesite' => $isHttps ? 'Strict' : 'Lax' // Strict when HTTPS is available
     ]);
 }
 
@@ -46,6 +54,25 @@ header('X-Frame-Options: SAMEORIGIN');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+
+// Content Security Policy - allows resources from same origin and configured URLs
+$cspDirectives = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'", // unsafe-inline needed for React
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob: " . SITE_URL,
+    "connect-src 'self' " . SITE_URL . " " . API_URL,
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "base-uri 'self'"
+];
+header('Content-Security-Policy: ' . implode('; ', $cspDirectives));
+
+// HSTS header for HTTPS connections
+if ($isHttps) {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+}
 
 // Cache control for API responses (no caching by default)
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
