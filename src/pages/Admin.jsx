@@ -434,7 +434,7 @@ export default function Admin() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Total Barosani', value: statistics?.total_barosani || 0, icon: '👥', color: 'from-purple-500 to-pink-500' },
+                { label: 'Total Barosani', value: (statistics?.total_barosani || 0) + (suprem ? 1 : 0), icon: '👥', color: 'from-purple-500 to-pink-500' },
                 { label: 'Cereri în așteptare', value: statistics?.pending_applications || 0, icon: '📝', color: 'from-yellow-500 to-orange-500' },
                 { label: 'Expiră în 7 zile', value: statistics?.expiring_soon || 0, icon: '⏰', color: 'from-red-500 to-pink-500' },
                 { label: 'Venit Total', value: `${statistics?.total_revenue || 0} RON`, icon: '💰', color: 'from-green-500 to-emerald-500' }
@@ -593,6 +593,12 @@ export default function Admin() {
                               ⚠️ Există deja un Suprem activ ({suprem.nume}). Dezactivează-l din tab-ul "Suprem" înainte de a aproba.
                             </div>
                           )}
+                          {/* Warning when trying to approve without payment confirmation */}
+                          {app.status === 'pending' && (
+                            <div className="bg-orange-500/20 border border-orange-500/50 rounded-lg p-2 text-xs text-orange-300">
+                              ⚠️ Trebuie să confirmi plata înainte de a aproba cererea.
+                            </div>
+                          )}
                           <div className="flex gap-2 flex-wrap">
                             {app.status === 'pending' && (
                               <button
@@ -604,9 +610,10 @@ export default function Admin() {
                             )}
                             <button
                               onClick={() => handleApplicationAction(app.id, 'approve')}
-                              disabled={app.tier === 'suprem' && suprem}
+                              disabled={(app.tier === 'suprem' && suprem) || app.status === 'pending'}
+                              title={app.status === 'pending' ? 'Trebuie să confirmi plata mai întâi' : ''}
                               className={`px-3 py-1 rounded-lg text-sm font-semibold ${
-                                app.tier === 'suprem' && suprem
+                                (app.tier === 'suprem' && suprem) || app.status === 'pending'
                                   ? 'bg-gray-500/20 text-gray-500 cursor-not-allowed'
                                   : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
                               }`}

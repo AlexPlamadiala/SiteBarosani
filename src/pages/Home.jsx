@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useCountUp } from '../hooks/useCountUp';
 import { useSEO } from '../hooks/useSEO';
 import RecentActivity from '../components/RecentActivity';
-import Leaderboard from '../components/Leaderboard';
 import confetti from 'canvas-confetti';
 import { BAROSANI_URL, SUPREM_URL, SSE_URL } from '../config/api';
 
@@ -109,10 +108,30 @@ export default function Home() {
     };
   }, [sseConnected]);
 
-  const totalBarosani = barosani.length;
+  // Count tiers - include suprem in total
   const platinumCount = barosani.filter(b => b.tier === 'platinum').length;
   const goldCount = barosani.filter(b => b.tier === 'gold').length;
   const basicCount = barosani.filter(b => b.tier === 'basic').length;
+  const supremCount = supremBarosan && !supremAvailable ? 1 : 0;
+  const totalBarosani = platinumCount + goldCount + basicCount + supremCount;
+
+  // Combine barosani with suprem for recent activity
+  const allBarosaniForActivity = useMemo(() => {
+    if (supremBarosan && !supremAvailable) {
+      const supremAsBarosan = {
+        id: `suprem-${supremBarosan.id}`,
+        certificatId: supremBarosan.certificatId || `SUP-${String(supremBarosan.id).padStart(6, '0')}`,
+        nume: supremBarosan.nume,
+        motto: supremBarosan.motto,
+        tier: 'suprem',
+        poza: supremBarosan.poza,
+        link: supremBarosan.link,
+        dataInregistrare: supremBarosan.dataStart
+      };
+      return [supremAsBarosan, ...barosani];
+    }
+    return barosani;
+  }, [barosani, supremBarosan, supremAvailable]);
 
   // Animated counters
   const animatedTotal = useCountUp(totalBarosani, 2000);
@@ -315,29 +334,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Two Column: Recent + Leaderboard */}
+      {/* Recent Activity Section */}
       <section className="py-16 px-4 bg-[#111]">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Recent Activity */}
-            <div>
-              <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
-                <span className="text-2xl">🔥</span>
-                Activitate Recentă
-              </h2>
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
-                <RecentActivity barosani={barosani} />
-              </div>
-            </div>
-
-            {/* Leaderboard */}
-            <div>
-              <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2">
-                <span className="text-2xl">🏆</span>
-                Top Barosani
-              </h2>
-              <Leaderboard barosani={barosani} />
-            </div>
+        <div className="container mx-auto max-w-3xl">
+          <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-2 justify-center">
+            <span className="text-2xl">🔥</span>
+            Activitate Recentă
+          </h2>
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
+            <RecentActivity barosani={allBarosaniForActivity} />
           </div>
         </div>
       </section>

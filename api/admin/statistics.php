@@ -5,9 +5,26 @@ $adminId = checkAdminAuth();
 $conn = getDBConnection();
 
 try {
-    // Statistici generale
-    $stmt = $conn->query("SELECT * FROM statistics");
-    $stats = $stmt->fetch();
+    // Calculate tier counts dynamically from barosani table (active only)
+    $stmt = $conn->query("
+        SELECT
+            COUNT(*) as total_barosani,
+            SUM(CASE WHEN tier = 'platinum' THEN 1 ELSE 0 END) as platinum_count,
+            SUM(CASE WHEN tier = 'gold' THEN 1 ELSE 0 END) as gold_count,
+            SUM(CASE WHEN tier = 'basic' THEN 1 ELSE 0 END) as basic_count
+        FROM barosani
+        WHERE status = 'active'
+        AND data_expirare >= CURDATE()
+    ");
+    $tierCounts = $stmt->fetch();
+
+    // Pending applications count
+    $stmt = $conn->query("
+        SELECT COUNT(*) as pending_applications
+        FROM applications
+        WHERE status = 'pending' OR status = 'payment_confirmed'
+    ");
+    $pendingApps = $stmt->fetch();
 
     // Venituri totale
     $stmt = $conn->query("
@@ -45,16 +62,16 @@ try {
     echo json_encode([
         'success' => true,
         'statistics' => [
-            'total_barosani' => $stats['total_barosani'],
-            'suprem_count' => $supremCount['suprem_count'] ?? 0,
-            'platinum_count' => $stats['platinum_count'],
-            'gold_count' => $stats['gold_count'],
-            'basic_count' => $stats['basic_count'],
-            'pending_applications' => $stats['pending_applications'],
-            'monthly_revenue' => $stats['monthly_revenue'] ?? 0,
-            'total_revenue' => $revenue['total_revenue'] ?? 0,
-            'recent_applications' => $recentApps['recent_applications'],
-            'expiring_soon' => $expiring['expiring_soon']
+            'total_barosani' => (int)($tierCounts['total_barosani'] ?? 0),
+            'suprem_count' => (int)($supremCount['suprem_count'] ?? 0),
+            'platinum_count' => (int)($tierCounts['platinum_count'] ?? 0),
+            'gold_count' => (int)($tierCounts['gold_count'] ?? 0),
+            'basic_count' => (int)($tierCounts['basic_count'] ?? 0),
+            'pending_applications' => (int)($pendingApps['pending_applications'] ?? 0),
+            'monthly_revenue' => 0,
+            'total_revenue' => (int)($revenue['total_revenue'] ?? 0),
+            'recent_applications' => (int)($recentApps['recent_applications'] ?? 0),
+            'expiring_soon' => (int)($expiring['expiring_soon'] ?? 0)
         ]
     ]);
 
