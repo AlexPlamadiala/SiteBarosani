@@ -108,14 +108,16 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
                 </div>
               </div>
             )}
-            {/* Actual image */}
+            {/* Actual image with lazy loading */}
             <img
               src={barosan.poza}
-              alt={barosan.nume}
+              alt={`Fotografie ${barosan.nume}`}
               className={`w-full h-full object-cover transition-all duration-500 ${
                 imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
               loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               onLoad={() => setImageLoaded(true)}
               onError={() => {
                 setImageError(true);

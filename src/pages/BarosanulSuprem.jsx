@@ -2,9 +2,16 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import CertificateGenerator from '../components/CertificateGenerator';
+import { useSEO } from '../hooks/useSEO';
 import { SUPREM_URL } from '../config/api';
 
 export default function BarosanulSuprem() {
+  useSEO({
+    title: 'Barosanul Suprem',
+    description: 'Devino Barosanul Suprem! Poziția supremă în comunitatea barosanilor - exclusivitate și recunoaștere maximă.',
+    url: '/barosanul-suprem'
+  });
+
   const [supremeBarosan, setSupremeBarosan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

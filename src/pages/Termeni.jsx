@@ -1,4 +1,12 @@
+import { useSEO } from '../hooks/useSEO';
+
 export default function Termeni() {
+  useSEO({
+    title: 'Termeni și Condiții',
+    description: 'Termenii și condițiile de utilizare a Registrului Oficial al Barosanilor.',
+    url: '/termeni'
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5E6D3] via-[#E8D5B7] to-[#F5E6D3] py-12 md:py-16 px-4 relative overflow-hidden">
       {/* Background Pattern */}

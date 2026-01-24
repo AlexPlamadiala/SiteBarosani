@@ -1,8 +1,15 @@
 import PricingTiers from '../components/PricingTiers';
 import HowItWorks from '../components/HowItWorks';
 import ApplicationForm from '../components/ApplicationForm';
+import { useSEO } from '../hooks/useSEO';
 
 export default function CumDevinBarosan() {
+  useSEO({
+    title: 'Cum Devin Barosan',
+    description: 'Înscrie-te în Registrul Oficial al Barosanilor! Alege pachetul potrivit și obține certificatul tău de barosan verificat.',
+    url: '/cum-devin-barosan'
+  });
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* Hero Section - Dark */}

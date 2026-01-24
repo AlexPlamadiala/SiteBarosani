@@ -5,9 +5,16 @@ import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
 import { fetchJSONWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
 import { useDebounce } from '../utils/useDebounce';
+import { useSEO } from '../hooks/useSEO';
 import { BAROSANI_URL, SUPREM_URL, SSE_URL } from '../config/api';
 
 export default function Zid() {
+  useSEO({
+    title: 'Zidul Barosanilor',
+    description: 'Descoperă toți barosanii verificați din comunitate. Caută, filtrează și vizualizează certificatele de barosan.',
+    url: '/zid'
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBarosan, setSelectedBarosan] = useState(null);
   const [barosani, setBarosani] = useState([]);

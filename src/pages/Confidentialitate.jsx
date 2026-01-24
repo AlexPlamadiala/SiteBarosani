@@ -1,4 +1,12 @@
+import { useSEO } from '../hooks/useSEO';
+
 export default function Confidentialitate() {
+  useSEO({
+    title: 'Politica de Confidențialitate',
+    description: 'Politica de confidențialitate și protecția datelor personale în Registrul Oficial al Barosanilor.',
+    url: '/confidentialitate'
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5E6D3] via-[#E8D5B7] to-[#F5E6D3] py-12 md:py-16 px-4 relative overflow-hidden">
       {/* Background Pattern */}

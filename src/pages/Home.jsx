@@ -1,12 +1,19 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCountUp } from '../hooks/useCountUp';
+import { useSEO } from '../hooks/useSEO';
 import RecentActivity from '../components/RecentActivity';
 import Leaderboard from '../components/Leaderboard';
 import confetti from 'canvas-confetti';
 import { BAROSANI_URL, SUPREM_URL, SSE_URL } from '../config/api';
 
 export default function Home() {
+  useSEO({
+    title: 'Registrul Oficial al Barosanilor',
+    description: 'Bun venit în Registrul Oficial al Barosanilor! Alătură-te comunității și obține certificatul tău de barosan verificat.',
+    url: '/'
+  });
+
   const [barosani, setBarosani] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sseConnected, setSseConnected] = useState(false);
