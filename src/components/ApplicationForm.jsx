@@ -102,26 +102,64 @@ export default function ApplicationForm() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.nume.trim()) {
+    // Validate name
+    const trimmedName = formData.nume.trim();
+    if (!trimmedName) {
       newErrors.nume = 'Numele este obligatoriu';
+    } else if (trimmedName.length < 2) {
+      newErrors.nume = 'Numele trebuie să aibă minim 2 caractere';
+    } else if (trimmedName.length > 50) {
+      newErrors.nume = 'Numele trebuie să aibă maximum 50 de caractere';
+    } else if (!/^[a-zA-ZăâîșțĂÂÎȘȚ\s\-'.]+$/.test(trimmedName)) {
+      newErrors.nume = 'Numele conține caractere invalide';
     }
 
+    // Validate email with proper regex
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     if (!formData.email.trim()) {
       newErrors.email = 'Email-ul este obligatoriu';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!emailRegex.test(formData.email.trim())) {
       newErrors.email = 'Email-ul nu este valid';
+    } else if (formData.email.trim().length > 100) {
+      newErrors.email = 'Email-ul este prea lung';
     }
 
-    if (!formData.revolutId.trim()) {
+    // Validate Revolut ID
+    const trimmedRevolutId = formData.revolutId.trim();
+    if (!trimmedRevolutId) {
       newErrors.revolutId = 'ID-ul Revolut este obligatoriu';
-    } else if (formData.revolutId.trim().length < 3) {
+    } else if (trimmedRevolutId.length < 3) {
       newErrors.revolutId = 'ID-ul Revolut pare prea scurt';
+    } else if (trimmedRevolutId.length > 30) {
+      newErrors.revolutId = 'ID-ul Revolut este prea lung';
+    } else if (!/^[a-zA-Z0-9_.-]+$/.test(trimmedRevolutId)) {
+      newErrors.revolutId = 'ID-ul Revolut conține caractere invalide';
     }
 
-    if (!formData.motto.trim()) {
+    // Validate motto
+    const trimmedMotto = formData.motto.trim();
+    if (!trimmedMotto) {
       newErrors.motto = 'Motto-ul este obligatoriu';
+    } else if (trimmedMotto.length < 3) {
+      newErrors.motto = 'Motto-ul trebuie să aibă minim 3 caractere';
     } else if (formData.motto.length > 50) {
       newErrors.motto = 'Motto-ul trebuie să aibă maximum 50 de caractere';
+    }
+
+    // Validate link (if provided for platinum/suprem)
+    if ((formData.tier === 'platinum' || formData.tier === 'suprem') && formData.link.trim()) {
+      const urlRegex = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
+      if (!urlRegex.test(formData.link.trim())) {
+        newErrors.link = 'Link-ul nu este valid (trebuie să înceapă cu http:// sau https://)';
+      }
+    }
+
+    // Validate suprem hours
+    if (formData.tier === 'suprem') {
+      const hours = parseInt(formData.supremHours);
+      if (isNaN(hours) || hours < 1 || hours > 168) {
+        newErrors.supremHours = 'Numărul de ore trebuie să fie între 1 și 168';
+      }
     }
 
     setErrors(newErrors);

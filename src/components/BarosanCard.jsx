@@ -97,7 +97,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   }, []);
 
   return (
-    <div className="group relative h-full">
+    <article className="group relative h-full" aria-label={`Card barosan: ${barosan.nume}, tier ${tier}`}>
       {/* Glow Effect - Always visible for suprem/platinum/gold */}
       {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
@@ -209,7 +209,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
             <div className={`absolute inset-0 ${colors.blurColor} rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity`}></div>
             <button
               onClick={() => onViewCertificate(barosan)}
-              className="relative w-full bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all font-extrabold text-sm touch-manipulation shadow-lg"
+              className="relative w-full bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all font-extrabold text-sm touch-manipulation shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2"
+              aria-label={`Vezi certificatul pentru ${barosan.nume}`}
             >
               📜 Vezi Certificat
             </button>
@@ -217,6 +218,6 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
         </div>
       </div>
       </div>
-    </div>
+    </article>
   );
 }

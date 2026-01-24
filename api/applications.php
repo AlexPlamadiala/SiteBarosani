@@ -17,12 +17,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // Validare
-        if (empty($data['nume']) || empty($data['email']) || empty($data['revolutId']) || empty($data['motto'])) {
+        // Validare completă
+        $validationErrors = [];
+
+        // Validate nume
+        if (empty($data['nume'])) {
+            $validationErrors[] = 'Numele este obligatoriu';
+        } else {
+            $nume = trim($data['nume']);
+            if (strlen($nume) < 2) {
+                $validationErrors[] = 'Numele trebuie să aibă minim 2 caractere';
+            } elseif (strlen($nume) > 50) {
+                $validationErrors[] = 'Numele trebuie să aibă maximum 50 de caractere';
+            }
+        }
+
+        // Validate email
+        if (empty($data['email'])) {
+            $validationErrors[] = 'Email-ul este obligatoriu';
+        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $validationErrors[] = 'Email-ul nu este valid';
+        } elseif (strlen($data['email']) > 100) {
+            $validationErrors[] = 'Email-ul este prea lung';
+        }
+
+        // Validate revolutId
+        if (empty($data['revolutId'])) {
+            $validationErrors[] = 'ID-ul Revolut este obligatoriu';
+        } else {
+            $revolutId = trim($data['revolutId']);
+            if (strlen($revolutId) < 3) {
+                $validationErrors[] = 'ID-ul Revolut pare prea scurt';
+            } elseif (strlen($revolutId) > 30) {
+                $validationErrors[] = 'ID-ul Revolut este prea lung';
+            } elseif (!preg_match('/^[a-zA-Z0-9_.-]+$/', $revolutId)) {
+                $validationErrors[] = 'ID-ul Revolut conține caractere invalide';
+            }
+        }
+
+        // Validate motto
+        if (empty($data['motto'])) {
+            $validationErrors[] = 'Motto-ul este obligatoriu';
+        } else {
+            $motto = trim($data['motto']);
+            if (strlen($motto) < 3) {
+                $validationErrors[] = 'Motto-ul trebuie să aibă minim 3 caractere';
+            } elseif (strlen($motto) > 50) {
+                $validationErrors[] = 'Motto-ul trebuie să aibă maximum 50 de caractere';
+            }
+        }
+
+        // Validate link (if provided for platinum/suprem)
+        if (!empty($data['link']) && in_array($data['tier'], ['platinum', 'suprem'])) {
+            if (!filter_var($data['link'], FILTER_VALIDATE_URL)) {
+                $validationErrors[] = 'Link-ul nu este valid';
+            }
+        }
+
+        // Validate suprem hours
+        if ($data['tier'] === 'suprem' && !empty($data['supremHours'])) {
+            $hours = intval($data['supremHours']);
+            if ($hours < 1 || $hours > 168) {
+                $validationErrors[] = 'Numărul de ore trebuie să fie între 1 și 168';
+            }
+        }
+
+        // Return all validation errors
+        if (!empty($validationErrors)) {
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'error' => 'Date incomplete'
+                'error' => implode('. ', $validationErrors)
             ]);
             exit();
         }

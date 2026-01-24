@@ -31,6 +31,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $data = json_decode(file_get_contents('php://input'), true);
 
+        // Start transaction for data integrity
+        $conn->beginTransaction();
+
         $certificatId = generateCertificatId();
         $dataInregistrare = date('Y-m-d');
         $dataExpirare = date('Y-m-d', strtotime('+1 month'));
@@ -54,6 +57,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $dataExpirare
         ]);
 
+        $conn->commit();
+
         logAdminAction($adminId, 'add_barosan', "Adăugat barosan: {$data['nume']}");
 
         // Notifică SSE că s-a creat un barosan nou
@@ -61,6 +66,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo json_encode(['success' => true, 'message' => 'Barosan adăugat cu succes']);
     } catch(PDOException $e) {
+        $conn->rollBack();
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
@@ -70,6 +76,9 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     try {
         $data = json_decode(file_get_contents('php://input'), true);
+
+        // Start transaction for data integrity
+        $conn->beginTransaction();
 
         $stmt = $conn->prepare("
             UPDATE barosani
@@ -91,6 +100,8 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             $data['id']
         ]);
 
+        $conn->commit();
+
         logAdminAction($adminId, 'update_barosan', "Actualizat barosan ID: {$data['id']}");
 
         // Notifică SSE că s-a actualizat barosanul
@@ -98,6 +109,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
         echo json_encode(['success' => true, 'message' => 'Barosan actualizat cu succes']);
     } catch(PDOException $e) {
+        $conn->rollBack();
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
