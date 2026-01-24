@@ -4,10 +4,7 @@ import { useCountUp } from '../hooks/useCountUp';
 import RecentActivity from '../components/RecentActivity';
 import Leaderboard from '../components/Leaderboard';
 import confetti from 'canvas-confetti';
-
-const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
-const SUPREM_API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
-const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
+import { BAROSANI_URL, SUPREM_URL, SSE_URL } from '../config/api';
 
 export default function Home() {
   const [barosani, setBarosani] = useState([]);
@@ -33,7 +30,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchBarosani() {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(BAROSANI_URL);
         const data = await response.json();
         if (data.success) {
           setBarosani(data.barosani);
@@ -47,7 +44,7 @@ export default function Home() {
 
     async function fetchSuprem() {
       try {
-        const response = await fetch(SUPREM_API_URL);
+        const response = await fetch(SUPREM_URL);
         const data = await response.json();
         if (data.success) {
           setSupremAvailable(data.available);

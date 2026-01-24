@@ -5,10 +5,7 @@ import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
 import { fetchJSONWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
 import { useDebounce } from '../utils/useDebounce';
-
-const API_URL = 'http://localhost/SiteBarosani/api/barosani.php';
-const SUPREM_API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
-const SSE_URL = 'http://localhost/SiteBarosani/api/sse/updates.php';
+import { BAROSANI_URL, SUPREM_URL, SSE_URL } from '../config/api';
 
 export default function Zid() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,8 +70,8 @@ export default function Zid() {
 
         // Fetch both regular barosani and suprem in parallel
         const [barosaniData, supremData] = await Promise.all([
-          fetchJSONWithRetry(API_URL, {}, 3),
-          fetchJSONWithRetry(SUPREM_API_URL, {}, 3).catch(() => ({ success: false }))
+          fetchJSONWithRetry(BAROSANI_URL, {}, 3),
+          fetchJSONWithRetry(SUPREM_URL, {}, 3).catch(() => ({ success: false }))
         ]);
 
         if (barosaniData.success) {

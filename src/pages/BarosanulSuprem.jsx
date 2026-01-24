@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import CertificateGenerator from '../components/CertificateGenerator';
-
-const API_URL = 'http://localhost/SiteBarosani/api/barosan_suprem.php';
+import { SUPREM_URL } from '../config/api';
 
 export default function BarosanulSuprem() {
   const [supremeBarosan, setSupremeBarosan] = useState(null);
@@ -29,7 +28,7 @@ export default function BarosanulSuprem() {
   useEffect(() => {
     async function fetchSuprem() {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(SUPREM_URL);
         const data = await response.json();
 
         if (data.success) {

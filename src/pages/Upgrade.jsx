@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-
-const API_URL = 'http://localhost/SiteBarosani/api/upgrade.php';
+import { UPGRADE_URL } from '../config/api';
 
 export default function Upgrade() {
   const [searchParams] = useSearchParams();
@@ -29,7 +28,7 @@ export default function Upgrade() {
     setError('');
 
     try {
-      const response = await fetch(`${API_URL}?action=verify&token=${token}`);
+      const response = await fetch(`${UPGRADE_URL}?action=verify&token=${token}`);
       const data = await response.json();
 
       if (data.success && data.valid) {
@@ -57,7 +56,7 @@ export default function Upgrade() {
     setError('');
 
     try {
-      const response = await fetch(`${API_URL}?action=check&email=${encodeURIComponent(email)}`);
+      const response = await fetch(`${UPGRADE_URL}?action=check&email=${encodeURIComponent(email)}`);
       const data = await response.json();
 
       if (data.success) {
@@ -83,7 +82,7 @@ export default function Upgrade() {
     setError('');
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(UPGRADE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

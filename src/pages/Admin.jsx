@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '../contexts/ToastContext';
-
-const API_BASE = 'http://localhost/SiteBarosani/api';
+import { API_BASE, API_ENDPOINTS } from '../config/api';
 
 export default function Admin() {
   const toast = useToast();

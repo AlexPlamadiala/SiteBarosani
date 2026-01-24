@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useToast } from '../contexts/ToastContext';
 import { fetchWithRetry, getErrorMessage } from '../utils/fetchWithRetry';
+import { UPLOAD_IMAGE_URL, APPLICATIONS_URL } from '../config/api';
 
 export default function ApplicationForm() {
   const toast = useToast();
@@ -144,7 +145,7 @@ export default function ApplicationForm() {
         imageFormData.append('image', imageFile);
 
         const uploadResponse = await fetchWithRetry(
-          'http://localhost/SiteBarosani/api/upload_image.php',
+          UPLOAD_IMAGE_URL,
           {
             method: 'POST',
             body: imageFormData
@@ -170,7 +171,7 @@ export default function ApplicationForm() {
 
       // Trimite cererea la API
       const response = await fetchWithRetry(
-        'http://localhost/SiteBarosani/api/applications.php',
+        APPLICATIONS_URL,
         {
           method: 'POST',
           headers: {
