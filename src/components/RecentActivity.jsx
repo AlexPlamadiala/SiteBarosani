@@ -7,19 +7,13 @@ export default function RecentActivity({ barosani }) {
   const handleActivityClick = (e, barosan) => {
     e.preventDefault();
     const certificatId = barosan.certificatId || barosan.certificat_id;
-    console.log('[RecentActivity] Click on:', barosan.nume, 'tier:', barosan.tier, 'certificatId:', certificatId);
 
-    // If suprem, navigate to suprem page
+    // If suprem, navigate to suprem page, otherwise go to barosan profile
     if (barosan.tier === 'suprem') {
-      console.log('[RecentActivity] Navigating to /barosanul-suprem');
       navigate('/barosanul-suprem');
     } else {
-      // Use 'highlight' param to scroll to card (not 'certificat' which opens modal)
-      console.log('[RecentActivity] Navigating to /zid?highlight=' + certificatId);
-      navigate(`/zid?highlight=${certificatId}`);
+      navigate(`/barosan/${certificatId}`);
     }
-    // Scroll to top after navigation
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   // Get last 5 barosani sorted by date
   const recentBarosani = useMemo(() => {
@@ -84,7 +78,7 @@ export default function RecentActivity({ barosani }) {
         {recentBarosani.map((barosan, index) => (
           <a
             key={barosan.id}
-            href={barosan.tier === 'suprem' ? '/barosanul-suprem' : `/zid?highlight=${barosan.certificatId || barosan.certificat_id}`}
+            href={barosan.tier === 'suprem' ? '/barosanul-suprem' : `/barosan/${barosan.certificatId || barosan.certificat_id}`}
             onClick={(e) => handleActivityClick(e, barosan)}
             className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-white hover:from-[#FFF9E6] hover:to-white transition-all border border-gray-100 animate-fadeIn cursor-pointer group"
             style={{
