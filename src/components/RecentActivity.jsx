@@ -1,7 +1,16 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function RecentActivity({ barosani }) {
+  const navigate = useNavigate();
+
+  const handleActivityClick = (e, barosan) => {
+    e.preventDefault();
+    const certificatId = barosan.certificatId || barosan.certificat_id;
+    navigate(`/zid?certificat=${certificatId}`);
+    // Scroll to top after navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   // Get last 5 barosani sorted by date
   const recentBarosani = useMemo(() => {
     return [...barosani]
@@ -63,9 +72,10 @@ export default function RecentActivity({ barosani }) {
 
       <div className="space-y-3" key={animationKey}>
         {recentBarosani.map((barosan, index) => (
-          <Link
+          <a
             key={barosan.id}
-            to={`/zid?certificat=${barosan.certificatId || barosan.certificat_id}`}
+            href={`/zid?certificat=${barosan.certificatId || barosan.certificat_id}`}
+            onClick={(e) => handleActivityClick(e, barosan)}
             className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-white hover:from-[#FFF9E6] hover:to-white transition-all border border-gray-100 animate-fadeIn cursor-pointer group"
             style={{
               animationDelay: `${index * 100}ms`
@@ -108,7 +118,7 @@ export default function RecentActivity({ barosani }) {
               </div>
               <span className="text-gray-400 group-hover:text-[#D4AF37] group-hover:translate-x-1 transition-all">→</span>
             </div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>

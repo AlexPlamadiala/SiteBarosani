@@ -270,23 +270,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Suprem Spotlight - Only show when active */}
+      {/* Suprem Spotlight - PROMINENT - Only show when active */}
       {supremBarosan && !supremAvailable && (
-        <section className="py-8 px-4 bg-gradient-to-r from-purple-900/30 via-black to-pink-900/30 border-y border-purple-500/20">
-          <div className="container mx-auto">
-            <Link to="/barosanul-suprem" className="flex items-center justify-center gap-4 group">
-              <div className="flex items-center gap-3">
-                {supremBarosan.poza ? (
-                  <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-12 h-12 rounded-full border-2 border-purple-400 object-cover" />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl">👑</div>
-                )}
-                <div>
-                  <div className="text-xs text-purple-300 uppercase tracking-wider">Barosanul Suprem</div>
-                  <div className="text-white font-bold group-hover:text-purple-300 transition-colors">{supremBarosan.nume}</div>
+        <section className="py-6 px-4 bg-gradient-to-r from-purple-900/40 via-[#0a0a0a] to-pink-900/40 border-y border-purple-500/30">
+          <div className="container mx-auto max-w-2xl">
+            <Link to="/barosanul-suprem" className="block group">
+              <div className="relative">
+                {/* Glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+
+                <div className="relative bg-gradient-to-br from-purple-900/60 to-pink-900/60 rounded-xl p-4 border border-purple-500/40">
+                  <div className="flex items-center gap-4">
+                    {/* Photo */}
+                    <div className="relative flex-shrink-0">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-3 border-purple-400 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500 group-hover:scale-105 transition-transform">
+                        {supremBarosan.poza ? (
+                          <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-3xl">👑</div>
+                        )}
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs animate-pulse">👑</div>
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
+                        👑 BAROSANUL SUPREM ACTIV
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-black text-white truncate group-hover:text-purple-300 transition-colors">
+                        {supremBarosan.nume}
+                      </h3>
+                      {supremBarosan.motto && (
+                        <p className="text-white/60 italic text-sm truncate">"{supremBarosan.motto}"</p>
+                      )}
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="flex-shrink-0 text-purple-400 text-2xl group-hover:translate-x-2 transition-transform">→</div>
+                  </div>
                 </div>
               </div>
-              <span className="text-purple-400 group-hover:translate-x-1 transition-transform">→</span>
             </Link>
           </div>
         </section>
