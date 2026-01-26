@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
@@ -16,6 +16,7 @@ export default function Zid() {
     url: '/zid'
   });
 
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBarosan, setSelectedBarosan] = useState(null);
   const [barosani, setBarosani] = useState([]);
@@ -363,7 +364,13 @@ export default function Zid() {
       {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (
         <section className="py-4 px-4 bg-gradient-to-r from-purple-900/40 via-[#0a0a0a] to-pink-900/40 border-b border-purple-500/30">
           <div className="container mx-auto max-w-3xl">
-            <a href="/barosanul-suprem" className="block group">
+            <div
+              onClick={() => navigate('/barosanul-suprem')}
+              className="block group cursor-pointer"
+              role="link"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && navigate('/barosanul-suprem')}
+            >
               <div className="relative">
                 {/* Glow */}
                 <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
@@ -416,7 +423,7 @@ export default function Zid() {
                     {/* Actions */}
                     <div className="flex flex-col gap-2 flex-shrink-0">
                       <button
-                        onClick={(e) => { e.preventDefault(); handleViewCertificate({ ...activeSuprem, tier: 'suprem', dataInregistrare: activeSuprem.dataStart }); }}
+                        onClick={(e) => { e.stopPropagation(); handleViewCertificate({ ...activeSuprem, tier: 'suprem', dataInregistrare: activeSuprem.dataStart }); }}
                         className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-lg"
                       >
                         📜 Certificat
@@ -428,7 +435,7 @@ export default function Zid() {
                   </div>
                 </div>
               </div>
-            </a>
+            </div>
           </div>
         </section>
       )}

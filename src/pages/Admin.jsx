@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useToast } from '../contexts/ToastContext';
 import { API_BASE, API_ENDPOINTS } from '../config/api';
+import Pagination from '../components/Pagination';
 
 export default function Admin() {
   const toast = useToast();
@@ -22,6 +23,11 @@ export default function Admin() {
   // Filter states
   const [appFilter, setAppFilter] = useState('all');
   const [barosanFilter, setBarosanFilter] = useState('all');
+
+  // Pagination states
+  const [appPage, setAppPage] = useState(1);
+  const [barosanPage, setBarosanPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Payment proof modal state
   const [paymentProofModal, setPaymentProofModal] = useState({ show: false, appId: null, appName: '' });
@@ -293,20 +299,47 @@ export default function Admin() {
     basic: { color: 'from-blue-400 to-blue-600', icon: '⭐', textColor: 'text-blue-400' }
   };
 
+  // Reset pagination when filters change
+  useEffect(() => {
+    setAppPage(1);
+  }, [appFilter]);
+
+  useEffect(() => {
+    setBarosanPage(1);
+  }, [barosanFilter]);
+
   // Filter applications
-  const filteredApplications = applications.filter(app => {
-    if (appFilter === 'all') return true;
-    return app.status === appFilter;
-  });
+  const filteredApplications = useMemo(() => {
+    return applications.filter(app => {
+      if (appFilter === 'all') return true;
+      return app.status === appFilter;
+    });
+  }, [applications, appFilter]);
+
+  // Paginated applications
+  const appTotalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  const paginatedApplications = useMemo(() => {
+    const startIndex = (appPage - 1) * itemsPerPage;
+    return filteredApplications.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredApplications, appPage, itemsPerPage]);
 
   // Filter barosani
-  const filteredBarosani = barosani.filter(b => {
-    if (barosanFilter === 'all') return true;
-    if (barosanFilter === 'active') return b.status === 'active';
-    if (barosanFilter === 'inactive') return b.status === 'inactive';
-    if (barosanFilter === 'expired') return b.status === 'expired';
-    return b.tier === barosanFilter;
-  });
+  const filteredBarosani = useMemo(() => {
+    return barosani.filter(b => {
+      if (barosanFilter === 'all') return true;
+      if (barosanFilter === 'active') return b.status === 'active';
+      if (barosanFilter === 'inactive') return b.status === 'inactive';
+      if (barosanFilter === 'expired') return b.status === 'expired';
+      return b.tier === barosanFilter;
+    });
+  }, [barosani, barosanFilter]);
+
+  // Paginated barosani
+  const barosanTotalPages = Math.ceil(filteredBarosani.length / itemsPerPage);
+  const paginatedBarosani = useMemo(() => {
+    const startIndex = (barosanPage - 1) * itemsPerPage;
+    return filteredBarosani.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredBarosani, barosanPage, itemsPerPage]);
 
   // Loading state
   if (loading) {
@@ -501,31 +534,47 @@ export default function Admin() {
         {activeTab === 'applications' && (
           <div className="space-y-6">
             {/* Filters */}
-            <div className="flex gap-2 flex-wrap">
-              {[
-                { id: 'all', label: 'Toate' },
-                { id: 'pending', label: 'În așteptare' },
-                { id: 'payment_confirmed', label: 'Plată confirmată' },
-                { id: 'approved', label: 'Aprobate' },
-                { id: 'rejected', label: 'Respinse' }
-              ].map(filter => (
-                <button
-                  key={filter.id}
-                  onClick={() => setAppFilter(filter.id)}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                    appFilter === filter.id
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white/10 text-white/60 hover:text-white'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex gap-2 flex-wrap">
+                {[
+                  { id: 'all', label: 'Toate' },
+                  { id: 'pending', label: 'În așteptare' },
+                  { id: 'payment_confirmed', label: 'Plată confirmată' },
+                  { id: 'approved', label: 'Aprobate' },
+                  { id: 'rejected', label: 'Respinse' }
+                ].map(filter => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setAppFilter(filter.id)}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                      appFilter === filter.id
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/10 text-white/60 hover:text-white'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+              <div className="text-white/50 text-sm">
+                {filteredApplications.length} cereri
+              </div>
             </div>
+
+            {/* Pagination Top */}
+            {appTotalPages > 1 && (
+              <div className="pb-2 border-b border-white/10">
+                <Pagination
+                  currentPage={appPage}
+                  totalPages={appTotalPages}
+                  onPageChange={setAppPage}
+                />
+              </div>
+            )}
 
             {/* Applications List */}
             <div className="space-y-4">
-              {filteredApplications.map(app => (
+              {paginatedApplications.map(app => (
                 <div key={app.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
@@ -649,12 +698,26 @@ export default function Admin() {
                 </div>
               ))}
 
-              {filteredApplications.length === 0 && (
+              {paginatedApplications.length === 0 && (
                 <div className="text-center py-12 text-white/50">
                   Nu există cereri în această categorie
                 </div>
               )}
             </div>
+
+            {/* Pagination Bottom */}
+            {appTotalPages > 1 && (
+              <div className="pt-4 border-t border-white/10">
+                <Pagination
+                  currentPage={appPage}
+                  totalPages={appTotalPages}
+                  onPageChange={setAppPage}
+                />
+                <p className="text-center text-white/40 text-xs mt-2">
+                  Pagina {appPage} din {appTotalPages} ({filteredApplications.length} cereri)
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -662,33 +725,49 @@ export default function Admin() {
         {activeTab === 'barosani' && (
           <div className="space-y-6">
             {/* Filters */}
-            <div className="flex gap-2 flex-wrap">
-              {[
-                { id: 'all', label: 'Toți' },
-                { id: 'active', label: 'Activi' },
-                { id: 'inactive', label: 'Inactivi' },
-                { id: 'expired', label: 'Expirați' },
-                { id: 'platinum', label: '💎 Platinum' },
-                { id: 'gold', label: '🏆 Gold' },
-                { id: 'basic', label: '⭐ Basic' }
-              ].map(filter => (
-                <button
-                  key={filter.id}
-                  onClick={() => setBarosanFilter(filter.id)}
-                  className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                    barosanFilter === filter.id
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-white/10 text-white/60 hover:text-white'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex gap-2 flex-wrap">
+                {[
+                  { id: 'all', label: 'Toți' },
+                  { id: 'active', label: 'Activi' },
+                  { id: 'inactive', label: 'Inactivi' },
+                  { id: 'expired', label: 'Expirați' },
+                  { id: 'platinum', label: '💎 Platinum' },
+                  { id: 'gold', label: '🏆 Gold' },
+                  { id: 'basic', label: '⭐ Basic' }
+                ].map(filter => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setBarosanFilter(filter.id)}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                      barosanFilter === filter.id
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-white/10 text-white/60 hover:text-white'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+              <div className="text-white/50 text-sm">
+                {filteredBarosani.length} barosani
+              </div>
             </div>
+
+            {/* Pagination Top */}
+            {barosanTotalPages > 1 && (
+              <div className="pb-2 border-b border-white/10">
+                <Pagination
+                  currentPage={barosanPage}
+                  totalPages={barosanTotalPages}
+                  onPageChange={setBarosanPage}
+                />
+              </div>
+            )}
 
             {/* Barosani List */}
             <div className="grid md:grid-cols-2 gap-4">
-              {filteredBarosani.map(barosan => (
+              {paginatedBarosani.map(barosan => (
                 <div key={barosan.id} className="bg-white/5 rounded-xl p-6 border border-white/10">
                   <div className="flex items-start gap-4">
                     {barosan.poza && (
@@ -743,12 +822,26 @@ export default function Admin() {
                 </div>
               ))}
 
-              {filteredBarosani.length === 0 && (
+              {paginatedBarosani.length === 0 && (
                 <div className="col-span-2 text-center py-12 text-white/50">
                   Nu există barosani în această categorie
                 </div>
               )}
             </div>
+
+            {/* Pagination Bottom */}
+            {barosanTotalPages > 1 && (
+              <div className="pt-4 border-t border-white/10">
+                <Pagination
+                  currentPage={barosanPage}
+                  totalPages={barosanTotalPages}
+                  onPageChange={setBarosanPage}
+                />
+                <p className="text-center text-white/40 text-xs mt-2">
+                  Pagina {barosanPage} din {barosanTotalPages} ({filteredBarosani.length} barosani)
+                </p>
+              </div>
+            )}
           </div>
         )}
 
