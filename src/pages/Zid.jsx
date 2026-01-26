@@ -359,49 +359,76 @@ export default function Zid() {
         )}
       </div>
 
-      {/* Active Suprem Banner - Compact inline version */}
+      {/* Active Suprem Banner - Prominent version */}
       {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (
-        <section className="py-2 px-4 bg-gradient-to-r from-purple-900/30 via-black to-pink-900/30 border-b border-purple-500/20">
-          <div className="container mx-auto">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              {/* Photo + Info */}
-              <div className="flex items-center gap-2">
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full border-2 border-purple-500 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500">
-                    {activeSuprem.poza ? (
-                      <img src={activeSuprem.poza} alt={activeSuprem.nume} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-lg">👑</div>
-                    )}
+        <section className="py-4 px-4 bg-gradient-to-r from-purple-900/40 via-[#0a0a0a] to-pink-900/40 border-b border-purple-500/30">
+          <div className="container mx-auto max-w-3xl">
+            <a href="/barosanul-suprem" className="block group">
+              <div className="relative">
+                {/* Glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+
+                <div className="relative bg-gradient-to-br from-purple-900/70 to-pink-900/70 rounded-xl p-4 md:p-5 border border-purple-500/40 group-hover:border-purple-400/60 transition-all">
+                  <div className="flex items-center gap-4">
+                    {/* Photo */}
+                    <div className="relative flex-shrink-0">
+                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-3 border-purple-400 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform">
+                        {activeSuprem.poza ? (
+                          <img src={activeSuprem.poza} alt={activeSuprem.nume} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-3xl">👑</div>
+                        )}
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm animate-pulse shadow-lg">👑</div>
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
+                        👑 BAROSANUL SUPREM ACTIV
+                      </div>
+                      <h3 className="text-xl md:text-2xl font-black text-white truncate group-hover:text-purple-200 transition-colors">
+                        {activeSuprem.nume}
+                      </h3>
+                      {activeSuprem.motto && (
+                        <p className="text-white/60 italic text-sm truncate hidden sm:block">"{activeSuprem.motto}"</p>
+                      )}
+                      <div className="flex items-center gap-3 mt-1 flex-wrap">
+                        <span className="text-xs text-white/50">
+                          ⏱️ Expiră: <span className="text-purple-300 font-semibold">
+                            {new Date(activeSuprem.dataExpirare).toLocaleString('ro-RO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </span>
+                        {activeSuprem.link && (
+                          <a
+                            href={activeSuprem.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-purple-300 hover:text-purple-200 text-xs"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            🔗 Link
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2 flex-shrink-0">
+                      <button
+                        onClick={(e) => { e.preventDefault(); handleViewCertificate({ ...activeSuprem, tier: 'suprem', dataInregistrare: activeSuprem.dataStart }); }}
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-lg"
+                      >
+                        📜 Certificat
+                      </button>
+                      <span className="text-purple-300 text-xs font-semibold text-center group-hover:translate-x-1 transition-transform">
+                        Profil →
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-purple-300 uppercase tracking-wider">Suprem Activ</span>
-                  <div className="text-white font-bold text-sm">{activeSuprem.nume}</div>
-                </div>
               </div>
-
-              {/* Timer */}
-              <div className="text-xs text-white/60">
-                ⏱️ <span className="text-purple-300 font-bold">
-                  {new Date(activeSuprem.dataExpirare).toLocaleString('ro-RO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center gap-2">
-                {activeSuprem.link && (
-                  <a href={activeSuprem.link} target="_blank" rel="noopener noreferrer" className="text-purple-300 hover:text-purple-200 text-xs">🔗</a>
-                )}
-                <button
-                  onClick={() => handleViewCertificate({ ...activeSuprem, tier: 'suprem', dataInregistrare: activeSuprem.dataStart })}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded text-xs font-bold hover:scale-105 transition-transform"
-                >
-                  📜 Certificat
-                </button>
-                <a href="/barosanul-suprem" className="text-purple-300 hover:text-purple-200 text-xs font-semibold">👑 →</a>
-              </div>
-            </div>
+            </a>
           </div>
         </section>
       )}
@@ -426,7 +453,7 @@ export default function Zid() {
             <>
               {/* Pagination Top */}
               {totalPages > 1 && (
-                <div className="mb-6 pb-4 border-b border-white/10">
+                <div className="mb-4 pb-3 border-b border-white/10">
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
@@ -447,13 +474,13 @@ export default function Zid() {
 
               {/* Pagination Bottom */}
               {totalPages > 1 && (
-                <div className="mt-8 pt-8 border-t border-white/10">
+                <div className="mt-6 pt-6 border-t border-white/10">
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                   />
-                  <p className="text-center text-white/40 text-sm mt-4">
+                  <p className="text-center text-white/40 text-xs mt-3">
                     Pagina {currentPage} din {totalPages} ({filteredBarosani.length} barosani)
                   </p>
                 </div>

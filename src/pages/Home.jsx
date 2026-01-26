@@ -188,8 +188,70 @@ export default function Home() {
               Singura instituție acreditată pentru certificarea oficială a barosanilor din România
             </p>
 
+            {/* BAROSANUL SUPREM - FEATURED SECTION */}
+            {supremBarosan && !supremAvailable ? (
+              <Link to="/barosanul-suprem" className="block group mb-10">
+                <div className="relative max-w-2xl mx-auto">
+                  {/* Animated Glow */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 rounded-3xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity animate-pulse"></div>
+
+                  <div className="relative bg-gradient-to-br from-purple-900/90 to-pink-900/90 rounded-2xl p-6 border-2 border-purple-400/50 group-hover:border-purple-300 transition-all">
+                    <div className="flex items-center gap-6">
+                      {/* Photo */}
+                      <div className="relative flex-shrink-0">
+                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-purple-400 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl shadow-purple-500/50 group-hover:scale-105 transition-transform">
+                          {supremBarosan.poza ? (
+                            <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-5xl">👑</div>
+                          )}
+                        </div>
+                        <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl animate-bounce shadow-lg">👑</div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0 text-left">
+                        <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2 shadow-lg">
+                          👑 BAROSANUL SUPREM ACTIV
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-black text-white truncate group-hover:text-purple-200 transition-colors">
+                          {supremBarosan.nume}
+                        </h3>
+                        {supremBarosan.motto && (
+                          <p className="text-white/70 italic text-base mt-1 truncate">"{supremBarosan.motto}"</p>
+                        )}
+                        <div className="mt-3 flex items-center gap-2 text-purple-300 text-sm font-semibold">
+                          <span>Vezi profilul</span>
+                          <span className="group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : (
+              <Link to="/barosanul-suprem" className="block group mb-10">
+                <div className="relative max-w-xl mx-auto">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-br from-purple-900/80 to-pink-900/80 rounded-xl p-5 border border-purple-400/40 group-hover:border-purple-300/60 transition-all">
+                    <div className="text-center">
+                      <div className="text-4xl mb-2">👑</div>
+                      <div className="text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                        POZIȚIA SUPREM E LIBERĂ!
+                      </div>
+                      <p className="text-purple-300/80 text-sm mt-1">Devino cel mai baros dintre barosani</p>
+                      <div className="mt-3 inline-flex items-center gap-2 text-green-400 text-sm font-bold">
+                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Disponibil acum →
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )}
+
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
               <Link
                 to="/zid"
                 className="group bg-white text-black px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all shadow-2xl shadow-white/10"
@@ -205,116 +267,47 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Stats Grid - 5 columns with Suprem */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-              {/* Suprem Card - Special */}
-              <Link
-                to="/barosanul-suprem"
-                className="relative group bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/30 hover:border-purple-400/50 transition-all hover:scale-105 col-span-2 sm:col-span-1"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative">
-                  {supremBarosan && !supremAvailable ? (
-                    <>
-                      <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">ACTIV</div>
-                      <div className="text-purple-300/80 font-semibold text-sm">👑 Suprem</div>
-                      <div className="text-xs text-purple-300/60 mt-1 truncate">{supremBarosan.nume}</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">LIBER</div>
-                      <div className="text-purple-300/80 font-semibold text-sm">👑 Suprem</div>
-                      <div className="text-xs text-green-400 mt-1">Disponibil!</div>
-                    </>
-                  )}
-                </div>
-              </Link>
-
+            {/* Stats Grid - 4 columns (without separate Suprem card) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
               {/* Total */}
               <Link
                 to="/zid"
-                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
               >
-                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedTotal}</div>
-                <div className="text-white/60 font-semibold text-sm">🎯 Total</div>
+                <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedTotal}</div>
+                <div className="text-white/60 font-semibold">🎯 Total Barosani</div>
               </Link>
 
               {/* Platinum */}
               <Link
                 to="/zid?tier=platinum"
-                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-gray-300/30 transition-all hover:scale-105"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-gray-300/30 transition-all hover:scale-105"
               >
-                <div className="text-3xl font-black text-gray-300 tabular-nums">{animatedPlatinum}</div>
-                <div className="text-white/60 font-semibold text-sm">💎 Platinum</div>
+                <div className="text-4xl font-black text-gray-300 tabular-nums">{animatedPlatinum}</div>
+                <div className="text-white/60 font-semibold">💎 Platinum</div>
               </Link>
 
               {/* Gold */}
               <Link
                 to="/zid?tier=gold"
-                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-yellow-500/30 transition-all hover:scale-105"
               >
-                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedGold}</div>
-                <div className="text-white/60 font-semibold text-sm">🏆 Gold</div>
+                <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-500 tabular-nums">{animatedGold}</div>
+                <div className="text-white/60 font-semibold">🏆 Gold</div>
               </Link>
 
               {/* Basic */}
               <Link
                 to="/zid?tier=basic"
-                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:border-gray-500/30 transition-all hover:scale-105"
+                className="group bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 hover:border-gray-500/30 transition-all hover:scale-105"
               >
-                <div className="text-3xl font-black text-gray-400 tabular-nums">{animatedBasic}</div>
-                <div className="text-white/60 font-semibold text-sm">⭐ Basic</div>
+                <div className="text-4xl font-black text-gray-400 tabular-nums">{animatedBasic}</div>
+                <div className="text-white/60 font-semibold">⭐ Basic</div>
               </Link>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Suprem Spotlight - PROMINENT - Only show when active */}
-      {supremBarosan && !supremAvailable && (
-        <section className="py-6 px-4 bg-gradient-to-r from-purple-900/40 via-[#0a0a0a] to-pink-900/40 border-y border-purple-500/30">
-          <div className="container mx-auto max-w-2xl">
-            <Link to="/barosanul-suprem" className="block group">
-              <div className="relative">
-                {/* Glow */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-
-                <div className="relative bg-gradient-to-br from-purple-900/60 to-pink-900/60 rounded-xl p-4 border border-purple-500/40">
-                  <div className="flex items-center gap-4">
-                    {/* Photo */}
-                    <div className="relative flex-shrink-0">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-3 border-purple-400 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500 group-hover:scale-105 transition-transform">
-                        {supremBarosan.poza ? (
-                          <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-3xl">👑</div>
-                        )}
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs animate-pulse">👑</div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        👑 BAROSANUL SUPREM ACTIV
-                      </div>
-                      <h3 className="text-xl md:text-2xl font-black text-white truncate group-hover:text-purple-300 transition-colors">
-                        {supremBarosan.nume}
-                      </h3>
-                      {supremBarosan.motto && (
-                        <p className="text-white/60 italic text-sm truncate">"{supremBarosan.motto}"</p>
-                      )}
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="flex-shrink-0 text-purple-400 text-2xl group-hover:translate-x-2 transition-transform">→</div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </section>
-      )}
 
       {/* Features Section - Glass Cards */}
       <section className="py-16 px-4 bg-gradient-to-b from-[#0a0a0a] to-[#111]">

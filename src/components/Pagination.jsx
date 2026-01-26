@@ -2,12 +2,12 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-1.5">
       {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+        className={`px-2.5 py-1.5 rounded-md font-semibold text-xs transition-all ${
           currentPage === 1
             ? 'bg-white/5 text-white/30 cursor-not-allowed'
             : 'bg-white/10 text-white hover:bg-white/20'
@@ -17,17 +17,17 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       </button>
 
       {/* Page Numbers */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5">
         {/* First page */}
         {currentPage > 3 && (
           <>
             <button
               onClick={() => onPageChange(1)}
-              className="w-10 h-10 rounded-lg font-bold text-sm bg-white/10 text-white hover:bg-white/20 transition-all"
+              className="w-7 h-7 rounded-md font-semibold text-xs bg-white/10 text-white hover:bg-white/20 transition-all"
             >
               1
             </button>
-            {currentPage > 4 && <span className="text-white/50 px-2">...</span>}
+            {currentPage > 4 && <span className="text-white/50 px-1 text-xs">...</span>}
           </>
         )}
 
@@ -38,9 +38,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`w-10 h-10 rounded-lg font-bold text-sm transition-all ${
+              className={`w-7 h-7 rounded-md font-semibold text-xs transition-all ${
                 page === currentPage
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md'
                   : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >
@@ -52,10 +52,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         {/* Last page */}
         {currentPage < totalPages - 2 && (
           <>
-            {currentPage < totalPages - 3 && <span className="text-white/50 px-2">...</span>}
+            {currentPage < totalPages - 3 && <span className="text-white/50 px-1 text-xs">...</span>}
             <button
               onClick={() => onPageChange(totalPages)}
-              className="w-10 h-10 rounded-lg font-bold text-sm bg-white/10 text-white hover:bg-white/20 transition-all"
+              className="w-7 h-7 rounded-md font-semibold text-xs bg-white/10 text-white hover:bg-white/20 transition-all"
             >
               {totalPages}
             </button>
@@ -67,7 +67,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+        className={`px-2.5 py-1.5 rounded-md font-semibold text-xs transition-all ${
           currentPage === totalPages
             ? 'bg-white/5 text-white/30 cursor-not-allowed'
             : 'bg-white/10 text-white hover:bg-white/20'
