@@ -39,10 +39,41 @@
 
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b flex justify-between items-center">
+            <div class="p-6 border-b flex justify-between items-center flex-wrap gap-4">
                 <h2 class="text-2xl font-bold">Barosani pe Zid</h2>
-                <button onclick="showAddModal()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-                    + Adaugă Barosan
+                <div class="flex items-center gap-3">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Caută..."
+                            onkeyup="handleSearch()"
+                            class="pl-8 pr-3 py-2 border rounded-lg text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <button onclick="showAddModal()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                        + Adaugă Barosan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tier Tabs -->
+            <div class="px-6 py-3 border-b bg-gray-50 flex items-center gap-2 flex-wrap">
+                <button onclick="setTierFilter('all')" id="tab-all" class="px-3 py-1.5 rounded-full text-sm font-semibold bg-blue-600 text-white">
+                    🎯 Toți <span id="count-all" class="ml-1 bg-white/20 px-1.5 rounded">0</span>
+                </button>
+                <button onclick="setTierFilter('platinum')" id="tab-platinum" class="px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
+                    💎 Platinum <span id="count-platinum" class="ml-1 bg-black/10 px-1.5 rounded">0</span>
+                </button>
+                <button onclick="setTierFilter('gold')" id="tab-gold" class="px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
+                    🏆 Gold <span id="count-gold" class="ml-1 bg-black/10 px-1.5 rounded">0</span>
+                </button>
+                <button onclick="setTierFilter('basic')" id="tab-basic" class="px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">
+                    ⭐ Basic <span id="count-basic" class="ml-1 bg-black/10 px-1.5 rounded">0</span>
                 </button>
             </div>
 
@@ -66,6 +97,14 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="paginationContainer" class="px-6 py-4 border-t bg-gray-50 flex items-center justify-between">
+                <p id="paginationInfo" class="text-sm text-gray-600">Pagina 1 din 1</p>
+                <div id="paginationButtons" class="flex items-center gap-1">
+                    <!-- Pagination buttons will be inserted here -->
+                </div>
             </div>
         </div>
     </div>
@@ -154,6 +193,13 @@
         let sseConnected = false;
         let eventSource = null;
 
+        // Filtering and Pagination State
+        let allBarosani = [];
+        let currentTierFilter = 'all';
+        let currentSearchTerm = '';
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
         async function checkAuth() {
             const response = await fetch('http://localhost/SiteBarosani/api/auth.php', {
                 credentials: 'include'
@@ -178,61 +224,215 @@
                 });
                 const data = await response.json();
 
-                const tbody = document.getElementById('barosaniTable');
-
-                if (!data.success || data.barosani.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Niciun barosan</td></tr>';
-                    return;
+                if (!data.success) {
+                    allBarosani = [];
+                } else {
+                    allBarosani = data.barosani || [];
                 }
 
-                tbody.innerHTML = data.barosani.map(b => {
-                    const statusColors = {
-                        active: 'bg-green-100 text-green-800',
-                        expired: 'bg-red-100 text-red-800',
-                        suspended: 'bg-gray-100 text-gray-800'
-                    };
-
-                    const isExpiringSoon = new Date(b.data_expirare) - new Date() < 7 * 24 * 60 * 60 * 1000;
-
-                    return `
-                        <tr>
-                            <td class="px-6 py-4 text-sm font-mono">${b.certificat_id}</td>
-                            <td class="px-6 py-4 text-sm font-medium">${b.nume}</td>
-                            <td class="px-6 py-4 text-sm">${b.email}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded uppercase ${
-                                    b.tier === 'platinum' ? 'bg-gray-200' :
-                                    b.tier === 'gold' ? 'bg-yellow-200' : 'bg-blue-200'
-                                }">
-                                    ${b.tier}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm">${new Date(b.data_inregistrare).toLocaleDateString('ro-RO')}</td>
-                            <td class="px-6 py-4 text-sm ${isExpiringSoon && b.status === 'active' ? 'text-red-600 font-bold' : ''}">
-                                ${new Date(b.data_expirare).toLocaleDateString('ro-RO')}
-                                ${isExpiringSoon && b.status === 'active' ? '⚠️' : ''}
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded ${statusColors[b.status]}">
-                                    ${b.status}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm space-x-2">
-                                <button onclick='editBarosan(${JSON.stringify(b)})' class="text-blue-600 hover:text-blue-800">
-                                    ✏️
-                                </button>
-                                <button onclick="deleteBarosan(${b.id})" class="text-red-600 hover:text-red-800">
-                                    🗑️
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
+                updateTierCounts();
+                renderBarosani();
             } catch (error) {
                 console.error('Error:', error);
             } finally {
                 hideRefreshIndicator();
             }
+        }
+
+        function updateTierCounts() {
+            const counts = {
+                all: allBarosani.length,
+                platinum: allBarosani.filter(b => b.tier === 'platinum').length,
+                gold: allBarosani.filter(b => b.tier === 'gold').length,
+                basic: allBarosani.filter(b => b.tier === 'basic').length
+            };
+
+            document.getElementById('count-all').textContent = counts.all;
+            document.getElementById('count-platinum').textContent = counts.platinum;
+            document.getElementById('count-gold').textContent = counts.gold;
+            document.getElementById('count-basic').textContent = counts.basic;
+        }
+
+        function setTierFilter(tier) {
+            currentTierFilter = tier;
+            currentPage = 1;
+
+            // Update tab styles
+            ['all', 'platinum', 'gold', 'basic'].forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                if (t === tier) {
+                    btn.className = 'px-3 py-1.5 rounded-full text-sm font-semibold bg-blue-600 text-white';
+                } else {
+                    btn.className = 'px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300';
+                }
+            });
+
+            renderBarosani();
+        }
+
+        function handleSearch() {
+            currentSearchTerm = document.getElementById('searchInput').value.toLowerCase();
+            currentPage = 1;
+            renderBarosani();
+        }
+
+        function getFilteredBarosani() {
+            let filtered = [...allBarosani];
+
+            // Filter by tier
+            if (currentTierFilter !== 'all') {
+                filtered = filtered.filter(b => b.tier === currentTierFilter);
+            }
+
+            // Filter by search
+            if (currentSearchTerm) {
+                filtered = filtered.filter(b =>
+                    b.nume.toLowerCase().includes(currentSearchTerm) ||
+                    b.email.toLowerCase().includes(currentSearchTerm) ||
+                    b.certificat_id.toLowerCase().includes(currentSearchTerm) ||
+                    (b.motto && b.motto.toLowerCase().includes(currentSearchTerm))
+                );
+            }
+
+            return filtered;
+        }
+
+        function renderBarosani() {
+            const filtered = getFilteredBarosani();
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+            // Adjust current page if needed
+            if (currentPage > totalPages && totalPages > 0) {
+                currentPage = totalPages;
+            }
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+            const tbody = document.getElementById('barosaniTable');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Niciun barosan găsit</td></tr>';
+                document.getElementById('paginationContainer').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('paginationContainer').classList.remove('hidden');
+
+            tbody.innerHTML = paginated.map(b => {
+                const statusColors = {
+                    active: 'bg-green-100 text-green-800',
+                    expired: 'bg-red-100 text-red-800',
+                    suspended: 'bg-gray-100 text-gray-800'
+                };
+
+                const isExpiringSoon = new Date(b.data_expirare) - new Date() < 7 * 24 * 60 * 60 * 1000;
+
+                return `
+                    <tr>
+                        <td class="px-6 py-4 text-sm font-mono">${b.certificat_id}</td>
+                        <td class="px-6 py-4 text-sm font-medium">${b.nume}</td>
+                        <td class="px-6 py-4 text-sm">${b.email}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded uppercase ${
+                                b.tier === 'platinum' ? 'bg-gray-200' :
+                                b.tier === 'gold' ? 'bg-yellow-200' : 'bg-blue-200'
+                            }">
+                                ${b.tier}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm">${new Date(b.data_inregistrare).toLocaleDateString('ro-RO')}</td>
+                        <td class="px-6 py-4 text-sm ${isExpiringSoon && b.status === 'active' ? 'text-red-600 font-bold' : ''}">
+                            ${new Date(b.data_expirare).toLocaleDateString('ro-RO')}
+                            ${isExpiringSoon && b.status === 'active' ? '⚠️' : ''}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-semibold rounded ${statusColors[b.status]}">
+                                ${b.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm space-x-2">
+                            <button onclick='editBarosan(${JSON.stringify(b).replace(/'/g, "\\'")})'  class="text-blue-600 hover:text-blue-800">
+                                ✏️
+                            </button>
+                            <button onclick="deleteBarosan(${b.id})" class="text-red-600 hover:text-red-800">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderPagination(totalPages, filtered.length);
+        }
+
+        function renderPagination(totalPages, totalItems) {
+            document.getElementById('paginationInfo').textContent =
+                `Pagina ${currentPage} din ${totalPages} (${totalItems} barosani)`;
+
+            const container = document.getElementById('paginationButtons');
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // Previous button
+            html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}
+                class="px-2 py-1 rounded text-xs font-semibold ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
+                ← Înapoi
+            </button>`;
+
+            // Page numbers
+            const maxVisible = 5;
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+            if (endPage - startPage < maxVisible - 1) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)" class="w-7 h-7 rounded text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">1</button>`;
+                if (startPage > 2) {
+                    html += `<span class="text-gray-400 text-xs px-1">...</span>`;
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button onclick="goToPage(${i})"
+                    class="w-7 h-7 rounded text-xs font-semibold ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
+                    ${i}
+                </button>`;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    html += `<span class="text-gray-400 text-xs px-1">...</span>`;
+                }
+                html += `<button onclick="goToPage(${totalPages})" class="w-7 h-7 rounded text-xs font-semibold bg-gray-200 text-gray-700 hover:bg-gray-300">${totalPages}</button>`;
+            }
+
+            // Next button
+            html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}
+                class="px-2 py-1 rounded text-xs font-semibold ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}">
+                Înainte →
+            </button>`;
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const filtered = getFilteredBarosani();
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+            if (page < 1 || page > totalPages) return;
+
+            currentPage = page;
+            renderBarosani();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function setupSSE() {

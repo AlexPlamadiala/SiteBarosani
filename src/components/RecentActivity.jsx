@@ -6,8 +6,13 @@ export default function RecentActivity({ barosani }) {
 
   const handleActivityClick = (e, barosan) => {
     e.preventDefault();
-    const certificatId = barosan.certificatId || barosan.certificat_id;
-    navigate(`/zid?certificat=${certificatId}`);
+    // If suprem, navigate to suprem page
+    if (barosan.tier === 'suprem') {
+      navigate('/barosanul-suprem');
+    } else {
+      const certificatId = barosan.certificatId || barosan.certificat_id;
+      navigate(`/zid?certificat=${certificatId}`);
+    }
     // Scroll to top after navigation
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -74,7 +79,7 @@ export default function RecentActivity({ barosani }) {
         {recentBarosani.map((barosan, index) => (
           <a
             key={barosan.id}
-            href={`/zid?certificat=${barosan.certificatId || barosan.certificat_id}`}
+            href={barosan.tier === 'suprem' ? '/barosanul-suprem' : `/zid?certificat=${barosan.certificatId || barosan.certificat_id}`}
             onClick={(e) => handleActivityClick(e, barosan)}
             className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-gray-50 to-white hover:from-[#FFF9E6] hover:to-white transition-all border border-gray-100 animate-fadeIn cursor-pointer group"
             style={{
