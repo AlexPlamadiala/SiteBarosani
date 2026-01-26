@@ -51,7 +51,7 @@ export default function Zid() {
     }
 
     if (certificatId && barosani.length > 0 && !selectedBarosan) {
-      const barosan = barosani.find(b => b.certificatId === certificatId);
+      const barosan = barosani.find(b => (b.certificatId || b.certificat_id) === certificatId);
       if (barosan) {
         setSelectedBarosan(barosan);
         setSearchParams({}, { replace: true });
