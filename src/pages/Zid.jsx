@@ -26,8 +26,15 @@ export default function Zid() {
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'suprem', 'platinum', 'gold', 'basic'
   const [sortBy, setSortBy] = useState('tier');
   const [activeSuprem, setActiveSuprem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 24; // Show 24 items per page
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Reset to page 1 when filters/search/tab changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, debouncedSearchTerm]);
 
   // Handle URL params for certificate and tier
   useEffect(() => {
@@ -133,13 +140,22 @@ export default function Zid() {
   }, []);
 
   // Count by tier (including active suprem from separate table)
-  const tierCounts = useMemo(() => ({
-    all: barosani.length + (activeSuprem ? 1 : 0),
-    suprem: (activeSuprem ? 1 : 0),
-    platinum: barosani.filter(b => b.tier === 'platinum').length,
-    gold: barosani.filter(b => b.tier === 'gold').length,
-    basic: barosani.filter(b => b.tier === 'basic').length
-  }), [barosani, activeSuprem]);
+  const tierCounts = useMemo(() => {
+    const platinumCount = barosani.filter(b => b.tier === 'platinum').length;
+    const goldCount = barosani.filter(b => b.tier === 'gold').length;
+    const basicCount = barosani.filter(b => b.tier === 'basic').length;
+    const supremCount = activeSuprem ? 1 : 0;
+    // Total is the sum of all tiers, not barosani.length (to avoid counting barosani with invalid/null tiers)
+    const total = platinumCount + goldCount + basicCount + supremCount;
+
+    return {
+      all: total,
+      suprem: supremCount,
+      platinum: platinumCount,
+      gold: goldCount,
+      basic: basicCount
+    };
+  }, [barosani, activeSuprem]);
 
   // Filter and sort
   const filteredBarosani = useMemo(() => {
@@ -196,6 +212,19 @@ export default function Zid() {
 
     return filtered;
   }, [barosani, debouncedSearchTerm, activeTab, sortBy]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredBarosani.length / itemsPerPage);
+  const paginatedBarosani = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredBarosani.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredBarosani, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of grid
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  };
 
   const handleViewCertificate = (barosan) => setSelectedBarosan(barosan);
   const handleCloseCertificate = () => setSelectedBarosan(null);
@@ -331,19 +360,18 @@ export default function Zid() {
 
       {/* Active Suprem Banner - Only show when viewing all or suprem tab */}
       {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (
-        <section className="py-6 px-4">
+        <section className="py-4 px-4">
           <div className="container mx-auto">
             <div className="relative">
-              {/* Glow effect */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-lg opacity-30 animate-pulse"></div>
+              {/* Glow effect - subtle */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20"></div>
 
-              <div className="relative bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-2xl border border-purple-500/30 p-6 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  {/* Crown badge */}
+              <div className="relative bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-xl border border-purple-500/30 p-4 backdrop-blur-sm">
+                <div className="flex items-center gap-4">
+                  {/* Crown badge - compact */}
                   <div className="flex-shrink-0">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full blur-xl opacity-50"></div>
-                      <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-purple-500 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500">
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full border-3 border-purple-500 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500">
                         {activeSuprem.poza ? (
                           <img
                             src={activeSuprem.poza}
@@ -351,31 +379,30 @@ export default function Zid() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-5xl">
+                          <div className="w-full h-full flex items-center justify-center text-3xl">
                             👑
                           </div>
                         )}
                       </div>
-                      <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xl shadow-lg">
+                      <div className="absolute -top-1 -right-1 w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm shadow-lg">
                         👑
                       </div>
                     </div>
                   </div>
 
-                  {/* Info */}
-                  <div className="flex-1 text-center md:text-left">
-                    <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-2">
+                  {/* Info - compact */}
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
                       👑 BAROSANUL SUPREM ACTIV
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+                    <h3 className="text-lg md:text-xl font-black text-white truncate">
                       {activeSuprem.nume}
                     </h3>
                     {activeSuprem.motto && (
-                      <p className="text-white/70 italic mb-3">"{activeSuprem.motto}"</p>
+                      <p className="text-white/70 italic text-sm truncate">"{activeSuprem.motto}"</p>
                     )}
-
-                    {/* Timer */}
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-sm">
+                    {/* Timer inline */}
+                    <div className="flex items-center gap-1 text-xs mt-1">
                       <span className="text-purple-300">⏱️</span>
                       <span className="text-white/60">Expiră:</span>
                       <span className="text-purple-300 font-bold">
@@ -389,47 +416,38 @@ export default function Zid() {
                     </div>
                   </div>
 
-                  {/* Link button if exists */}
-                  {activeSuprem.link && (
-                    <div className="flex-shrink-0">
+                  {/* Actions - compact */}
+                  <div className="flex-shrink-0 flex flex-col sm:flex-row items-center gap-2">
+                    {activeSuprem.link && (
                       <a
                         href={activeSuprem.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl font-bold transition-all"
+                        className="inline-flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-all"
                       >
                         🔗 Link Personal
                       </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="mt-4 pt-4 border-t border-white/10 flex flex-wrap items-center justify-center gap-4">
-                  {/* Certificate Button */}
-                  <button
-                    onClick={() => {
-                      // Map suprem data to certificate format
-                      const supremCertData = {
-                        ...activeSuprem,
-                        tier: 'suprem',
-                        dataInregistrare: activeSuprem.dataStart
-                      };
-                      handleViewCertificate(supremCertData);
-                    }}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:scale-105 transition-transform shadow-lg"
-                  >
-                    📜 Vezi Certificat
-                  </button>
-
-                  {/* View full page link */}
-                  <a
-                    href="/barosanul-suprem"
-                    className="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 font-semibold text-sm transition-colors"
-                  >
-                    Vezi pagina completă 👑
-                    <span>→</span>
-                  </a>
+                    )}
+                    <button
+                      onClick={() => {
+                        const supremCertData = {
+                          ...activeSuprem,
+                          tier: 'suprem',
+                          dataInregistrare: activeSuprem.dataStart
+                        };
+                        handleViewCertificate(supremCertData);
+                      }}
+                      className="inline-flex items-center gap-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg font-bold text-xs hover:scale-105 transition-transform shadow-lg"
+                    >
+                      📜 Vezi Certificat
+                    </button>
+                    <a
+                      href="/barosanul-suprem"
+                      className="inline-flex items-center gap-1 text-purple-300 hover:text-purple-200 font-semibold text-xs transition-colors"
+                    >
+                      Vezi pagina completă 👑 →
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -454,15 +472,102 @@ export default function Zid() {
               </button>
             </div>
           ) : filteredBarosani.length > 0 ? (
-            <div className={`grid ${getGridClass()}`}>
-              {filteredBarosani.map((barosan) => (
-                <BarosanCard
-                  key={barosan.id}
-                  barosan={barosan}
-                  onViewCertificate={handleViewCertificate}
-                />
-              ))}
-            </div>
+            <>
+              <div className={`grid ${getGridClass()}`}>
+                {paginatedBarosani.map((barosan) => (
+                  <BarosanCard
+                    key={barosan.id}
+                    barosan={barosan}
+                    onViewCertificate={handleViewCertificate}
+                  />
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-white/10">
+                  {/* Previous Button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                      currentPage === 1
+                        ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    ← Inapoi
+                  </button>
+
+                  {/* Page Numbers */}
+                  <div className="flex items-center gap-1">
+                    {/* First page */}
+                    {currentPage > 3 && (
+                      <>
+                        <button
+                          onClick={() => handlePageChange(1)}
+                          className="w-10 h-10 rounded-lg font-bold text-sm bg-white/10 text-white hover:bg-white/20 transition-all"
+                        >
+                          1
+                        </button>
+                        {currentPage > 4 && <span className="text-white/50 px-2">...</span>}
+                      </>
+                    )}
+
+                    {/* Page numbers around current */}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(page => page >= currentPage - 2 && page <= currentPage + 2)
+                      .map(page => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`w-10 h-10 rounded-lg font-bold text-sm transition-all ${
+                            page === currentPage
+                              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
+                              : 'bg-white/10 text-white hover:bg-white/20'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))
+                    }
+
+                    {/* Last page */}
+                    {currentPage < totalPages - 2 && (
+                      <>
+                        {currentPage < totalPages - 3 && <span className="text-white/50 px-2">...</span>}
+                        <button
+                          onClick={() => handlePageChange(totalPages)}
+                          className="w-10 h-10 rounded-lg font-bold text-sm bg-white/10 text-white hover:bg-white/20 transition-all"
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Next Button */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                      currentPage === totalPages
+                        ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    Inainte →
+                  </button>
+                </div>
+              )}
+
+              {/* Page Info */}
+              {totalPages > 1 && (
+                <p className="text-center text-white/40 text-sm mt-4">
+                  Pagina {currentPage} din {totalPages} ({filteredBarosani.length} barosani)
+                </p>
+              )}
+            </>
           ) : null}
         </div>
       </section>

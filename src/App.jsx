@@ -16,6 +16,7 @@ const CumDevinBarosan = lazy(() => import('./pages/CumDevinBarosan'));
 const Termeni = lazy(() => import('./pages/Termeni'));
 const Confidentialitate = lazy(() => import('./pages/Confidentialitate'));
 const BarosanulSuprem = lazy(() => import('./pages/BarosanulSuprem'));
+const BarosanProfile = lazy(() => import('./pages/BarosanProfile'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Upgrade = lazy(() => import('./pages/Upgrade'));
 
@@ -55,6 +56,7 @@ function App() {
                   <Route path="/termeni" element={<Termeni />} />
                   <Route path="/confidentialitate" element={<Confidentialitate />} />
                   <Route path="/barosanul-suprem" element={<BarosanulSuprem />} />
+                  <Route path="/barosan/:certificatId" element={<BarosanProfile />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/upgrade" element={<Upgrade />} />
                 </Routes>

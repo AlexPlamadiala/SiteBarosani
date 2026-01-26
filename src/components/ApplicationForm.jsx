@@ -95,7 +95,7 @@ export default function ApplicationForm() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate name
+    // Validate name - allow any characters
     const trimmedName = formData.nume.trim();
     if (!trimmedName) {
       newErrors.nume = 'Numele este obligatoriu';
@@ -103,8 +103,6 @@ export default function ApplicationForm() {
       newErrors.nume = 'Numele trebuie să aibă minim 2 caractere';
     } else if (trimmedName.length > 50) {
       newErrors.nume = 'Numele trebuie să aibă maximum 50 de caractere';
-    } else if (!/^[a-zA-ZăâîșțĂÂÎȘȚ\s\-'.]+$/.test(trimmedName)) {
-      newErrors.nume = 'Numele conține caractere invalide';
     }
 
     // Validate email with proper regex
@@ -156,6 +154,17 @@ export default function ApplicationForm() {
     }
 
     setErrors(newErrors);
+
+    // If there are errors, scroll to the first error field
+    if (Object.keys(newErrors).length > 0) {
+      const firstErrorField = Object.keys(newErrors)[0];
+      const element = document.querySelector(`[name="${firstErrorField}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      }
+    }
+
     return Object.keys(newErrors).length === 0;
   };
 

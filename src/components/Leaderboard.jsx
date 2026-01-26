@@ -104,7 +104,7 @@ export default function Leaderboard({ barosani }) {
 
             return (
               <Link
-                to={`/zid?certificat=${barosan.certificatId}`}
+                to={`/barosan/${barosan.certificatId}`}
                 key={barosan.id}
                 className={`group relative flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer ${
                   isPodium

@@ -2,21 +2,21 @@ export default function HowItWorks() {
   const steps = [
     {
       number: 1,
-      icon: '🎯',
-      title: 'Alege Tier-ul',
-      description: 'Selectează pachetul: Basic, Gold sau Platinum'
+      icon: '📝',
+      title: 'Completează Formularul',
+      description: 'Alege tier-ul, adaugă poza și motto-ul în formular'
     },
     {
       number: 2,
-      icon: '💳',
-      title: 'Plătește prin Revolut',
-      description: 'Trimite suma la @username-revolut'
+      icon: '🎫',
+      title: 'Primești Codul',
+      description: 'După trimitere primești un cod unic pentru cerere'
     },
     {
       number: 3,
-      icon: '📸',
-      title: 'Trimite Poza',
-      description: 'Trimite poza, motto-ul și link-ul pe email'
+      icon: '💳',
+      title: 'Plătește prin Revolut',
+      description: 'Trimite suma la @username-revolut cu codul primit'
     },
     {
       number: 4,

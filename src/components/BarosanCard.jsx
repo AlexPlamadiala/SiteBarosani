@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import BadgeDisplay from './BadgeDisplay';
 
 export default function BarosanCard({ barosan, onViewCertificate, totalBarosani = 0 }) {
@@ -85,115 +86,118 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
         onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
         onMouseLeave={!isTouchDevice ? handleMouseLeave : undefined}
       >
-        {/* Tier Badge - Enhanced */}
-        <div className={`relative ${colors.badge} text-center py-2.5 font-extrabold text-sm tracking-wide overflow-hidden`}>
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white rounded-full blur-2xl"></div>
+        {/* Clickable area that links to profile */}
+        <Link to={`/barosan/${barosan.certificatId}`} className="block">
+          {/* Tier Badge - Enhanced */}
+          <div className={`relative ${colors.badge} text-center py-2.5 font-extrabold text-sm tracking-wide overflow-hidden`}>
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-white rounded-full blur-2xl"></div>
+            </div>
+            <span className={`relative ${colors.badgeText} drop-shadow-sm`}>
+              {tierLabels[tier]}
+            </span>
           </div>
-          <span className={`relative ${colors.badgeText} drop-shadow-sm`}>
-            {tierLabels[tier]}
-          </span>
-        </div>
 
-      {/* Image - Enhanced */}
-      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-        {barosan.poza && !imageError ? (
-          <>
-            {/* Loading placeholder */}
-            {!imageLoaded && (
-              <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${colors.cardGradient} animate-pulse`}>
+          {/* Image - Enhanced */}
+          <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+            {barosan.poza && !imageError ? (
+              <>
+                {/* Loading placeholder */}
+                {!imageLoaded && (
+                  <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${colors.cardGradient} animate-pulse`}>
+                    <div className="relative">
+                      <div className={`absolute inset-0 ${colors.blurColor} rounded-full blur-xl opacity-30`}></div>
+                      <div className="relative text-5xl opacity-50">📸</div>
+                    </div>
+                  </div>
+                )}
+                {/* Actual image with lazy loading */}
+                <img
+                  src={barosan.poza}
+                  alt={`Fotografie ${barosan.nume}`}
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+                  }`}
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => {
+                    setImageError(true);
+                    setImageLoaded(false);
+                  }}
+                />
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                 <div className="relative">
-                  <div className={`absolute inset-0 ${colors.blurColor} rounded-full blur-xl opacity-30`}></div>
-                  <div className="relative text-5xl opacity-50">📸</div>
+                  <div className="absolute inset-0 bg-gray-300 rounded-full blur-2xl opacity-50"></div>
+                  <span className="relative text-7xl opacity-75">👤</span>
                 </div>
               </div>
             )}
-            {/* Actual image with lazy loading */}
-            <img
-              src={barosan.poza}
-              alt={`Fotografie ${barosan.nume}`}
-              className={`w-full h-full object-cover transition-all duration-500 ${
-                imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-              }`}
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
-              onLoad={() => setImageLoaded(true)}
-              onError={() => {
-                setImageError(true);
-                setImageLoaded(false);
-              }}
-            />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gray-300 rounded-full blur-2xl opacity-50"></div>
-              <span className="relative text-7xl opacity-75">👤</span>
+          </div>
+
+          {/* Content - Enhanced */}
+          <div className="p-5 space-y-3 flex-1 flex flex-col">
+            <h3 className="font-extrabold text-xl text-center text-[#1a365d] leading-tight">
+              {barosan.nume}
+            </h3>
+
+            {/* Badges */}
+            <div className="flex justify-center min-h-[28px]">
+              <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
+            </div>
+
+            <p className="text-sm text-gray-600 text-center italic leading-relaxed min-h-[40px] flex items-center justify-center">
+              "{barosan.motto}"
+            </p>
+
+            <div className="flex items-center justify-center text-xs font-semibold text-gray-500 pt-1">
+              <div className="bg-gray-100 px-3 py-1.5 rounded-full">
+                <span>🏆 Barosan din {formattedDate}</span>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </Link>
 
-      {/* Content - Enhanced */}
-      <div className="p-5 space-y-3 flex-1 flex flex-col">
-        <h3 className="font-extrabold text-xl text-center text-[#1a365d] leading-tight">
-          {barosan.nume}
-        </h3>
+        {/* Buttons section - outside the Link to avoid nested links */}
+        <div className="px-5 pb-5 space-y-3">
+          {/* Link for Suprem/Platinum - Fixed height container */}
+          <div className="min-h-[44px] text-center">
+            {(tier === 'suprem' || tier === 'platinum') && barosan.link ? (
+              <a
+                href={barosan.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-1.5 transition-colors text-sm font-bold px-4 py-2 rounded-lg shadow-sm ${
+                  tier === 'suprem'
+                    ? 'text-purple-500 hover:text-purple-400 bg-gradient-to-r from-purple-100 to-pink-50 hover:from-purple-200 hover:to-pink-100'
+                    : 'text-[#BCC6CC] hover:text-[#E5E4E2] bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100'
+                }`}
+              >
+                <span>🔗</span>
+                <span>Link Personal</span>
+              </a>
+            ) : null}
+          </div>
 
-        {/* Badges */}
-        <div className="flex justify-center min-h-[28px]">
-          <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
-        </div>
-
-        <p className="text-sm text-gray-600 text-center italic leading-relaxed min-h-[40px] flex items-center justify-center">
-          "{barosan.motto}"
-        </p>
-
-        <div className="flex items-center justify-center text-xs font-semibold text-gray-500 pt-1">
-          <div className="bg-gray-100 px-3 py-1.5 rounded-full">
-            <span>🏆 Barosan din {formattedDate}</span>
+          {/* Certificate Button - Fixed height to prevent layout shift */}
+          <div className="h-12">
+            <div className={`relative group/btn transition-opacity duration-300 ${
+              showButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}>
+              <div className={`absolute inset-0 ${colors.blurColor} rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity`}></div>
+              <button
+                onClick={() => onViewCertificate(barosan)}
+                className="relative w-full bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all font-extrabold text-sm touch-manipulation shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2"
+                aria-label={`Vezi certificatul pentru ${barosan.nume}`}
+              >
+                📜 Vezi Certificat
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* Spacer to push button to bottom */}
-        <div className="flex-1"></div>
-
-        {/* Link for Suprem/Platinum - Fixed height container */}
-        <div className="min-h-[44px] pt-2 text-center">
-          {(tier === 'suprem' || tier === 'platinum') && barosan.link ? (
-            <a
-              href={barosan.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`inline-flex items-center gap-1.5 transition-colors text-sm font-bold px-4 py-2 rounded-lg shadow-sm ${
-                tier === 'suprem'
-                  ? 'text-purple-500 hover:text-purple-400 bg-gradient-to-r from-purple-100 to-pink-50 hover:from-purple-200 hover:to-pink-100'
-                  : 'text-[#BCC6CC] hover:text-[#E5E4E2] bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100'
-              }`}
-            >
-              <span>🔗</span>
-              <span>Link Personal</span>
-            </a>
-          ) : null}
-        </div>
-
-        {/* Certificate Button - Fixed height to prevent layout shift */}
-        <div className="h-12">
-          <div className={`relative group/btn transition-opacity duration-300 ${
-            showButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}>
-            <div className={`absolute inset-0 ${colors.blurColor} rounded-xl blur opacity-30 group-hover/btn:opacity-50 transition-opacity`}></div>
-            <button
-              onClick={() => onViewCertificate(barosan)}
-              className="relative w-full bg-gradient-to-r from-[#1a365d] to-[#2d5986] text-white py-2.5 rounded-xl hover:scale-105 active:scale-95 transition-all font-extrabold text-sm touch-manipulation shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2"
-              aria-label={`Vezi certificatul pentru ${barosan.nume}`}
-            >
-              📜 Vezi Certificat
-            </button>
-          </div>
-        </div>
-      </div>
       </div>
     </article>
   );
