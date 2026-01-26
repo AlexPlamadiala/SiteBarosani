@@ -38,26 +38,71 @@ export default function Zid() {
     setCurrentPage(1);
   }, [activeTab, debouncedSearchTerm]);
 
-  // Handle URL params for certificate and tier
+  // Handle URL params for certificate, highlight, and tier
   useEffect(() => {
     const certificatId = searchParams.get('certificat');
+    const highlightId = searchParams.get('highlight');
     const tierParam = searchParams.get('tier');
 
+    console.log('[Zid] URL params:', { certificatId, highlightId, tierParam });
+    console.log('[Zid] barosani.length:', barosani.length);
+
     if (tierParam && ['suprem', 'platinum', 'gold', 'basic', 'all'].includes(tierParam)) {
+      console.log('[Zid] Setting activeTab to:', tierParam);
       setActiveTab(tierParam);
       const newParams = new URLSearchParams(searchParams);
       newParams.delete('tier');
       setSearchParams(newParams, { replace: true });
     }
 
+    // Handle highlight parameter - scroll to card without opening certificate
+    if (highlightId && barosani.length > 0) {
+      console.log('[Zid] Looking for barosan with highlightId:', highlightId);
+      const barosan = barosani.find(b => (b.certificatId || b.certificat_id) === highlightId);
+      console.log('[Zid] Found barosan:', barosan);
+
+      if (barosan) {
+        // Set the appropriate tier tab to ensure the barosan is visible
+        const barosanTier = barosan.tier || 'basic';
+        console.log('[Zid] Barosan tier:', barosanTier, 'activeTab:', activeTab);
+
+        // Switch to the appropriate tab or 'all' to make sure the card is visible
+        if (activeTab !== 'all' && activeTab !== barosanTier) {
+          console.log('[Zid] Switching to all tab');
+          setActiveTab('all');
+        }
+
+        // Scroll to the card after a short delay to let the grid render
+        setTimeout(() => {
+          const cardElement = document.querySelector(`[data-certificat-id="${highlightId}"]`);
+          console.log('[Zid] Card element found:', cardElement);
+          if (cardElement) {
+            cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add highlight animation
+            cardElement.classList.add('ring-4', 'ring-purple-500', 'ring-opacity-75');
+            setTimeout(() => {
+              cardElement.classList.remove('ring-4', 'ring-purple-500', 'ring-opacity-75');
+            }, 3000);
+          }
+        }, 300);
+
+        // Clear the highlight param
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete('highlight');
+        setSearchParams(newParams, { replace: true });
+      }
+    }
+
+    // Handle certificat parameter - opens certificate modal (for direct links)
     if (certificatId && barosani.length > 0 && !selectedBarosan) {
+      console.log('[Zid] Opening certificate for:', certificatId);
       const barosan = barosani.find(b => (b.certificatId || b.certificat_id) === certificatId);
       if (barosan) {
         setSelectedBarosan(barosan);
         setSearchParams({}, { replace: true });
       }
     }
-  }, [searchParams, barosani, selectedBarosan, setSearchParams]);
+  }, [searchParams, barosani, selectedBarosan, setSearchParams, activeTab]);
 
   // Load preferences
   useEffect(() => {

@@ -73,7 +73,11 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   };
 
   return (
-    <article className="group relative h-full" aria-label={`Card barosan: ${barosan.nume}, tier ${tier}`}>
+    <article
+      className="group relative h-full transition-all duration-500"
+      aria-label={`Card barosan: ${barosan.nume}, tier ${tier}`}
+      data-certificat-id={barosan.certificatId || barosan.certificat_id}
+    >
       {/* Glow Effect - Always visible for suprem/platinum/gold */}
       {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
