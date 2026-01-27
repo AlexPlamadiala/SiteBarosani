@@ -235,8 +235,8 @@ export default function Zid() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a]">
-        <div className="sticky top-16 z-40 bg-[#111] border-b border-white/10 py-3 px-4">
+      <div className="min-h-screen bg-transparent">
+        <div className="sticky top-16 z-40 bg-black/80 border-b border-white/10 py-3 px-4">
           <div className="container mx-auto">
             <div className="flex gap-2">
               {[1,2,3,4,5].map(i => (
@@ -261,7 +261,7 @@ export default function Zid() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="text-5xl mb-4">⚠️</div>
           <p className="text-xl font-bold text-red-400 mb-4">{error}</p>
@@ -293,7 +293,7 @@ export default function Zid() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-transparent">
       {/* Refresh indicator */}
       {isRefreshing && (
         <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
@@ -302,7 +302,7 @@ export default function Zid() {
       )}
 
       {/* Filter Bar - Sticky on scroll (top matches header height: 72px mobile, 88px desktop) */}
-      <div className="sticky top-[72px] md:top-[88px] z-40 bg-[#111]/95 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
+      <div className="sticky top-16 md:top-20 z-40 bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
         <div className="container mx-auto px-4">
           {/* Tier Tabs - Main element */}
           <div className="flex items-center justify-between py-3">

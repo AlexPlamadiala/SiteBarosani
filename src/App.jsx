@@ -6,6 +6,7 @@ import ScrollToTop from './components/ScrollToTop';
 import BackToTop from './components/BackToTop';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import StarryBackground from './components/StarryBackground';
 
 // Eager load Home for fast initial render
 import Home from './pages/Home';
@@ -45,9 +46,12 @@ function App() {
           >
             Sari la conținut principal
           </a>
-          <div className="flex flex-col min-h-screen">
+          {/* Animated cosmic background */}
+          <StarryBackground />
+
+          <div className="flex flex-col min-h-screen relative z-10">
             <Header />
-            <main id="main-content" className="flex-grow" role="main">
+            <main id="main-content" className="flex-grow pt-16 md:pt-20" role="main">
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/" element={<Home />} />

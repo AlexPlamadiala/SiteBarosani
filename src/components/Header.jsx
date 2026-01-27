@@ -28,204 +28,172 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const headerClasses = `sticky top-0 z-50 transition-all duration-500 ${
-    scrolled
-      ? 'bg-[#0a0a0a]/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(212,175,55,0.15)]'
-      : 'bg-[#0a0a0a]/80 backdrop-blur-md'
-  }`;
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
-  const navLinkVariants = {
-    hover: {
-      scale: 1.05,
-      color: '#D4AF37',
-      transition: { duration: 0.2 },
-    },
-  };
-
-  const logoVariants = {
-    hover: {
-      scale: 1.1,
-      rotate: [0, -5, 5, 0],
-      transition: { duration: 0.5 },
-    },
-  };
-
-  const mobileMenuVariants = {
-    hidden: {
-      opacity: 0,
-      height: 0,
-      transition: { duration: 0.3, ease: 'easeInOut' },
-    },
-    visible: {
-      opacity: 1,
-      height: 'auto',
-      transition: { duration: 0.3, ease: 'easeInOut' },
-    },
-  };
-
-  const mobileItemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i) => ({
-      opacity: 1,
-      x: 0,
-      transition: { delay: i * 0.1, duration: 0.3 },
-    }),
-  };
+  const navItems = [
+    { to: '/', label: 'Acasa' },
+    { to: '/zid', label: 'Registrul' },
+  ];
 
   return (
     <motion.header
-      className={headerClasses}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? 'bg-black/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(212,175,55,0.2)]'
+          : 'bg-black/50 backdrop-blur-md'
+      }`}
       role="banner"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      {/* Luxury top border glow */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent" />
+      {/* Top gold accent line */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent opacity-60" />
 
-      <div className="container mx-auto px-4 py-3 md:py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo with 3D effect */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
           <Link
             to="/"
-            className="flex items-center space-x-3 group focus:outline-none rounded-lg"
-            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] rounded-lg"
             aria-label="Registrul Oficial al Barosanilor - Pagina principala"
           >
             <motion.div
-              className="w-12 h-12 md:w-14 md:h-14 relative"
-              variants={logoVariants}
-              whileHover="hover"
+              className="relative w-10 h-10 md:w-12 md:h-12"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {/* Glow effect behind logo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-full blur-lg opacity-50 group-hover:opacity-80 transition-opacity" />
-              <div className="relative w-full h-full bg-gradient-to-br from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full flex items-center justify-center shadow-xl">
-                <span className="text-2xl md:text-3xl drop-shadow-lg">👑</span>
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-full blur-md opacity-60 group-hover:opacity-100 transition-opacity" />
+              <div className="relative w-full h-full bg-gradient-to-br from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-xl md:text-2xl">👑</span>
               </div>
             </motion.div>
-            <div>
-              <motion.h1
-                className="text-sm md:text-lg font-extrabold text-white"
-                whileHover={{ scale: 1.02 }}
-              >
+            <div className="hidden sm:block">
+              <div className="text-xs md:text-sm font-bold text-white/90 tracking-wider">
                 REGISTRUL OFICIAL
-              </motion.h1>
-              <motion.h2
-                className="text-xs md:text-sm font-bold bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent"
-                whileHover={{ scale: 1.02 }}
-              >
+              </div>
+              <div className="text-xs md:text-sm font-bold bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
                 AL BAROSANILOR
-              </motion.h2>
+              </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-2 lg:gap-4" role="navigation" aria-label="Navigare principala">
-            <motion.div variants={navLinkVariants} whileHover="hover">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2" role="navigation" aria-label="Navigare principala">
+            {navItems.map((item) => (
               <Link
-                to="/"
-                className="px-4 py-2 text-sm lg:text-base text-white/90 transition-colors font-semibold rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                key={item.to}
+                to={item.to}
+                className={`
+                  relative px-4 py-2 text-sm font-semibold rounded-lg
+                  transition-all duration-300 ease-out
+                  hover:text-[#D4AF37] hover:bg-white/5
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
+                  ${location.pathname === item.to ? 'text-[#D4AF37]' : 'text-white/80'}
+                `}
               >
-                Acasa
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="block"
+                >
+                  {item.label}
+                </motion.span>
+                {location.pathname === item.to && (
+                  <motion.div
+                    className="absolute bottom-0 left-1/2 w-1 h-1 bg-[#D4AF37] rounded-full"
+                    layoutId="activeIndicator"
+                    initial={{ x: '-50%' }}
+                    animate={{ x: '-50%' }}
+                  />
+                )}
               </Link>
-            </motion.div>
+            ))}
 
-            <motion.div variants={navLinkVariants} whileHover="hover">
-              <Link
-                to="/zid"
-                className="px-4 py-2 text-sm lg:text-base text-white/90 transition-colors font-semibold rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-              >
-                Registrul
-              </Link>
-            </motion.div>
-
-            {/* Suprem Button - Premium animated */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* Suprem Button */}
+            <Link
+              to="/barosanul-suprem"
+              className="relative ml-2 px-4 py-2 text-sm font-bold rounded-lg overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
             >
-              <Link
-                to="/barosanul-suprem"
-                className="relative px-4 py-2 text-sm lg:text-base font-bold rounded-lg overflow-hidden group focus:outline-none focus:ring-2 focus:ring-purple-400"
-              >
-                {/* Animated gradient background */}
-                <span className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%] animate-gradient" />
-                {/* Shimmer effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <span className="relative text-white">Suprem</span>
-              </Link>
-            </motion.div>
-
-            {/* Inscrie-te Button - Gold luxury */}
-            <motion.div
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Link
-                to="/cum-devin-barosan"
-                className="relative px-4 lg:px-6 py-2 rounded-lg font-bold text-sm lg:text-base overflow-hidden group shadow-lg hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-shadow focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/50"
-              >
-                {/* Gold gradient background */}
-                <span className="absolute inset-0 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]" />
-                {/* Shimmer */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
-                <span className="relative text-[#0a0a0a] font-bold">Inscrie-te</span>
-              </Link>
-            </motion.div>
-
-            {isAdmin && (
-              <motion.div
+              <motion.span
+                className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%]"
+                animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
+              />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <motion.span
+                className="relative text-white"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link
-                  to="/admin"
-                  className="px-3 py-2 text-sm font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white transition-all focus:outline-none focus:ring-2 focus:ring-red-400"
-                >
+                Suprem
+              </motion.span>
+            </Link>
+
+            {/* Inscrie-te Button - CTA */}
+            <Link
+              to="/cum-devin-barosan"
+              className="relative ml-2 px-5 py-2.5 rounded-lg font-bold text-sm overflow-hidden group shadow-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]" />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
+              <motion.span
+                className="relative text-black font-bold"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Inscrie-te
+              </motion.span>
+            </Link>
+
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="ml-2 px-4 py-2 text-sm font-bold rounded-lg bg-red-600/90 hover:bg-red-600 text-white transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              >
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="block">
                   Admin
-                </Link>
-              </motion.div>
+                </motion.span>
+              </Link>
             )}
           </nav>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-            aria-label={mobileMenuOpen ? "Inchide meniu" : "Deschide meniu"}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+            aria-label={mobileMenuOpen ? 'Inchide meniul' : 'Deschide meniul'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
             whileTap={{ scale: 0.9 }}
           >
-            <motion.div
-              animate={mobileMenuOpen ? 'open' : 'closed'}
-              className="w-6 h-6 flex flex-col justify-center items-center"
-            >
+            <div className="w-6 h-6 flex flex-col justify-center items-center">
               <motion.span
                 className="w-5 h-0.5 bg-[#D4AF37] block"
-                variants={{
-                  closed: { rotate: 0, y: 0 },
-                  open: { rotate: 45, y: 6 },
+                animate={{
+                  rotate: mobileMenuOpen ? 45 : 0,
+                  y: mobileMenuOpen ? 6 : 0,
                 }}
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 className="w-5 h-0.5 bg-[#D4AF37] block mt-1.5"
-                variants={{
-                  closed: { opacity: 1 },
-                  open: { opacity: 0 },
-                }}
+                animate={{ opacity: mobileMenuOpen ? 0 : 1 }}
                 transition={{ duration: 0.3 }}
               />
               <motion.span
                 className="w-5 h-0.5 bg-[#D4AF37] block mt-1.5"
-                variants={{
-                  closed: { rotate: 0, y: 0 },
-                  open: { rotate: -45, y: -6 },
+                animate={{
+                  rotate: mobileMenuOpen ? -45 : 0,
+                  y: mobileMenuOpen ? -6 : 0,
                 }}
                 transition={{ duration: 0.3 }}
               />
-            </motion.div>
+            </div>
           </motion.button>
         </div>
 
@@ -234,86 +202,90 @@ export default function Header() {
           {mobileMenuOpen && (
             <motion.nav
               id="mobile-menu"
-              className="md:hidden mt-4 pb-4 space-y-3 border-t border-[#D4AF37]/20 pt-4 overflow-hidden"
+              className="md:hidden py-4 border-t border-[#D4AF37]/20"
               role="navigation"
               aria-label="Navigare mobila"
-              variants={mobileMenuVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
-              {[
-                { to: '/', label: 'Acasa' },
-                { to: '/zid', label: 'Registrul' },
-              ].map((item, i) => (
+              <div className="flex flex-col gap-2">
+                {navItems.map((item, i) => (
+                  <motion.div
+                    key={item.to}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Link
+                      to={item.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`
+                        block w-full px-4 py-3 text-base font-semibold rounded-lg
+                        transition-all duration-200
+                        hover:bg-white/5 hover:text-[#D4AF37]
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
+                        ${location.pathname === item.to ? 'text-[#D4AF37] bg-white/5' : 'text-white/80'}
+                      `}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+
                 <motion.div
-                  key={item.to}
-                  custom={i}
-                  variants={mobileItemVariants}
-                  initial="hidden"
-                  animate="visible"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
                 >
                   <Link
-                    to={item.to}
+                    to="/barosanul-suprem"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block text-base text-white/90 hover:text-[#D4AF37] transition-colors font-semibold py-2 px-3 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                    className="block w-full px-4 py-3 text-base font-bold text-center text-white rounded-lg relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
                   >
-                    {item.label}
+                    <span className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%] animate-gradient" />
+                    <span className="relative">Barosanul Suprem</span>
                   </Link>
                 </motion.div>
-              ))}
 
-              <motion.div
-                custom={2}
-                variants={mobileItemVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                <Link
-                  to="/barosanul-suprem"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-base font-bold py-3 px-4 text-center text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400 relative overflow-hidden"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%] animate-gradient" />
-                  <span className="relative">Barosanul Suprem</span>
-                </Link>
-              </motion.div>
-
-              <motion.div
-                custom={3}
-                variants={mobileItemVariants}
-                initial="hidden"
-                animate="visible"
-              >
-                <Link
-                  to="/cum-devin-barosan"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-base font-bold py-3 px-4 text-center bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700] text-[#0a0a0a] rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-[#D4AF37]/50"
-                >
-                  Inscrie-te Acum
-                </Link>
-              </motion.div>
-
-              {isAdmin && (
                 <motion.div
-                  custom={4}
-                  variants={mobileItemVariants}
-                  initial="hidden"
-                  animate="visible"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
                 >
                   <Link
-                    to="/admin"
+                    to="/cum-devin-barosan"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block text-base font-bold py-3 px-4 text-center bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400"
+                    className="block w-full px-4 py-3 text-base font-bold text-center bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700] text-black rounded-lg shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
                   >
-                    Panou Admin
+                    Inscrie-te Acum
                   </Link>
                 </motion.div>
-              )}
+
+                {isAdmin && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-4 py-3 text-base font-bold text-center bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                    >
+                      Panou Admin
+                    </Link>
+                  </motion.div>
+                )}
+              </div>
             </motion.nav>
           )}
         </AnimatePresence>
       </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
     </motion.header>
   );
 }

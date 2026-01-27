@@ -144,7 +144,7 @@ export default function Home() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] bg-luxury-pattern">
+      <div className="min-h-screen bg-transparent">
         <div className="flex items-center justify-center min-h-screen">
           <motion.div
             className="text-center"
@@ -170,34 +170,11 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen">
       {/* Hero Section - Luxury Dark */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-        {/* Animated Background */}
-        <div className="absolute inset-0 bg-luxury-pattern">
-          {/* Floating particles */}
-          <FloatingParticles count={25} type="mixed" />
-
-          {/* Gradient orbs */}
-          <motion.div
-            className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px]"
-            animate={{
-              x: [0, 50, 0],
-              y: [0, 30, 0],
-              scale: [1, 1.1, 1],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#D4AF37]/20 rounded-full blur-[100px]"
-            animate={{
-              x: [0, -50, 0],
-              y: [0, -30, 0],
-              scale: [1.1, 1, 1.1],
-            }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          />
-
+        {/* Subtle overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50">
           {/* Decorative circles */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] border border-[#D4AF37]/10 rounded-full"></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-[#9333EA]/10 rounded-full"></div>
@@ -407,8 +384,7 @@ export default function Home() {
       <div className="divider-luxury h-px" />
 
       {/* Features Section */}
-      <section className="py-20 px-4 bg-gradient-luxury relative overflow-hidden">
-        <FloatingParticles count={10} type="diamond" className="opacity-30" />
+      <section className="py-20 px-4 bg-black/40 backdrop-blur-sm relative overflow-hidden">
 
         <div className="container mx-auto max-w-5xl relative z-10">
           <FadeIn>
@@ -471,7 +447,7 @@ export default function Home() {
       </section>
 
       {/* Recent Activity Section */}
-      <section className="py-20 px-4 bg-[#0f0f0f]">
+      <section className="py-20 px-4 bg-black/50 backdrop-blur-sm">
         <div className="container mx-auto max-w-3xl">
           <FadeIn>
             <h2 className="text-2xl font-black text-white mb-8 flex items-center gap-3 justify-center">
@@ -494,8 +470,7 @@ export default function Home() {
       </section>
 
       {/* Tier Comparison */}
-      <section className="py-20 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#0a0a0a] relative overflow-hidden">
-        <FloatingParticles count={15} type="star" className="opacity-20" />
+      <section className="py-20 px-4 bg-black/30 relative overflow-hidden">
 
         <div className="container mx-auto max-w-5xl relative z-10">
           <FadeIn>
@@ -515,7 +490,7 @@ export default function Home() {
                   transition={{ duration: 5, repeat: Infinity }}
                   style={{ backgroundSize: '200% 200%' }}
                 />
-                <div className="relative bg-[#0a0a0a] rounded-2xl p-5 border border-[#9333EA]/50 h-full">
+                <div className="relative bg-black/80 backdrop-blur-sm rounded-2xl p-5 border border-[#9333EA]/50 h-full">
                   <div className="text-4xl mb-3">👑</div>
                   <h3 className="text-white font-bold mb-1">Suprem</h3>
                   <p className="text-[#D4AF37] text-xs mb-3 font-semibold">De la 50 RON/ora</p>
@@ -589,19 +564,7 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-4 bg-[#0a0a0a] relative overflow-hidden">
-        <div className="absolute inset-0">
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37]/10 rounded-full blur-[100px]"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{ duration: 5, repeat: Infinity }}
-          />
-        </div>
-
-        <FloatingParticles count={20} type="mixed" className="opacity-40" />
+      <section className="py-24 px-4 bg-black/50 backdrop-blur-sm relative overflow-hidden">
 
         <div className="relative z-10 container mx-auto text-center max-w-2xl">
           <FadeIn>

@@ -85,7 +85,7 @@ export default function BarosanProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl animate-bounce mb-4">👑</div>
           <p className="text-yellow-400 font-bold animate-pulse">Se incarca...</p>
@@ -96,7 +96,7 @@ export default function BarosanProfile() {
 
   if (error || !barosan) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="text-6xl mb-4">😔</div>
           <p className="text-xl font-bold text-red-400 mb-4">{error || 'Barosan negasit'}</p>
@@ -120,7 +120,7 @@ export default function BarosanProfile() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-transparent">
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>

@@ -133,7 +133,7 @@ export default function Upgrade() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-12 px-4">
+    <div className="min-h-screen bg-transparent py-12 px-4">
       <div className="container mx-auto max-w-lg">
         {/* Header */}
         <div className="text-center mb-8">

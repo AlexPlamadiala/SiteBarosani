@@ -344,7 +344,7 @@ export default function Admin() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-white text-xl">Se încarcă...</div>
       </div>
     );
@@ -353,7 +353,7 @@ export default function Admin() {
   // Login screen
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-black text-white mb-2">🔐 Admin</h1>
@@ -400,7 +400,7 @@ export default function Admin() {
 
   // Admin Dashboard
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
       <div className="bg-white/5 border-b border-white/10 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
