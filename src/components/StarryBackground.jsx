@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SUPREM_URL } from '../config/api';
 
-// Meteorite component with Barosanul Suprem banner - SLOWER
+// Meteorite component with Barosanul Suprem banner
 function Meteorite({ supremName, onComplete }) {
   const [startPosition] = useState(() => ({
     startX: -15,
@@ -118,7 +118,8 @@ export default function StarryBackground() {
   const starsRef = useRef({ background: [], midground: [], foreground: [] });
   const galaxiesRef = useRef([]);
   const nebulaeRef = useRef([]);
-  const earthRef = useRef({ rotation: 0, cloudRotation: 0 });
+  const shootingStarsRef = useRef([]);
+  const cosmicDustRef = useRef([]);
 
   const [showMeteorite, setShowMeteorite] = useState(false);
   const [supremName, setSupremName] = useState(null);
@@ -140,7 +141,7 @@ export default function StarryBackground() {
 
     const meteoriteInterval = setInterval(() => {
       setShowMeteorite(true);
-    }, 45000); // Every 45 seconds (slower interval since animation is longer)
+    }, 45000);
 
     const initialTimeout = setTimeout(() => {
       setShowMeteorite(true);
@@ -155,14 +156,14 @@ export default function StarryBackground() {
   const starColors = useCallback(() => [
     { r: 255, g: 255, b: 255 },
     { r: 255, g: 255, b: 255 },
-    { r: 255, g: 255, b: 255 },
-    { r: 255, g: 255, b: 255 },
-    { r: 200, g: 220, b: 255 },
-    { r: 170, g: 200, b: 255 },
-    { r: 255, g: 250, b: 230 },
-    { r: 255, g: 220, b: 180 },
-    { r: 255, g: 200, b: 150 },
-    { r: 255, g: 180, b: 180 },
+    { r: 200, g: 220, b: 255 }, // Blue-white
+    { r: 170, g: 200, b: 255 }, // Blue
+    { r: 255, g: 250, b: 230 }, // Yellow-white
+    { r: 255, g: 220, b: 180 }, // Orange
+    { r: 255, g: 200, b: 150 }, // Deep orange
+    { r: 255, g: 180, b: 180 }, // Red
+    { r: 212, g: 175, b: 55 },  // Gold (theme color)
+    { r: 147, g: 51, b: 234 },  // Purple (theme color)
   ], []);
 
   const initializeStars = useCallback((width, height) => {
@@ -177,63 +178,92 @@ export default function StarryBackground() {
           y: Math.random() * height,
           size: Math.random() * (sizeRange[1] - sizeRange[0]) + sizeRange[0],
           baseOpacity: Math.random() * (opacityRange[1] - opacityRange[0]) + opacityRange[0],
-          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinkleSpeed: Math.random() * 0.03 + 0.01,
           twinklePhase: Math.random() * Math.PI * 2,
-          twinkleIntensity: Math.random() * 0.5 + 0.2,
+          twinkleIntensity: Math.random() * 0.6 + 0.3,
           color,
-          speed: Math.random() * (speedRange[1] - speedRange[0]) + speedRange[0],
+          speedY: Math.random() * (speedRange[1] - speedRange[0]) + speedRange[0],
+          speedX: (Math.random() - 0.5) * 0.02, // Subtle horizontal drift
         });
       }
       return stars;
     };
 
     return {
-      background: createStarLayer(400, [0.2, 0.6], [0.15, 0.35], [0.01, 0.03]),
-      midground: createStarLayer(200, [0.5, 1.2], [0.3, 0.6], [0.03, 0.06]),
-      foreground: createStarLayer(60, [1, 2.5], [0.5, 0.9], [0.06, 0.12]),
+      background: createStarLayer(500, [0.3, 0.8], [0.2, 0.4], [0.02, 0.05]),
+      midground: createStarLayer(250, [0.6, 1.5], [0.35, 0.7], [0.05, 0.1]),
+      foreground: createStarLayer(80, [1.2, 3], [0.6, 1], [0.1, 0.2]),
     };
   }, [starColors]);
 
   const initializeGalaxies = useCallback((width, height) => {
     const galaxies = [];
-    for (let i = 0; i < 2; i++) {
+    const count = 4 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
       galaxies.push({
-        x: Math.random() * width * 0.6 + width * 0.2,
-        y: Math.random() * height * 0.4 + height * 0.1,
-        size: Math.random() * 50 + 30,
+        x: Math.random() * width,
+        y: Math.random() * height * 0.8,
+        size: Math.random() * 80 + 40,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.0003,
-        opacity: Math.random() * 0.08 + 0.03,
+        rotationSpeed: (Math.random() - 0.5) * 0.0005,
+        opacity: Math.random() * 0.12 + 0.04,
         type: Math.random() > 0.5 ? 'spiral' : 'elliptical',
+        driftX: (Math.random() - 0.5) * 0.02,
+        driftY: Math.random() * 0.01 + 0.005,
+        pulsePhase: Math.random() * Math.PI * 2,
+        pulseSpeed: Math.random() * 0.005 + 0.002,
       });
     }
     return galaxies;
   }, []);
 
   const initializeNebulae = useCallback((width, height) => {
-    return [
-      {
-        x: width * 0.1,
-        y: height * 0.15,
-        radius: Math.min(width, height) * 0.25,
-        color: { r: 80, g: 40, b: 120 },
-        opacity: 0.012,
-      },
-      {
-        x: width * 0.9,
-        y: height * 0.6,
-        radius: Math.min(width, height) * 0.3,
-        color: { r: 120, g: 80, b: 40 },
-        opacity: 0.008,
-      },
-      {
-        x: width * 0.5,
-        y: height * 0.4,
-        radius: Math.min(width, height) * 0.35,
-        color: { r: 40, g: 60, b: 100 },
-        opacity: 0.006,
-      },
+    const nebulae = [];
+    const colors = [
+      { r: 147, g: 51, b: 234 },  // Purple
+      { r: 212, g: 175, b: 55 },  // Gold
+      { r: 80, g: 40, b: 120 },   // Deep purple
+      { r: 40, g: 80, b: 140 },   // Blue
+      { r: 120, g: 60, b: 100 },  // Magenta
+      { r: 60, g: 100, b: 80 },   // Teal
     ];
+
+    for (let i = 0; i < 5; i++) {
+      nebulae.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.min(width, height) * (0.2 + Math.random() * 0.25),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: 0.008 + Math.random() * 0.012,
+        driftX: (Math.random() - 0.5) * 0.03,
+        driftY: (Math.random() - 0.5) * 0.03,
+        pulsePhase: Math.random() * Math.PI * 2,
+        pulseSpeed: Math.random() * 0.003 + 0.001,
+      });
+    }
+    return nebulae;
+  }, []);
+
+  const initializeShootingStars = useCallback((width, height) => {
+    return [];
+  }, []);
+
+  const initializeCosmicDust = useCallback((width, height) => {
+    const particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 1.5 + 0.3,
+        opacity: Math.random() * 0.15 + 0.05,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: Math.random() * 0.2 + 0.05,
+        wobblePhase: Math.random() * Math.PI * 2,
+        wobbleSpeed: Math.random() * 0.02 + 0.01,
+        wobbleAmount: Math.random() * 0.5 + 0.2,
+      });
+    }
+    return particles;
   }, []);
 
   useEffect(() => {
@@ -252,6 +282,8 @@ export default function StarryBackground() {
       starsRef.current = initializeStars(width, height);
       galaxiesRef.current = initializeGalaxies(width, height);
       nebulaeRef.current = initializeNebulae(width, height);
+      shootingStarsRef.current = initializeShootingStars(width, height);
+      cosmicDustRef.current = initializeCosmicDust(width, height);
     };
 
     setCanvasSize();
@@ -259,77 +291,124 @@ export default function StarryBackground() {
 
     let time = 0;
 
+    // Create shooting star occasionally
+    const maybeCreateShootingStar = () => {
+      if (Math.random() < 0.003 && shootingStarsRef.current.length < 3) {
+        const startX = Math.random() * width;
+        const startY = Math.random() * height * 0.5;
+        shootingStarsRef.current.push({
+          x: startX,
+          y: startY,
+          length: 50 + Math.random() * 100,
+          speed: 8 + Math.random() * 12,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
+          opacity: 1,
+          life: 1,
+        });
+      }
+    };
+
     const drawStar = (star, layerOpacityMod = 1) => {
       star.twinklePhase += star.twinkleSpeed;
       const twinkle = Math.sin(star.twinklePhase) * star.twinkleIntensity + (1 - star.twinkleIntensity);
       const opacity = star.baseOpacity * twinkle * layerOpacityMod;
       const { r, g, b } = star.color;
 
-      if (star.size > 0.8) {
+      // Glow for larger stars
+      if (star.size > 1) {
         const glowGradient = ctx.createRadialGradient(
           star.x, star.y, 0,
-          star.x, star.y, star.size * 3
+          star.x, star.y, star.size * 4
         );
-        glowGradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${opacity * 0.4})`);
-        glowGradient.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${opacity * 0.15})`);
+        glowGradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${opacity * 0.5})`);
+        glowGradient.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, ${opacity * 0.2})`);
         glowGradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
         ctx.fillStyle = glowGradient;
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size * 3, 0, Math.PI * 2);
+        ctx.arc(star.x, star.y, star.size * 4, 0, Math.PI * 2);
         ctx.fill();
       }
 
+      // Core
       ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
       ctx.beginPath();
       ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
       ctx.fill();
 
-      if (star.size > 1.8 && opacity > 0.6) {
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity * 0.25})`;
+      // Spikes for bright stars
+      if (star.size > 2 && opacity > 0.7) {
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity * 0.3})`;
         ctx.lineWidth = 0.5;
-        const spikeLength = star.size * 5;
+        const spikeLength = star.size * 6;
         ctx.beginPath();
         ctx.moveTo(star.x - spikeLength, star.y);
         ctx.lineTo(star.x + spikeLength, star.y);
         ctx.moveTo(star.x, star.y - spikeLength);
         ctx.lineTo(star.x, star.y + spikeLength);
+        // Diagonal spikes
+        const diagLength = spikeLength * 0.5;
+        ctx.moveTo(star.x - diagLength, star.y - diagLength);
+        ctx.lineTo(star.x + diagLength, star.y + diagLength);
+        ctx.moveTo(star.x + diagLength, star.y - diagLength);
+        ctx.lineTo(star.x - diagLength, star.y + diagLength);
         ctx.stroke();
       }
     };
 
-    const drawGalaxy = (galaxy) => {
+    const drawGalaxy = (galaxy, time) => {
       galaxy.rotation += galaxy.rotationSpeed;
+      galaxy.x += galaxy.driftX;
+      galaxy.y += galaxy.driftY;
+      galaxy.pulsePhase += galaxy.pulseSpeed;
+
+      // Wrap around
+      if (galaxy.x < -galaxy.size) galaxy.x = width + galaxy.size;
+      if (galaxy.x > width + galaxy.size) galaxy.x = -galaxy.size;
+      if (galaxy.y > height + galaxy.size) {
+        galaxy.y = -galaxy.size;
+        galaxy.x = Math.random() * width;
+      }
+
+      const pulse = Math.sin(galaxy.pulsePhase) * 0.2 + 1;
+      const currentOpacity = galaxy.opacity * pulse;
+
       ctx.save();
       ctx.translate(galaxy.x, galaxy.y);
       ctx.rotate(galaxy.rotation);
 
       if (galaxy.type === 'spiral') {
+        // Draw spiral arms
         for (let arm = 0; arm < 2; arm++) {
           const armAngle = (Math.PI * 2 / 2) * arm;
-          for (let i = 0; i < 80; i++) {
-            const angle = armAngle + (i / 80) * Math.PI * 2.5;
-            const distance = (i / 80) * galaxy.size;
+          for (let i = 0; i < 100; i++) {
+            const angle = armAngle + (i / 100) * Math.PI * 3;
+            const distance = (i / 100) * galaxy.size;
             const x = Math.cos(angle) * distance;
-            const y = Math.sin(angle) * distance * 0.35;
-            const starOpacity = galaxy.opacity * (1 - i / 80) * 0.8;
-            ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`;
+            const y = Math.sin(angle) * distance * 0.4;
+            const starOpacity = currentOpacity * (1 - i / 100) * 0.9;
+            const starSize = 0.3 + Math.random() * 0.5;
+            ctx.fillStyle = `rgba(255, 250, 240, ${starOpacity})`;
             ctx.beginPath();
-            ctx.arc(x, y, 0.3 + Math.random() * 0.4, 0, Math.PI * 2);
+            ctx.arc(x, y, starSize, 0, Math.PI * 2);
             ctx.fill();
           }
         }
-        const bulgeGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, galaxy.size * 0.25);
-        bulgeGradient.addColorStop(0, `rgba(255, 250, 230, ${galaxy.opacity * 1.5})`);
-        bulgeGradient.addColorStop(1, 'rgba(255, 250, 230, 0)');
+        // Bright center bulge
+        const bulgeGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, galaxy.size * 0.3);
+        bulgeGradient.addColorStop(0, `rgba(255, 250, 220, ${currentOpacity * 2})`);
+        bulgeGradient.addColorStop(0.5, `rgba(255, 240, 200, ${currentOpacity})`);
+        bulgeGradient.addColorStop(1, 'rgba(255, 240, 200, 0)');
         ctx.fillStyle = bulgeGradient;
         ctx.beginPath();
-        ctx.arc(0, 0, galaxy.size * 0.25, 0, Math.PI * 2);
+        ctx.arc(0, 0, galaxy.size * 0.3, 0, Math.PI * 2);
         ctx.fill();
       } else {
+        // Elliptical galaxy
         const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, galaxy.size);
-        gradient.addColorStop(0, `rgba(255, 250, 220, ${galaxy.opacity * 1.2})`);
-        gradient.addColorStop(0.5, `rgba(255, 240, 200, ${galaxy.opacity * 0.4})`);
-        gradient.addColorStop(1, 'rgba(255, 240, 200, 0)');
+        gradient.addColorStop(0, `rgba(255, 250, 220, ${currentOpacity * 1.5})`);
+        gradient.addColorStop(0.3, `rgba(255, 240, 200, ${currentOpacity * 0.8})`);
+        gradient.addColorStop(0.6, `rgba(255, 230, 180, ${currentOpacity * 0.3})`);
+        gradient.addColorStop(1, 'rgba(255, 220, 160, 0)');
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.ellipse(0, 0, galaxy.size, galaxy.size * 0.5, 0, 0, Math.PI * 2);
@@ -338,15 +417,28 @@ export default function StarryBackground() {
       ctx.restore();
     };
 
-    const drawNebula = (nebula) => {
+    const drawNebula = (nebula, time) => {
+      nebula.x += nebula.driftX;
+      nebula.y += nebula.driftY;
+      nebula.pulsePhase += nebula.pulseSpeed;
+
+      // Wrap around
+      if (nebula.x < -nebula.radius) nebula.x = width + nebula.radius;
+      if (nebula.x > width + nebula.radius) nebula.x = -nebula.radius;
+      if (nebula.y < -nebula.radius) nebula.y = height + nebula.radius;
+      if (nebula.y > height + nebula.radius) nebula.y = -nebula.radius;
+
+      const pulse = Math.sin(nebula.pulsePhase) * 0.3 + 1;
       const { r, g, b } = nebula.color;
+      const currentOpacity = nebula.opacity * pulse;
+
       const gradient = ctx.createRadialGradient(
         nebula.x, nebula.y, 0,
         nebula.x, nebula.y, nebula.radius
       );
-      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${nebula.opacity})`);
-      gradient.addColorStop(0.4, `rgba(${r}, ${g}, ${b}, ${nebula.opacity * 0.6})`);
-      gradient.addColorStop(0.7, `rgba(${r}, ${g}, ${b}, ${nebula.opacity * 0.2})`);
+      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${currentOpacity * 1.2})`);
+      gradient.addColorStop(0.3, `rgba(${r}, ${g}, ${b}, ${currentOpacity * 0.8})`);
+      gradient.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, ${currentOpacity * 0.4})`);
       gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
       ctx.fillStyle = gradient;
       ctx.beginPath();
@@ -354,439 +446,132 @@ export default function StarryBackground() {
       ctx.fill();
     };
 
-    // Draw TRUE 3D Earth with realistic sphere shading
-    const drawEarth = (x, y, radius) => {
-      earthRef.current.rotation += 0.0002;
-      earthRef.current.cloudRotation += 0.00025;
+    const drawShootingStar = (star) => {
+      const tailX = star.x - Math.cos(star.angle) * star.length;
+      const tailY = star.y - Math.sin(star.angle) * star.length;
 
-      ctx.save();
-      ctx.translate(x, y);
+      const gradient = ctx.createLinearGradient(tailX, tailY, star.x, star.y);
+      gradient.addColorStop(0, `rgba(255, 255, 255, 0)`);
+      gradient.addColorStop(0.7, `rgba(255, 255, 255, ${star.opacity * 0.5})`);
+      gradient.addColorStop(1, `rgba(255, 255, 255, ${star.opacity})`);
 
-      // Light source - strong directional from top-left
-      const lightAngle = -Math.PI * 0.75;
-      const lightX = Math.cos(lightAngle);
-      const lightY = Math.sin(lightAngle);
-
-      // === OUTER ATMOSPHERE GLOW ===
-      const atmosGlow = ctx.createRadialGradient(0, 0, radius, 0, 0, radius * 1.4);
-      atmosGlow.addColorStop(0, 'rgba(80, 160, 255, 0.5)');
-      atmosGlow.addColorStop(0.3, 'rgba(60, 140, 255, 0.25)');
-      atmosGlow.addColorStop(0.6, 'rgba(40, 120, 255, 0.1)');
-      atmosGlow.addColorStop(1, 'rgba(30, 100, 255, 0)');
-      ctx.fillStyle = atmosGlow;
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.arc(0, 0, radius * 1.4, 0, Math.PI * 2);
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(star.x, star.y);
+      ctx.stroke();
+
+      // Bright head
+      const headGlow = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, 8);
+      headGlow.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
+      headGlow.addColorStop(0.5, `rgba(200, 220, 255, ${star.opacity * 0.5})`);
+      headGlow.addColorStop(1, 'rgba(150, 180, 255, 0)');
+      ctx.fillStyle = headGlow;
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, 8, 0, Math.PI * 2);
       ctx.fill();
-
-      // Create clipping mask
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.clip();
-
-      // === BASE SPHERE - TRUE 3D SHADING ===
-      // Main sphere gradient positioned off-center for 3D effect
-      const sphereGradient = ctx.createRadialGradient(
-        lightX * radius * 0.5, lightY * radius * 0.5, 0,
-        lightX * radius * -0.2, lightY * radius * -0.2, radius * 1.5
-      );
-      sphereGradient.addColorStop(0, '#4da6ff');    // Bright lit ocean
-      sphereGradient.addColorStop(0.2, '#2980b9');   // Mid ocean
-      sphereGradient.addColorStop(0.4, '#1a5276');   // Deeper
-      sphereGradient.addColorStop(0.6, '#0e3654');   // Dark side transition
-      sphereGradient.addColorStop(0.8, '#061a2e');   // Very dark
-      sphereGradient.addColorStop(1, '#020a12');     // Near black
-      ctx.fillStyle = sphereGradient;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === DRAW CONTINENTS ===
-      ctx.save();
-      ctx.rotate(earthRef.current.rotation);
-
-      // Continent drawing with 3D sphere projection
-      const drawContinent3D = (points, baseColor, brightColor, darkColor) => {
-        ctx.beginPath();
-        ctx.moveTo(points[0].x * radius, points[0].y * radius);
-        for (let i = 1; i < points.length; i++) {
-          ctx.lineTo(points[i].x * radius, points[i].y * radius);
-        }
-        ctx.closePath();
-
-        // Apply sphere shading to continent
-        const landGrad = ctx.createRadialGradient(
-          lightX * radius * 0.5, lightY * radius * 0.5, 0,
-          lightX * radius * -0.2, lightY * radius * -0.2, radius * 1.5
-        );
-        landGrad.addColorStop(0, brightColor);
-        landGrad.addColorStop(0.3, baseColor);
-        landGrad.addColorStop(0.6, darkColor);
-        landGrad.addColorStop(1, '#0a1a0a');
-        ctx.fillStyle = landGrad;
-        ctx.fill();
-      };
-
-      // Continents with improved colors
-      drawContinent3D([
-        { x: 0.05, y: -0.35 }, { x: 0.15, y: -0.4 }, { x: 0.25, y: -0.35 },
-        { x: 0.3, y: -0.15 }, { x: 0.35, y: 0.05 }, { x: 0.3, y: 0.25 },
-        { x: 0.2, y: 0.4 }, { x: 0.1, y: 0.35 }, { x: 0.0, y: 0.2 },
-        { x: -0.05, y: 0.0 }, { x: 0.0, y: -0.2 }
-      ], '#4a8c2a', '#7acc40', '#1e4010'); // Africa
-
-      drawContinent3D([
-        { x: -0.05, y: -0.55 }, { x: 0.1, y: -0.6 }, { x: 0.2, y: -0.55 },
-        { x: 0.25, y: -0.45 }, { x: 0.15, y: -0.4 }, { x: 0.0, y: -0.42 },
-        { x: -0.1, y: -0.48 }
-      ], '#5a9a35', '#8cd050', '#2a5018'); // Europe
-
-      drawContinent3D([
-        { x: -0.7, y: -0.45 }, { x: -0.55, y: -0.55 }, { x: -0.4, y: -0.5 },
-        { x: -0.35, y: -0.35 }, { x: -0.45, y: -0.2 }, { x: -0.55, y: -0.15 },
-        { x: -0.65, y: -0.25 }, { x: -0.75, y: -0.35 }
-      ], '#5a9a35', '#8cd050', '#2a5018'); // N. America
-
-      drawContinent3D([
-        { x: -0.45, y: 0.0 }, { x: -0.35, y: -0.05 }, { x: -0.3, y: 0.1 },
-        { x: -0.35, y: 0.3 }, { x: -0.4, y: 0.45 }, { x: -0.5, y: 0.5 },
-        { x: -0.55, y: 0.35 }, { x: -0.5, y: 0.15 }
-      ], '#4a8c2a', '#7acc40', '#1e4010'); // S. America
-
-      drawContinent3D([
-        { x: 0.3, y: -0.5 }, { x: 0.5, y: -0.55 }, { x: 0.7, y: -0.45 },
-        { x: 0.75, y: -0.25 }, { x: 0.65, y: -0.1 }, { x: 0.5, y: -0.05 },
-        { x: 0.35, y: -0.15 }, { x: 0.3, y: -0.35 }
-      ], '#5a9a35', '#8cd050', '#2a5018'); // Asia
-
-      drawContinent3D([
-        { x: 0.55, y: 0.3 }, { x: 0.7, y: 0.25 }, { x: 0.8, y: 0.35 },
-        { x: 0.75, y: 0.5 }, { x: 0.6, y: 0.5 }, { x: 0.5, y: 0.4 }
-      ], '#a08060', '#d4b896', '#5a4530'); // Australia
-
-      // Ice caps
-      ctx.beginPath();
-      ctx.ellipse(0, radius * 0.88, radius * 0.45, radius * 0.14, 0, 0, Math.PI * 2);
-      const iceGrad = ctx.createRadialGradient(
-        lightX * radius * 0.3, radius * 0.75, 0,
-        0, radius * 0.88, radius * 0.5
-      );
-      iceGrad.addColorStop(0, '#ffffff');
-      iceGrad.addColorStop(0.5, '#e0f0ff');
-      iceGrad.addColorStop(1, '#a0c0d0');
-      ctx.fillStyle = iceGrad;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.ellipse(0, -radius * 0.86, radius * 0.3, radius * 0.1, 0, 0, Math.PI * 2);
-      ctx.fillStyle = iceGrad;
-      ctx.fill();
-
-      ctx.restore();
-
-      // === CLOUDS with 3D shading ===
-      ctx.save();
-      ctx.rotate(earthRef.current.cloudRotation);
-
-      const drawCloud = (cx, cy, w, h, opacity) => {
-        // Calculate if cloud is on lit or dark side
-        const distFromLight = Math.sqrt(Math.pow(cx - lightX * 0.5, 2) + Math.pow(cy - lightY * 0.5, 2));
-        const lightFactor = Math.max(0.3, 1 - distFromLight * 0.7);
-
-        const cloudGrad = ctx.createRadialGradient(
-          (cx - 0.05) * radius, (cy - 0.05) * radius, 0,
-          cx * radius, cy * radius, Math.max(w, h) * radius * 1.2
-        );
-        cloudGrad.addColorStop(0, `rgba(255, 255, 255, ${opacity * lightFactor})`);
-        cloudGrad.addColorStop(0.4, `rgba(240, 248, 255, ${opacity * lightFactor * 0.6})`);
-        cloudGrad.addColorStop(1, 'rgba(200, 220, 240, 0)');
-        ctx.fillStyle = cloudGrad;
-        ctx.beginPath();
-        ctx.ellipse(cx * radius, cy * radius, w * radius, h * radius, 0, 0, Math.PI * 2);
-        ctx.fill();
-      };
-
-      drawCloud(-0.3, -0.35, 0.28, 0.12, 0.75);
-      drawCloud(0.35, -0.2, 0.32, 0.1, 0.65);
-      drawCloud(-0.15, 0.3, 0.35, 0.11, 0.7);
-      drawCloud(0.45, 0.1, 0.22, 0.08, 0.55);
-      drawCloud(-0.5, 0.0, 0.24, 0.09, 0.6);
-
-      ctx.restore();
-
-      // === STRONG TERMINATOR (day/night) ===
-      const terminator = ctx.createLinearGradient(
-        lightX * radius * 1.2, lightY * radius * 1.2,
-        -lightX * radius * 1.2, -lightY * radius * 1.2
-      );
-      terminator.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      terminator.addColorStop(0.4, 'rgba(0, 0, 0, 0)');
-      terminator.addColorStop(0.5, 'rgba(0, 5, 15, 0.4)');
-      terminator.addColorStop(0.6, 'rgba(0, 5, 20, 0.65)');
-      terminator.addColorStop(0.75, 'rgba(0, 3, 15, 0.8)');
-      terminator.addColorStop(1, 'rgba(0, 2, 10, 0.9)');
-      ctx.fillStyle = terminator;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === BRIGHT FRESNEL RIM (atmosphere edge) ===
-      const fresnel = ctx.createRadialGradient(0, 0, radius * 0.75, 0, 0, radius);
-      fresnel.addColorStop(0, 'rgba(100, 180, 255, 0)');
-      fresnel.addColorStop(0.8, 'rgba(100, 180, 255, 0)');
-      fresnel.addColorStop(0.88, 'rgba(120, 190, 255, 0.25)');
-      fresnel.addColorStop(0.94, 'rgba(150, 210, 255, 0.5)');
-      fresnel.addColorStop(0.98, 'rgba(180, 230, 255, 0.7)');
-      fresnel.addColorStop(1, 'rgba(200, 240, 255, 0.9)');
-      ctx.fillStyle = fresnel;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === STRONG SPECULAR HIGHLIGHT ===
-      const specX = lightX * radius * 0.45;
-      const specY = lightY * radius * 0.45;
-      const specular = ctx.createRadialGradient(specX, specY, 0, specX, specY, radius * 0.5);
-      specular.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
-      specular.addColorStop(0.1, 'rgba(255, 255, 255, 0.5)');
-      specular.addColorStop(0.25, 'rgba(255, 255, 255, 0.25)');
-      specular.addColorStop(0.5, 'rgba(255, 255, 255, 0.1)');
-      specular.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.fillStyle = specular;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === SECONDARY HIGHLIGHT ===
-      const spec2X = lightX * radius * 0.6;
-      const spec2Y = lightY * radius * 0.6;
-      const specular2 = ctx.createRadialGradient(spec2X, spec2Y, 0, spec2X, spec2Y, radius * 0.3);
-      specular2.addColorStop(0, 'rgba(255, 255, 255, 0.4)');
-      specular2.addColorStop(0.4, 'rgba(220, 240, 255, 0.15)');
-      specular2.addColorStop(1, 'rgba(200, 230, 255, 0)');
-      ctx.fillStyle = specular2;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      ctx.restore();
     };
 
-    // Draw TRUE 3D Moon with realistic sphere shading
-    const drawMoon = (x, y, radius) => {
-      ctx.save();
-      ctx.translate(x, y);
+    const drawCosmicDust = (particle) => {
+      particle.wobblePhase += particle.wobbleSpeed;
+      const wobble = Math.sin(particle.wobblePhase) * particle.wobbleAmount;
 
-      // Light source - same as Earth
-      const lightAngle = -Math.PI * 0.75;
-      const lightX = Math.cos(lightAngle);
-      const lightY = Math.sin(lightAngle);
-
-      // === OUTER GLOW ===
-      const outerGlow = ctx.createRadialGradient(0, 0, radius * 0.95, 0, 0, radius * 1.25);
-      outerGlow.addColorStop(0, 'rgba(220, 220, 230, 0)');
-      outerGlow.addColorStop(0.5, 'rgba(200, 200, 215, 0.15)');
-      outerGlow.addColorStop(1, 'rgba(180, 180, 200, 0)');
-      ctx.fillStyle = outerGlow;
+      ctx.fillStyle = `rgba(200, 180, 255, ${particle.opacity})`;
       ctx.beginPath();
-      ctx.arc(0, 0, radius * 1.25, 0, Math.PI * 2);
+      ctx.arc(particle.x + wobble, particle.y, particle.size, 0, Math.PI * 2);
       ctx.fill();
-
-      // Create clipping mask
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.clip();
-
-      // === BASE SPHERE - TRUE 3D SHADING ===
-      const sphereGradient = ctx.createRadialGradient(
-        lightX * radius * 0.5, lightY * radius * 0.5, 0,
-        lightX * radius * -0.2, lightY * radius * -0.2, radius * 1.5
-      );
-      sphereGradient.addColorStop(0, '#f0f0f0');    // Bright lit side
-      sphereGradient.addColorStop(0.15, '#d8d8dc');
-      sphereGradient.addColorStop(0.3, '#b8b8c0');
-      sphereGradient.addColorStop(0.5, '#888890');
-      sphereGradient.addColorStop(0.7, '#505058');
-      sphereGradient.addColorStop(0.85, '#303038');
-      sphereGradient.addColorStop(1, '#18181c');    // Very dark side
-      ctx.fillStyle = sphereGradient;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === MARIA (darker lunar seas) ===
-      const drawMaria = (cx, cy, rx, ry, rotation, baseOpacity) => {
-        // Calculate if maria is on lit or dark side
-        const distFromLight = Math.sqrt(Math.pow(cx - lightX * 0.5, 2) + Math.pow(cy - lightY * 0.5, 2));
-        const opacity = baseOpacity * Math.max(0.3, 1 - distFromLight * 0.5);
-
-        ctx.save();
-        ctx.translate(cx * radius, cy * radius);
-        ctx.rotate(rotation);
-        const mariaGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(rx, ry) * radius);
-        mariaGrad.addColorStop(0, `rgba(50, 50, 60, ${opacity})`);
-        mariaGrad.addColorStop(0.5, `rgba(60, 60, 70, ${opacity * 0.7})`);
-        mariaGrad.addColorStop(1, 'rgba(70, 70, 80, 0)');
-        ctx.fillStyle = mariaGrad;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, rx * radius, ry * radius, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      };
-
-      drawMaria(-0.2, -0.05, 0.28, 0.22, 0.2, 0.5);
-      drawMaria(0.12, 0.18, 0.22, 0.18, -0.3, 0.45);
-      drawMaria(-0.08, 0.32, 0.18, 0.13, 0.1, 0.4);
-      drawMaria(0.32, -0.18, 0.15, 0.1, 0.4, 0.35);
-
-      // === CRATERS with proper 3D shadows ===
-      const drawCrater = (cx, cy, r, depth) => {
-        const craterX = cx * radius;
-        const craterY = cy * radius;
-        const craterR = r * radius;
-
-        // Check if crater is on lit or dark side
-        const distFromLight = Math.sqrt(Math.pow(cx - lightX * 0.5, 2) + Math.pow(cy - lightY * 0.5, 2));
-        const shadowMod = Math.max(0.4, 1 - distFromLight * 0.5);
-
-        // Shadow inside crater (opposite to light)
-        const shadowGrad = ctx.createRadialGradient(
-          craterX + lightX * craterR * 0.3,
-          craterY + lightY * craterR * 0.3,
-          0,
-          craterX, craterY, craterR
-        );
-        shadowGrad.addColorStop(0, `rgba(30, 30, 35, ${depth * shadowMod})`);
-        shadowGrad.addColorStop(0.6, `rgba(50, 50, 55, ${depth * shadowMod * 0.5})`);
-        shadowGrad.addColorStop(1, 'rgba(70, 70, 75, 0)');
-        ctx.fillStyle = shadowGrad;
-        ctx.beginPath();
-        ctx.arc(craterX, craterY, craterR, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Rim highlight on lit side
-        const rimGrad = ctx.createRadialGradient(
-          craterX - lightX * craterR * 0.4,
-          craterY - lightY * craterR * 0.4,
-          craterR * 0.5,
-          craterX, craterY, craterR * 1.15
-        );
-        rimGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-        rimGrad.addColorStop(0.75, 'rgba(255, 255, 255, 0)');
-        rimGrad.addColorStop(0.9, `rgba(240, 240, 245, ${depth * 0.5 * shadowMod})`);
-        rimGrad.addColorStop(1, 'rgba(220, 220, 230, 0)');
-        ctx.fillStyle = rimGrad;
-        ctx.beginPath();
-        ctx.arc(craterX, craterY, craterR * 1.15, 0, Math.PI * 2);
-        ctx.fill();
-      };
-
-      // Large craters
-      drawCrater(-0.32, -0.28, 0.13, 0.8);
-      drawCrater(0.28, -0.38, 0.11, 0.7);
-      drawCrater(0.38, 0.22, 0.12, 0.75);
-      drawCrater(-0.18, 0.42, 0.1, 0.65);
-
-      // Medium craters
-      drawCrater(-0.48, 0.08, 0.08, 0.6);
-      drawCrater(0.13, 0.08, 0.065, 0.55);
-      drawCrater(-0.08, -0.48, 0.07, 0.6);
-      drawCrater(0.48, -0.08, 0.06, 0.5);
-
-      // Small craters
-      drawCrater(-0.28, 0.13, 0.04, 0.45);
-      drawCrater(0.42, 0.03, 0.03, 0.4);
-      drawCrater(-0.13, -0.23, 0.035, 0.4);
-      drawCrater(0.08, -0.33, 0.028, 0.35);
-
-      // === STRONG TERMINATOR ===
-      const terminator = ctx.createLinearGradient(
-        lightX * radius * 1.2, lightY * radius * 1.2,
-        -lightX * radius * 1.2, -lightY * radius * 1.2
-      );
-      terminator.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      terminator.addColorStop(0.4, 'rgba(0, 0, 0, 0)');
-      terminator.addColorStop(0.5, 'rgba(0, 0, 5, 0.35)');
-      terminator.addColorStop(0.6, 'rgba(0, 0, 8, 0.6)');
-      terminator.addColorStop(0.75, 'rgba(0, 0, 5, 0.8)');
-      terminator.addColorStop(1, 'rgba(0, 0, 3, 0.92)');
-      ctx.fillStyle = terminator;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === BRIGHT FRESNEL RIM ===
-      const fresnel = ctx.createRadialGradient(0, 0, radius * 0.8, 0, 0, radius);
-      fresnel.addColorStop(0, 'rgba(200, 200, 210, 0)');
-      fresnel.addColorStop(0.85, 'rgba(200, 200, 210, 0)');
-      fresnel.addColorStop(0.92, 'rgba(220, 220, 230, 0.2)');
-      fresnel.addColorStop(0.96, 'rgba(235, 235, 245, 0.4)');
-      fresnel.addColorStop(1, 'rgba(250, 250, 255, 0.6)');
-      ctx.fillStyle = fresnel;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      // === STRONG SPECULAR HIGHLIGHT ===
-      const specX = lightX * radius * 0.4;
-      const specY = lightY * radius * 0.4;
-      const specular = ctx.createRadialGradient(specX, specY, 0, specX, specY, radius * 0.4);
-      specular.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-      specular.addColorStop(0.1, 'rgba(255, 255, 255, 0.5)');
-      specular.addColorStop(0.3, 'rgba(255, 255, 255, 0.25)');
-      specular.addColorStop(0.6, 'rgba(255, 255, 255, 0.08)');
-      specular.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.fillStyle = specular;
-      ctx.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-      ctx.restore();
     };
 
     const animate = () => {
       time += 0.016;
 
-      // Deep space gradient
+      // Deep space gradient background
       const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
-      bgGradient.addColorStop(0, '#030305');
-      bgGradient.addColorStop(0.15, '#050508');
-      bgGradient.addColorStop(0.3, '#08080c');
-      bgGradient.addColorStop(0.5, '#0a0a0f');
-      bgGradient.addColorStop(0.7, '#08080c');
-      bgGradient.addColorStop(0.85, '#050508');
-      bgGradient.addColorStop(1, '#030305');
+      bgGradient.addColorStop(0, '#020205');
+      bgGradient.addColorStop(0.2, '#050510');
+      bgGradient.addColorStop(0.4, '#080815');
+      bgGradient.addColorStop(0.5, '#0a0a18');
+      bgGradient.addColorStop(0.6, '#080815');
+      bgGradient.addColorStop(0.8, '#050510');
+      bgGradient.addColorStop(1, '#020205');
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, width, height);
 
-      // Draw nebulae
-      nebulaeRef.current.forEach(drawNebula);
+      // Draw nebulae (background layer)
+      nebulaeRef.current.forEach(nebula => drawNebula(nebula, time));
 
       // Draw distant galaxies
-      galaxiesRef.current.forEach(drawGalaxy);
+      galaxiesRef.current.forEach(galaxy => drawGalaxy(galaxy, time));
 
       // Draw background stars
       starsRef.current.background.forEach(star => {
-        star.y += star.speed;
+        star.y += star.speedY;
+        star.x += star.speedX;
         if (star.y > height) {
           star.y = 0;
           star.x = Math.random() * width;
         }
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
         drawStar(star, 0.5);
       });
 
-      // Draw Earth (positioned in lower right area, visible on first screen)
-      // Draw Earth (larger, more prominent)
-      const earthX = width * 0.82;
-      const earthY = height * 0.14;
-      const earthRadius = Math.min(width, height) * 0.12;
-      drawEarth(earthX, earthY, earthRadius);
-
-      // Draw Moon (proportionally larger, positioned nicely)
-      const moonX = earthX - earthRadius * 2.2;
-      const moonY = earthY + earthRadius * 0.6;
-      const moonRadius = earthRadius * 0.32;
-      drawMoon(moonX, moonY, moonRadius);
+      // Draw cosmic dust
+      cosmicDustRef.current.forEach(particle => {
+        particle.y += particle.speedY;
+        particle.x += particle.speedX;
+        if (particle.y > height) {
+          particle.y = 0;
+          particle.x = Math.random() * width;
+        }
+        if (particle.x < 0) particle.x = width;
+        if (particle.x > width) particle.x = 0;
+        drawCosmicDust(particle);
+      });
 
       // Draw midground stars
       starsRef.current.midground.forEach(star => {
-        star.y += star.speed;
+        star.y += star.speedY;
+        star.x += star.speedX;
         if (star.y > height) {
           star.y = 0;
           star.x = Math.random() * width;
         }
-        drawStar(star, 0.7);
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        drawStar(star, 0.75);
       });
 
       // Draw foreground stars
       starsRef.current.foreground.forEach(star => {
-        star.y += star.speed;
+        star.y += star.speedY;
+        star.x += star.speedX;
         if (star.y > height) {
           star.y = 0;
           star.x = Math.random() * width;
         }
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
         drawStar(star, 1);
+      });
+
+      // Maybe create shooting star
+      maybeCreateShootingStar();
+
+      // Update and draw shooting stars
+      shootingStarsRef.current = shootingStarsRef.current.filter(star => {
+        star.x += Math.cos(star.angle) * star.speed;
+        star.y += Math.sin(star.angle) * star.speed;
+        star.life -= 0.02;
+        star.opacity = star.life;
+
+        if (star.life > 0) {
+          drawShootingStar(star);
+          return true;
+        }
+        return false;
       });
 
       animationRef.current = requestAnimationFrame(animate);
@@ -800,7 +585,7 @@ export default function StarryBackground() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [initializeStars, initializeGalaxies, initializeNebulae]);
+  }, [initializeStars, initializeGalaxies, initializeNebulae, initializeShootingStars, initializeCosmicDust]);
 
   return (
     <>

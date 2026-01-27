@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ToastProvider } from './contexts/ToastContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ScrollToTop from './components/ScrollToTop';
@@ -21,15 +22,103 @@ const BarosanProfile = lazy(() => import('./pages/BarosanProfile'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Upgrade = lazy(() => import('./pages/Upgrade'));
 
-// Loading fallback component
+// Page transition variants
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 20,
+    scale: 0.98,
+  },
+  enter: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.22, 1, 0.36, 1],
+      staggerChildren: 0.1,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    scale: 0.98,
+    transition: {
+      duration: 0.3,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+// Page wrapper component with animation
+function PageWrapper({ children }) {
+  return (
+    <motion.div
+      initial="initial"
+      animate="enter"
+      exit="exit"
+      variants={pageVariants}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Loading fallback component with animation
 function PageLoader() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center bg-[#0a0a0a]">
+    <motion.div
+      className="min-h-[60vh] flex items-center justify-center bg-transparent"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="text-center">
-        <div className="text-5xl animate-bounce mb-4">👑</div>
-        <p className="text-yellow-400 font-bold animate-pulse">Se încarcă...</p>
+        <motion.div
+          className="text-5xl mb-4"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 10, -10, 0],
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          👑
+        </motion.div>
+        <motion.p
+          className="text-yellow-400 font-bold"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          Se încarcă...
+        </motion.p>
       </div>
-    </div>
+    </motion.div>
+  );
+}
+
+// Animated routes component
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/zid" element={<PageWrapper><Zid /></PageWrapper>} />
+        <Route path="/cum-devin-barosan" element={<PageWrapper><CumDevinBarosan /></PageWrapper>} />
+        <Route path="/termeni" element={<PageWrapper><Termeni /></PageWrapper>} />
+        <Route path="/confidentialitate" element={<PageWrapper><Confidentialitate /></PageWrapper>} />
+        <Route path="/barosanul-suprem" element={<PageWrapper><BarosanulSuprem /></PageWrapper>} />
+        <Route path="/barosan/:certificatId" element={<PageWrapper><BarosanProfile /></PageWrapper>} />
+        <Route path="/admin" element={<PageWrapper><Admin /></PageWrapper>} />
+        <Route path="/upgrade" element={<PageWrapper><Upgrade /></PageWrapper>} />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
@@ -53,17 +142,7 @@ function App() {
             <Header />
             <main id="main-content" className="flex-grow pt-16 md:pt-20" role="main">
               <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/zid" element={<Zid />} />
-                  <Route path="/cum-devin-barosan" element={<CumDevinBarosan />} />
-                  <Route path="/termeni" element={<Termeni />} />
-                  <Route path="/confidentialitate" element={<Confidentialitate />} />
-                  <Route path="/barosanul-suprem" element={<BarosanulSuprem />} />
-                  <Route path="/barosan/:certificatId" element={<BarosanProfile />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/upgrade" element={<Upgrade />} />
-                </Routes>
+                <AnimatedRoutes />
               </Suspense>
             </main>
             <Footer />
