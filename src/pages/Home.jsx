@@ -184,7 +184,7 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
           <div className="text-center max-w-4xl mx-auto">
             {/* Badge */}
-            <FadeIn delay={0.2}>
+            <FadeIn delay={0.1}>
               <div className="inline-flex items-center gap-2 glass-gold px-5 py-2.5 rounded-full mb-8">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 <span className="text-[#D4AF37] text-sm font-semibold">{animatedTotal} barosani activi</span>
@@ -192,7 +192,7 @@ export default function Home() {
             </FadeIn>
 
             {/* Main Title */}
-            <FadeIn delay={0.3}>
+            <FadeIn delay={0.25}>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
                 <span className="text-white">REGISTRUL</span>
                 <br />
@@ -209,7 +209,7 @@ export default function Home() {
             </FadeIn>
 
             {/* BAROSANUL SUPREM - FEATURED SECTION */}
-            <FadeIn delay={0.5}>
+            <FadeIn delay={0.55}>
               {supremBarosan && !supremAvailable ? (
                 <Link to="/barosanul-suprem" className="block group mb-12">
                   <motion.div
@@ -306,7 +306,7 @@ export default function Home() {
             </FadeIn>
 
             {/* CTA Buttons */}
-            <FadeIn delay={0.6}>
+            <FadeIn delay={0.7}>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <motion.div whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>
                   <Link
@@ -331,51 +331,53 @@ export default function Home() {
             </FadeIn>
 
             {/* Stats Grid */}
-            <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4" staggerDelay={0.1}>
-              {/* Total */}
-              <StaggerItem>
-                <Link
-                  to="/zid"
-                  className="group block card-luxury p-5 hover:border-[#D4AF37]/50"
-                >
-                  <div className="text-4xl font-black text-gold-shimmer tabular-nums">{animatedTotal}</div>
-                  <div className="text-gray-400 font-semibold text-sm">Total Barosani</div>
-                </Link>
-              </StaggerItem>
+            <FadeIn delay={0.85}>
+              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4" staggerDelay={0.15}>
+                {/* Total */}
+                <StaggerItem>
+                  <Link
+                    to="/zid"
+                    className="group block card-luxury p-5 hover:border-[#D4AF37]/50"
+                  >
+                    <div className="text-4xl font-black text-gold-shimmer tabular-nums">{animatedTotal}</div>
+                    <div className="text-gray-400 font-semibold text-sm">Total Barosani</div>
+                  </Link>
+                </StaggerItem>
 
-              {/* Platinum */}
-              <StaggerItem>
-                <Link
-                  to="/zid?tier=platinum"
-                  className="group block card-luxury p-5 hover:border-gray-300/50"
-                >
-                  <div className="text-4xl font-black text-gray-300 tabular-nums">{animatedPlatinum}</div>
-                  <div className="text-gray-400 font-semibold text-sm">Platinum</div>
-                </Link>
-              </StaggerItem>
+                {/* Platinum */}
+                <StaggerItem>
+                  <Link
+                    to="/zid?tier=platinum"
+                    className="group block card-luxury p-5 hover:border-gray-300/50"
+                  >
+                    <div className="text-4xl font-black text-gray-300 tabular-nums">{animatedPlatinum}</div>
+                    <div className="text-gray-400 font-semibold text-sm">Platinum</div>
+                  </Link>
+                </StaggerItem>
 
-              {/* Gold */}
-              <StaggerItem>
-                <Link
-                  to="/zid?tier=gold"
-                  className="group block card-luxury p-5 hover:border-[#D4AF37]/50"
-                >
-                  <div className="text-4xl font-black text-[#D4AF37] tabular-nums">{animatedGold}</div>
-                  <div className="text-gray-400 font-semibold text-sm">Gold</div>
-                </Link>
-              </StaggerItem>
+                {/* Gold */}
+                <StaggerItem>
+                  <Link
+                    to="/zid?tier=gold"
+                    className="group block card-luxury p-5 hover:border-[#D4AF37]/50"
+                  >
+                    <div className="text-4xl font-black text-[#D4AF37] tabular-nums">{animatedGold}</div>
+                    <div className="text-gray-400 font-semibold text-sm">Gold</div>
+                  </Link>
+                </StaggerItem>
 
-              {/* Basic */}
-              <StaggerItem>
-                <Link
-                  to="/zid?tier=basic"
-                  className="group block card-luxury p-5 hover:border-gray-500/50"
-                >
-                  <div className="text-4xl font-black text-gray-400 tabular-nums">{animatedBasic}</div>
-                  <div className="text-gray-400 font-semibold text-sm">Basic</div>
-                </Link>
-              </StaggerItem>
-            </StaggerContainer>
+                {/* Basic */}
+                <StaggerItem>
+                  <Link
+                    to="/zid?tier=basic"
+                    className="group block card-luxury p-5 hover:border-gray-500/50"
+                  >
+                    <div className="text-4xl font-black text-gray-400 tabular-nums">{animatedBasic}</div>
+                    <div className="text-gray-400 font-semibold text-sm">Basic</div>
+                  </Link>
+                </StaggerItem>
+              </StaggerContainer>
+            </FadeIn>
           </div>
         </div>
       </section>
