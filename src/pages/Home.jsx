@@ -184,7 +184,7 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
           <div className="text-center max-w-4xl mx-auto">
             {/* Badge */}
-            <FadeIn delay={0.1}>
+            <FadeIn delay={0}>
               <div className="inline-flex items-center gap-2 glass-gold px-5 py-2.5 rounded-full mb-8">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 <span className="text-[#D4AF37] text-sm font-semibold">{animatedTotal} barosani activi</span>
@@ -192,7 +192,7 @@ export default function Home() {
             </FadeIn>
 
             {/* Main Title */}
-            <FadeIn delay={0.25}>
+            <FadeIn delay={0.1}>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
                 <span className="text-white">REGISTRUL</span>
                 <br />
@@ -202,14 +202,14 @@ export default function Home() {
               </h1>
             </FadeIn>
 
-            <FadeIn delay={0.4}>
+            <FadeIn delay={0.2}>
               <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
                 Singura institutie acreditata pentru certificarea oficiala a barosanilor din Romania
               </p>
             </FadeIn>
 
             {/* BAROSANUL SUPREM - FEATURED SECTION */}
-            <FadeIn delay={0.55}>
+            <FadeIn delay={0.3}>
               {supremBarosan && !supremAvailable ? (
                 <Link to="/barosanul-suprem" className="block group mb-12">
                   <motion.div
@@ -306,7 +306,7 @@ export default function Home() {
             </FadeIn>
 
             {/* CTA Buttons */}
-            <FadeIn delay={0.7}>
+            <FadeIn delay={0.4}>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <motion.div whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>
                   <Link
@@ -331,8 +331,8 @@ export default function Home() {
             </FadeIn>
 
             {/* Stats Grid */}
-            <FadeIn delay={0.85}>
-              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4" staggerDelay={0.15}>
+            <FadeIn delay={0.5}>
+              <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4" staggerDelay={0.08}>
                 {/* Total */}
                 <StaggerItem>
                   <Link
