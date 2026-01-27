@@ -101,7 +101,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   };
 
   return (
-    <motion.article
+    <article
       ref={cardRef}
       className="group relative h-full"
       aria-label={`Card barosan: ${barosan.nume}, tier ${tier}`}
@@ -109,10 +109,6 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
       style={{
         perspective: 1000,
       }}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
     >
       {/* Animated glow effect */}
       {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
@@ -289,6 +285,6 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
         </div>
       </motion.div>
-    </motion.article>
+    </article>
   );
 }
