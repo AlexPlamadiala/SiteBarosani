@@ -1,154 +1,148 @@
-# 👑 Zidul Barosanilor
+# Zidul Barosanilor
 
-Site MVP satiric/amuzant unde utilizatorii plătesc pentru a apărea pe un "zid" public și primesc un certificat digital care atestă că sunt "barosani verificați".
+Site MVP unde utilizatorii platesc pentru a aparea pe un "zid" public si primesc un certificat digital care atesta ca sunt "barosani verificati".
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Frontend:** React 19 + Vite
+- **Frontend:** React 19 + Vite 7
 - **Styling:** Tailwind CSS v4
-- **Routing:** React Router DOM
-- **Certificate Generation:** html2canvas
+- **Animations:** Framer Motion
+- **Routing:** React Router DOM 7
+- **Certificate Generation:** Canvas API + jsPDF
 - **QR Codes:** qrcode.react
-- **Data Storage:** Static JSON (MVP - no backend)
+- **Testing:** Vitest + React Testing Library
+- **Backend:** PHP APIs (separate)
 
-## 📋 Features
+## Features
 
-- ✅ Public "Wall" displaying all verified barosani
-- ✅ 3 pricing tiers (Basic, Gold, Platinum)
-- ✅ Downloadable digital certificates (PNG)
-- ✅ Responsive design (mobile-first)
-- ✅ SEO optimized
-- ✅ Sorting by tier (Platinum → Gold → Basic)
+### Core Features
+- Public "Wall" displaying all verified barosani
+- 4 pricing tiers (Basic, Gold, Platinum, Suprem)
+- Downloadable digital certificates (PNG/PDF)
+- Individual barosan profile pages
+- QR code verification on certificates
+- Responsive luxury dark theme
 
-## 🛠️ Development
+### Visual Features
+- Animated cosmic background with stars, galaxies, nebulae
+- Realistic Earth and Moon rendering
+- Meteorite animations with "Barosanul Suprem" banner
+- 3D card tilt effects
+- Confetti celebrations
+- Floating particles
+
+### User Features
+- Search, filter, and sort functionality
+- Tier upgrade system with email verification
+- Real-time activity feed (SSE)
+- Leaderboard
+- Pagination (24 items per page)
+
+### Admin Features
+- Full admin dashboard
+- Application management
+- Barosani management
+- Statistics overview
+- Payment proof tracking
+
+## Development
 
 ### Install dependencies
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ### Run development server
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
+
+### Run tests
+
+```bash
+npm run test
+```
 
 ### Build for production
 
-\`\`\`bash
+```bash
 npm run build
-\`\`\`
+```
 
-### Preview production build
+## Project Structure
 
-\`\`\`bash
-npm run preview
-\`\`\`
-
-## 📁 Project Structure
-
-\`\`\`
+```
 /src
   /components
-    Header.jsx              # Navigation header
-    Footer.jsx              # Site footer
-    BarosanCard.jsx         # Individual barosan card
-    BarosanGrid.jsx         # Grid of all barosani
-    CertificateGenerator.jsx # Certificate generation & download
-    PricingTiers.jsx        # Pricing cards with modals
-    HowItWorks.jsx          # Process explanation
+    /animations         # Framer Motion animations
+    /certificate        # Certificate generation system
+    Header.jsx          # Navigation header
+    Footer.jsx          # Site footer
+    BarosanCard.jsx     # Individual barosan card with 3D effect
+    BarosanGrid.jsx     # Grid of all barosani
+    CertificateGenerator.jsx # Certificate modal
+    PricingTiers.jsx    # Pricing cards
+    StarryBackground.jsx # Cosmic background
+    ...
   /pages
-    Home.jsx                # Homepage with the wall
-    CumDevinBarosan.jsx     # Pricing & instructions page
-  /data
-    barosani.json           # Static data file
-  /assets
-    /images                 # Static images
-\`\`\`
+    Home.jsx            # Homepage with hero, stats, activity
+    Zid.jsx             # Main wall with all barosani
+    CumDevinBarosan.jsx # Registration page
+    BarosanProfile.jsx  # Individual profile page
+    BarosanulSuprem.jsx # Supreme barosan page
+    Upgrade.jsx         # Tier upgrade page
+    Admin.jsx           # Admin dashboard
+    ...
+  /hooks                # Custom React hooks
+  /utils                # Utility functions
+  /contexts             # React contexts
+  /config               # API configuration
+```
 
-## 💾 Data Management
+## Tier System
 
-To add a new barosan, edit \`src/data/barosani.json\`:
+| Tier | Price | Features |
+|------|-------|----------|
+| Basic | Free | Standard certificate, listed in registry |
+| Gold | 50 RON | Gold certificate, special badge |
+| Platinum | 149 RON | Premium certificate, priority display, social link |
+| Suprem | 50 RON/hour | Featured position, meteorite banner, countdown timer |
 
-\`\`\`json
-{
-  "id": "7",
-  "nume": "Numele Barosanului",
-  "motto": "Motto personal (max 50 caractere)",
-  "tier": "basic|gold|platinum",
-  "poza": "URL sau /path/to/image.jpg",
-  "link": "https://instagram.com/username (platinum only)",
-  "dataInregistrare": "2025-01-13",
-  "certificatId": "BRS-2025-0007"
-}
-\`\`\`
+## Payment Process
 
-## 🎨 Design
+1. User selects tier on registration page
+2. Payment via Revolut
+3. User uploads photo and details
+4. Admin approves application
+5. User appears on wall and can download certificate
 
-### Color Palette
-- **Primary Background:** Gradient gold/beige (#F5E6D3 → #E8D5B7)
-- **Accent Gold:** #D4AF37
-- **Official Blue:** #1a365d
-- **Stamp Red:** #8B0000
+## Deployment
 
-### Typography
-- **Headings:** Playfair Display (serif)
-- **Body:** Open Sans (sans-serif)
+Optimized for static hosting (Netlify, Vercel) with PHP backend.
 
-## 💳 Payment Process
-
-1. User selects tier (Basic 20 RON, Gold 50 RON, Platinum 100 RON)
-2. Payment via Revolut to @username-revolut
-3. User sends photo + details via email
-4. Manual addition to barosani.json
-5. User appears on wall + receives certificate
-
-## 🚢 Deployment
-
-Optimized for:
-- **Netlify** (recommended)
-- **Vercel**
-- Any static hosting service
-
-### Deploy to Netlify
-
-\`\`\`bash
+```bash
 # Build command
 npm run build
 
 # Publish directory
 dist
-\`\`\`
+```
 
-## 📝 TODO for Production
+## TODO for Production
 
 - [ ] Update Revolut username in PricingTiers.jsx
 - [ ] Update contact email in PricingTiers.jsx
 - [ ] Add real social media links in Footer.jsx
 - [ ] Create and add og-image.png to /public
 - [ ] Set up custom domain
-- [ ] Add analytics (Google Analytics, Plausible, etc.)
+- [ ] Add analytics
 
-## 🎯 Future Enhancements
-
-- Search/filter functionality
-- Automatic payment processing
-- Backend + database
-- Individual barosan pages
-- Dark mode
-- Admin panel
-- Email notifications
-- Monthly renewal reminders
-
-## 📄 License
+## License
 
 This project is for entertainment purposes only.
 
-## 🤝 Contributing
-
-This is a private MVP project. Contact the owner for contribution guidelines.
-
 ---
 
-**Made with 💎 and 🤣 in Romania**
+**Made in Romania**

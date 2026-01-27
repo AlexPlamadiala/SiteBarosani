@@ -47,7 +47,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={mockBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('📜 Vezi Certificat')).toBeInTheDocument()
+      expect(screen.getByText('Vezi Certificat')).toBeInTheDocument()
     })
 
     it('should have proper aria-label', () => {
@@ -74,7 +74,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={mockBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('🏆 GOLD')).toBeInTheDocument()
+      expect(screen.getByText('GOLD')).toBeInTheDocument()
     })
 
     it('should display PLATINUM tier label for platinum tier', () => {
@@ -83,7 +83,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={platinumBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('💎 PLATINUM')).toBeInTheDocument()
+      expect(screen.getByText('PLATINUM')).toBeInTheDocument()
     })
 
     it('should display SUPREM tier label for suprem tier', () => {
@@ -92,7 +92,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={supremBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('👑 SUPREM')).toBeInTheDocument()
+      expect(screen.getByText('SUPREM')).toBeInTheDocument()
     })
 
     it('should display BASIC tier label for basic tier', () => {
@@ -101,7 +101,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={basicBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('⭐ BASIC')).toBeInTheDocument()
+      expect(screen.getByText('BASIC')).toBeInTheDocument()
     })
 
     it('should default to BASIC for unknown tier', () => {
@@ -110,7 +110,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={unknownTierBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('⭐ BASIC')).toBeInTheDocument()
+      expect(screen.getByText('BASIC')).toBeInTheDocument()
     })
   })
 
@@ -198,7 +198,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={mockBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      const button = screen.getByText('📜 Vezi Certificat')
+      const button = screen.getByText('Vezi Certificat')
       fireEvent.click(button)
 
       expect(mockOnViewCertificate).toHaveBeenCalledTimes(1)
@@ -258,7 +258,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={barosanNoTier} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('⭐ BASIC')).toBeInTheDocument()
+      expect(screen.getByText('BASIC')).toBeInTheDocument()
     })
 
     it('should handle empty motto', () => {
