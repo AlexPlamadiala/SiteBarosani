@@ -1,20 +1,191 @@
 @import "tailwindcss";
 
+/* ============================================
+   🔱 LUXURY DESIGN SYSTEM - Elegant Premium Theme
+   Culori: Auriu + Mov + Negru
+   ============================================ */
+
+:root {
+  /* === Primary Colors === */
+  --gold-primary: #D4AF37;
+  --gold-light: #FFD700;
+  --gold-dark: #B8860B;
+  --gold-shine: #FFF8DC;
+
+  /* === Purple/Royal Colors === */
+  --purple-primary: #9333EA;
+  --purple-light: #A855F7;
+  --purple-dark: #7E22CE;
+  --purple-deep: #581C87;
+
+  /* === Dark Theme === */
+  --black-primary: #0a0a0a;
+  --black-secondary: #121212;
+  --black-elevated: #1a1a1a;
+  --black-card: #1f1f1f;
+
+  /* === Gradients === */
+  --gradient-gold: linear-gradient(135deg, var(--gold-dark), var(--gold-primary), var(--gold-light));
+  --gradient-purple: linear-gradient(135deg, var(--purple-dark), var(--purple-primary), var(--purple-light));
+  --gradient-royal: linear-gradient(135deg, var(--gold-primary), var(--purple-primary));
+  --gradient-luxury: linear-gradient(135deg, var(--black-secondary), var(--purple-deep), var(--black-secondary));
+  --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+
+  /* === Shadows === */
+  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
+  --shadow-gold-intense: 0 0 40px rgba(212, 175, 55, 0.5);
+  --shadow-purple: 0 0 20px rgba(147, 51, 234, 0.3);
+  --shadow-luxury: 0 10px 40px rgba(0, 0, 0, 0.5);
+
+  /* === Glow Effects === */
+  --glow-gold: 0 0 10px var(--gold-primary), 0 0 20px var(--gold-primary), 0 0 30px var(--gold-dark);
+  --glow-purple: 0 0 10px var(--purple-primary), 0 0 20px var(--purple-primary);
+}
+
 @layer base {
   body {
     margin: 0;
     font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: var(--black-primary);
+    color: #f5f5f5;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto Condensed', sans-serif;
   }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar - luxury style */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--black-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--gold-dark), var(--purple-dark));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--gold-primary), var(--purple-primary));
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: var(--gold-primary);
+    color: var(--black-primary);
+  }
 }
 
 @layer utilities {
-  /* Toast animations */
+  /* ============================================
+     🎬 ANIMATIONS - Luxury Effects
+     ============================================ */
+
+  /* === Shimmer Effect === */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* === Gold Shimmer for text/buttons === */
+  @keyframes gold-shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .text-gold-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--gold-dark) 0%,
+      var(--gold-light) 25%,
+      var(--gold-shine) 50%,
+      var(--gold-light) 75%,
+      var(--gold-dark) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gold-shimmer 3s linear infinite;
+  }
+
+  /* === Glow Pulse === */
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: var(--shadow-gold); }
+    50% { box-shadow: var(--shadow-gold-intense); }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  /* === Float Animation === */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* === Gradient Flow === */
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-flow 5s ease infinite;
+  }
+
+  /* === Border Glow Animation === */
+  @keyframes border-glow {
+    0%, 100% {
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 5px var(--gold-dark);
+    }
+    50% {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 20px var(--gold-primary);
+    }
+  }
+
+  .animate-border-glow {
+    animation: border-glow 2s ease-in-out infinite;
+  }
+
+  /* === Sparkle Effect === */
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  /* === Fade and Slide Animations === */
   @keyframes slide-in-right {
     from {
       transform: translateX(100%);
@@ -44,6 +215,151 @@
   .animate-fadeIn {
     animation: fadeIn 0.5s ease-out forwards;
     opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fadeInScale {
+    animation: fadeInScale 0.5s ease-out forwards;
+  }
+
+  /* === 3D Card Tilt Base === */
+  .card-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .card-3d-inner {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+  }
+
+  /* === Luxury Button Styles === */
+  .btn-luxury {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+    border: 1px solid var(--gold-light);
+    color: var(--black-primary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn-luxury::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+
+  .btn-luxury:hover::before {
+    left: 100%;
+  }
+
+  .btn-luxury:hover {
+    box-shadow: var(--shadow-gold-intense);
+    transform: translateY(-2px);
+  }
+
+  /* === Luxury Card === */
+  .card-luxury {
+    background: var(--black-card);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .card-luxury:hover {
+    border-color: var(--gold-primary);
+    box-shadow: var(--shadow-gold), var(--shadow-luxury);
+    transform: translateY(-5px);
+  }
+
+  /* === Glass Effect === */
+  .glass-dark {
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .glass-gold {
+    background: rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+  }
+
+  /* === Text Glow === */
+  .text-glow-gold {
+    text-shadow: 0 0 10px var(--gold-primary), 0 0 20px var(--gold-dark);
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 10px var(--purple-primary), 0 0 20px var(--purple-dark);
+  }
+
+  /* === Divider Styles === */
+  .divider-luxury {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--gold-primary),
+      var(--purple-primary),
+      var(--gold-primary),
+      transparent
+    );
+  }
+
+  /* === Background Patterns === */
+  .bg-luxury-pattern {
+    background-image:
+      radial-gradient(ellipse at top, rgba(147, 51, 234, 0.1), transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.1), transparent 50%);
+  }
+
+  .bg-gradient-luxury {
+    background: linear-gradient(
+      135deg,
+      var(--black-primary) 0%,
+      var(--black-secondary) 25%,
+      rgba(88, 28, 135, 0.2) 50%,
+      var(--black-secondary) 75%,
+      var(--black-primary) 100%
+    );
   }
 
   /* Certificate scaling for different screen sizes */
