@@ -1,30 +1,36 @@
 export default function SkeletonCard() {
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-200 animate-pulse">
+    <div className="bg-[#0f0f12] rounded-2xl shadow-lg overflow-hidden border-2 border-[#2a2a35] animate-pulse">
+      {/* Tier Badge Skeleton */}
+      <div className="h-10 bg-[#1a1a20]"></div>
+
       {/* Image Skeleton */}
-      <div className="aspect-square bg-gray-200"></div>
+      <div className="aspect-square bg-[#15151a]"></div>
 
       {/* Content Skeleton */}
-      <div className="p-4 space-y-3">
-        {/* Tier Badge Skeleton */}
-        <div className="flex justify-center">
-          <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
-        </div>
-
+      <div className="p-5 space-y-3 bg-[#0f0f12]">
         {/* Name Skeleton */}
-        <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
+        <div className="h-6 bg-[#1a1a20] rounded w-3/4 mx-auto"></div>
+
+        {/* Badges Skeleton */}
+        <div className="flex justify-center gap-1">
+          <div className="h-6 w-6 bg-[#1a1a20] rounded-full"></div>
+          <div className="h-6 w-6 bg-[#1a1a20] rounded-full"></div>
+        </div>
 
         {/* Motto Skeleton */}
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-full"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+          <div className="h-4 bg-[#1a1a20] rounded w-full"></div>
+          <div className="h-4 bg-[#1a1a20] rounded w-2/3 mx-auto"></div>
         </div>
 
-        {/* Certificate ID Skeleton */}
-        <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto mt-2"></div>
+        {/* Date Skeleton */}
+        <div className="flex justify-center">
+          <div className="h-7 w-32 bg-[#1a1a20] rounded-full"></div>
+        </div>
 
         {/* Button Skeleton */}
-        <div className="h-10 bg-gray-200 rounded-lg mt-4"></div>
+        <div className="h-12 bg-[#1a1a20] rounded-xl mt-2"></div>
       </div>
     </div>
   );

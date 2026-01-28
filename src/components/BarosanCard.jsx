@@ -28,46 +28,46 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   // On touch devices, always show button
   const showButton = isTouchDevice || isHovered;
 
-  // Cosmic Penthouse Design System - Tier Colors
+  // Cosmic Penthouse Design System - Tier Colors (using direct colors for instant rendering)
   const tierColors = {
     suprem: {
-      border: 'border-[var(--purple-primary)]',
-      badge: 'bg-[var(--gradient-suprem)]',
+      border: 'border-[#9333EA]',
+      badge: 'bg-gradient-to-r from-[#9333EA] via-[#a855f7] to-[#ec4899]',
       badgeText: 'text-white',
-      glow: 'shadow-[var(--shadow-glow-purple-intense),var(--shadow-glow-gold)]',
-      cardGradient: 'from-[var(--purple-primary)]/15 to-[var(--gold-primary)]/10',
-      blurColor: 'bg-gradient-to-r from-[var(--purple-primary)] to-[var(--gold-primary)]',
-      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(147,51,234,0.08)] to-[var(--color-bg-surface)]',
+      glow: 'shadow-[0_0_40px_rgba(147,51,234,0.4),0_0_20px_rgba(212,175,55,0.3)]',
+      cardGradient: 'from-[#9333EA]/20 to-[#D4AF37]/15',
+      blurColor: 'bg-gradient-to-r from-[#9333EA] to-[#D4AF37]',
+      cardBg: 'bg-[#0f0f12]',
       shimmer: true
     },
     platinum: {
-      border: 'border-[var(--platinum-400)]',
-      badge: 'bg-[var(--gradient-platinum)]',
-      badgeText: 'text-[var(--color-text-inverse)]',
-      glow: 'shadow-[0_0_30px_var(--tier-platina-glow)]',
-      cardGradient: 'from-[var(--platinum-400)]/15 to-[var(--platinum-500)]/10',
-      blurColor: 'bg-[var(--platinum-400)]',
-      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(160,160,181,0.05)] to-[var(--color-bg-surface)]',
+      border: 'border-[#A0A0B5]',
+      badge: 'bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#A0A0B5]',
+      badgeText: 'text-[#0A0A0F]',
+      glow: 'shadow-[0_0_30px_rgba(160,160,181,0.3)]',
+      cardGradient: 'from-[#A0A0B5]/15 to-[#8a8a9a]/10',
+      blurColor: 'bg-[#A0A0B5]',
+      cardBg: 'bg-[#0f0f12]',
       shimmer: true
     },
     gold: {
-      border: 'border-[var(--gold-primary)]',
-      badge: 'bg-[var(--gradient-gold)]',
-      badgeText: 'text-[var(--color-text-inverse)]',
-      glow: 'shadow-[var(--shadow-glow-gold)]',
-      cardGradient: 'from-[var(--gold-primary)]/15 to-[var(--gold-light)]/10',
-      blurColor: 'bg-[var(--gold-primary)]',
-      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(201,162,39,0.05)] to-[var(--color-bg-surface)]',
+      border: 'border-[#C9A227]',
+      badge: 'bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]',
+      badgeText: 'text-[#0A0A0F]',
+      glow: 'shadow-[0_0_25px_rgba(212,175,55,0.4)]',
+      cardGradient: 'from-[#D4AF37]/15 to-[#FFD700]/10',
+      blurColor: 'bg-[#D4AF37]',
+      cardBg: 'bg-[#0f0f12]',
       shimmer: true
     },
     basic: {
-      border: 'border-[var(--border-subtle)]',
-      badge: 'bg-[var(--tier-basic)]',
-      badgeText: 'text-[var(--color-text-primary)]',
-      glow: 'shadow-[var(--shadow-sm)]',
-      cardGradient: 'from-[var(--tier-basic)]/10 to-[var(--tier-basic)]/5',
-      blurColor: 'bg-[var(--tier-basic)]',
-      cardBg: 'bg-[var(--color-bg-surface)]',
+      border: 'border-[#3a3a45]',
+      badge: 'bg-[#505060]',
+      badgeText: 'text-[#F5F5F7]',
+      glow: 'shadow-sm',
+      cardGradient: 'from-[#505060]/10 to-[#404050]/5',
+      blurColor: 'bg-[#505060]',
+      cardBg: 'bg-[#0f0f12]',
       shimmer: false
     }
   };
@@ -179,13 +179,13 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
               <>
                 {/* Loading placeholder */}
                 {!imageLoaded && (
-                  <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${colors.cardGradient}`}>
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#15151a]">
                     <motion.div
                       className="relative"
                       animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >
-                      <div className={`absolute inset-0 ${colors.blurColor} rounded-full blur-xl opacity-30`}></div>
+                      <div className={`absolute inset-0 ${colors.blurColor} rounded-full blur-xl opacity-20`}></div>
                       <div className="relative text-5xl">📸</div>
                     </motion.div>
                   </div>
@@ -194,8 +194,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
                 <img
                   src={barosan.poza}
                   alt={`Fotografie ${barosan.nume}`}
-                  className={`w-full h-full object-cover transition-all duration-700 ${
-                    imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+                  className={`w-full h-full object-cover transition-all duration-500 ${
+                    imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
                   }`}
                   loading="lazy"
                   decoding="async"
@@ -207,21 +207,21 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
                   }}
                 />
                 {/* Gradient overlay for depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/60 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f12]/80 via-transparent to-transparent pointer-events-none" />
               </>
             ) : (
-              <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${colors.cardGradient}`}>
+              <div className="w-full h-full flex items-center justify-center bg-[#15151a]">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gray-500 rounded-full blur-2xl opacity-30"></div>
-                  <span className="relative text-7xl opacity-75">👤</span>
+                  <div className="absolute inset-0 bg-[#3a3a45] rounded-full blur-2xl opacity-30"></div>
+                  <span className="relative text-7xl opacity-60">👤</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Content - Cosmic Penthouse luxury theme */}
-          <div className="p-5 space-y-3 flex-1 flex flex-col">
-            <h3 className="font-bold text-xl text-center text-[var(--color-text-primary)] leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <div className="p-5 space-y-3 flex-1 flex flex-col bg-[#0f0f12]/90 backdrop-blur-sm">
+            <h3 className="font-bold text-xl text-center text-white leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {barosan.nume}
             </h3>
 
@@ -230,12 +230,12 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
               <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
             </div>
 
-            <p className="text-motto text-sm text-center leading-relaxed min-h-[40px] flex items-center justify-center" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', color: 'var(--color-text-secondary)' }}>
+            <p className="text-sm text-center leading-relaxed min-h-[40px] flex items-center justify-center text-[#d0d0d8] drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
               „{barosan.motto}"
             </p>
 
-            <div className="flex items-center justify-center text-xs font-medium text-[var(--color-text-tertiary)] pt-1">
-              <div className="bg-[var(--color-bg-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-full">
+            <div className="flex items-center justify-center text-xs font-semibold pt-1">
+              <div className="bg-[#1a1a20] border border-[#3a3a45] px-3 py-1.5 rounded-full text-[#b0b0b8] shadow-inner">
                 <span>Barosan din {formattedDate}</span>
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
         </Link>
 
         {/* Buttons section */}
-        <div className="px-5 pb-5 space-y-3">
+        <div className="px-5 pb-5 space-y-3 bg-[#0f0f12]/90">
           {/* Link for Suprem/Platinum */}
           <div className="min-h-[44px] text-center">
             {(tier === 'suprem' || tier === 'platinum') && barosan.link ? (
@@ -251,14 +251,17 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
                 href={barosan.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-1.5 transition-all text-sm font-bold px-4 py-2 rounded-lg ${
+                className={`inline-flex items-center gap-2 transition-all text-sm font-bold px-5 py-2.5 rounded-xl shadow-lg ${
                   tier === 'suprem'
-                    ? 'text-[#D4AF37] bg-gradient-to-r from-purple-900/50 to-[#D4AF37]/20 border border-purple-500/30 hover:border-[#D4AF37]/50'
-                    : 'text-gray-300 bg-white/5 border border-white/10 hover:border-white/20'
+                    ? 'bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white border border-purple-400/50 hover:shadow-purple-500/40 hover:shadow-xl'
+                    : 'bg-gradient-to-r from-[#2a2a35] to-[#35354a] text-[#E5E4E2] border border-[#A0A0B5]/30 hover:border-[#A0A0B5]/50 hover:shadow-[#A0A0B5]/20 hover:shadow-xl'
                 }`}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
                 <span>Link Personal</span>
               </motion.a>
             ) : null}
@@ -275,16 +278,17 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
             >
               <motion.button
                 onClick={() => onViewCertificate(barosan)}
-                className="relative w-full overflow-hidden py-2.5 rounded-xl font-extrabold text-sm touch-manipulation shadow-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 focus:ring-offset-[#1a1a1a]"
+                className="relative w-full overflow-hidden py-3 rounded-xl font-bold text-sm touch-manipulation focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-[#1a1a1a] bg-gradient-to-r from-[#1a1a25] via-[#252535] to-[#1a1a25] border border-[#3a3a50] hover:border-[#5a5a70] shadow-lg hover:shadow-xl transition-all"
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 aria-label={`Vezi certificatul pentru ${barosan.nume}`}
               >
-                {/* Gold gradient background */}
-                <span className="absolute inset-0 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]" />
-                {/* Shimmer effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <span className="relative text-[#0a0a0a] font-bold">Vezi Certificat</span>
+                <span className="relative flex items-center justify-center gap-2 text-[#E5E4E2]">
+                  <svg className="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Vezi Certificat</span>
+                </span>
               </motion.button>
             </motion.div>
           </div>

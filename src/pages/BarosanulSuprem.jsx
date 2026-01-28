@@ -131,7 +131,7 @@ export default function BarosanulSuprem() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl animate-bounce mb-2">👑</div>
           <p className="text-yellow-400 text-lg font-bold animate-pulse">Se încarcă...</p>
@@ -142,7 +142,7 @@ export default function BarosanulSuprem() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">😔</div>
           <p className="text-red-400 text-lg font-bold mb-4">{error}</p>
@@ -155,9 +155,12 @@ export default function BarosanulSuprem() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-black relative overflow-hidden">
-      {/* Animated Background Effects */}
+    <div className="min-h-screen bg-transparent relative overflow-hidden">
+      {/* Animated Background Effects - Purple/gold overlay for Suprem vibe */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Subtle purple gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-transparent to-purple-900/20"></div>
+
         {/* Rotating gold rings */}
         <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px]">
           <div className="absolute inset-0 border-4 border-yellow-500/20 rounded-full animate-spin" style={{ animationDuration: '20s' }}></div>
@@ -190,7 +193,7 @@ export default function BarosanulSuprem() {
             {/* Glow effect */}
             <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-red-500 to-yellow-400 rounded-3xl blur-xl opacity-75 animate-pulse"></div>
 
-            <div className="relative bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 rounded-3xl p-6 md:p-8 border-4 border-yellow-500 shadow-[0_0_50px_rgba(255,215,0,0.6)]">
+            <div className="relative bg-gradient-to-br from-[#0f0f15]/95 via-purple-900/60 to-[#0f0f15]/95 backdrop-blur-sm rounded-3xl p-6 md:p-8 border-4 border-yellow-500 shadow-[0_0_50px_rgba(255,215,0,0.6)]">
               {/* Photo and Info - Stacked on mobile, side by side on desktop */}
               <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
                 {/* Photo - BIGGER */}
@@ -244,7 +247,7 @@ export default function BarosanulSuprem() {
 
               {/* Countdown or Available Status - BIGGER */}
               {!isAvailable && supremeBarosan ? (
-                <div className="bg-black/50 rounded-2xl px-6 py-4 mb-4">
+                <div className="bg-[#0a0a0f]/60 backdrop-blur-sm rounded-2xl px-6 py-4 mb-4">
                   <p className="text-yellow-300/80 text-sm text-center mb-2">⏰ Timp rămas până expiră titlul</p>
                   <div className="flex items-center justify-center gap-4">
                     <div className="text-center">
@@ -315,10 +318,10 @@ export default function BarosanulSuprem() {
                   </div>
                 )}
 
-                <div className={`relative rounded-xl p-3 border ${
-                  pkg.best ? 'bg-gradient-to-br from-yellow-900 to-red-900 border-yellow-400' :
-                  pkg.popular ? 'bg-gradient-to-br from-purple-900 to-pink-900 border-purple-400' :
-                  'bg-gradient-to-br from-gray-800 to-gray-900 border-gray-500'
+                <div className={`relative rounded-xl p-3 border backdrop-blur-sm ${
+                  pkg.best ? 'bg-gradient-to-br from-yellow-900/80 to-red-900/80 border-yellow-400' :
+                  pkg.popular ? 'bg-gradient-to-br from-purple-900/80 to-pink-900/80 border-purple-400' :
+                  'bg-gradient-to-br from-[#1a1a25]/90 to-[#15151a]/90 border-[#3a3a45]'
                 }`}>
                   <div className="text-center">
                     <span className="text-2xl block">{pkg.emoji}</span>
@@ -347,7 +350,7 @@ export default function BarosanulSuprem() {
         </div>
 
         {/* Benefits - Compact horizontal */}
-        <div className="max-w-3xl mx-auto mb-4 bg-black/40 rounded-xl p-3 border border-yellow-500/30">
+        <div className="max-w-3xl mx-auto mb-4 bg-[#0f0f15]/70 backdrop-blur-sm rounded-xl p-3 border border-yellow-500/30">
           <h3 className="text-sm font-bold text-center text-yellow-400 mb-2">✨ CE PRIMEȘTI ✨</h3>
           <div className="flex flex-wrap justify-center gap-2">
             {['👑 Prima pagină', '🔥 Efecte speciale', '💎 Badge exclusiv', '🏆 Certificat'].map((benefit, i) => (
