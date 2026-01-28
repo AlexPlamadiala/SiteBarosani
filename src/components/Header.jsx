@@ -42,8 +42,8 @@ export default function Header() {
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-black/90 backdrop-blur-xl shadow-[0_4px_30px_rgba(212,175,55,0.2)]'
-          : 'bg-black/50 backdrop-blur-md'
+          ? 'glass-dark shadow-[0_4px_30px_rgba(201,162,39,0.15)] border-b border-[var(--border-subtle)]'
+          : 'bg-[var(--color-bg-void)]/50 backdrop-blur-md'
       }`}
       role="banner"
       initial={{ y: -100 }}

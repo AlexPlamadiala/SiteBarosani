@@ -28,42 +28,47 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   // On touch devices, always show button
   const showButton = isTouchDevice || isHovered;
 
+  // Cosmic Penthouse Design System - Tier Colors
   const tierColors = {
     suprem: {
-      border: 'border-purple-500',
-      badge: 'bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA]',
+      border: 'border-[var(--purple-primary)]',
+      badge: 'bg-[var(--gradient-suprem)]',
       badgeText: 'text-white',
-      glow: 'shadow-[0_0_40px_rgba(147,51,234,0.5),0_0_60px_rgba(212,175,55,0.3)]',
-      cardGradient: 'from-purple-500/20 to-[#D4AF37]/20',
-      blurColor: 'bg-gradient-to-r from-purple-500 to-[#D4AF37]',
-      cardBg: 'bg-gradient-to-br from-[#1a1a1a] via-[#1f1f1f] to-[#1a1a1a]'
+      glow: 'shadow-[var(--shadow-glow-purple-intense),var(--shadow-glow-gold)]',
+      cardGradient: 'from-[var(--purple-primary)]/15 to-[var(--gold-primary)]/10',
+      blurColor: 'bg-gradient-to-r from-[var(--purple-primary)] to-[var(--gold-primary)]',
+      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(147,51,234,0.08)] to-[var(--color-bg-surface)]',
+      shimmer: true
     },
     platinum: {
-      border: 'border-[#BCC6CC]',
-      badge: 'bg-gradient-to-r from-[#E5E4E2] via-white to-[#BCC6CC]',
-      badgeText: 'text-[#1a1a1a]',
-      glow: 'shadow-[0_0_30px_rgba(188,198,204,0.5)]',
-      cardGradient: 'from-[#E5E4E2]/20 to-[#BCC6CC]/20',
-      blurColor: 'bg-[#BCC6CC]',
-      cardBg: 'bg-gradient-to-br from-[#1a1a1a] via-[#1f1f1f] to-[#1a1a1a]'
+      border: 'border-[var(--platinum-400)]',
+      badge: 'bg-[var(--gradient-platinum)]',
+      badgeText: 'text-[var(--color-text-inverse)]',
+      glow: 'shadow-[0_0_30px_var(--tier-platina-glow)]',
+      cardGradient: 'from-[var(--platinum-400)]/15 to-[var(--platinum-500)]/10',
+      blurColor: 'bg-[var(--platinum-400)]',
+      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(160,160,181,0.05)] to-[var(--color-bg-surface)]',
+      shimmer: true
     },
     gold: {
-      border: 'border-[#D4AF37]',
-      badge: 'bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]',
-      badgeText: 'text-[#1a1a1a]',
-      glow: 'shadow-[0_0_30px_rgba(212,175,55,0.5)]',
-      cardGradient: 'from-[#D4AF37]/20 to-[#FFD700]/20',
-      blurColor: 'bg-[#D4AF37]',
-      cardBg: 'bg-gradient-to-br from-[#1a1a1a] via-[#1f1f1f] to-[#1a1a1a]'
+      border: 'border-[var(--gold-primary)]',
+      badge: 'bg-[var(--gradient-gold)]',
+      badgeText: 'text-[var(--color-text-inverse)]',
+      glow: 'shadow-[var(--shadow-glow-gold)]',
+      cardGradient: 'from-[var(--gold-primary)]/15 to-[var(--gold-light)]/10',
+      blurColor: 'bg-[var(--gold-primary)]',
+      cardBg: 'bg-gradient-to-br from-[var(--color-bg-surface)] via-[rgba(201,162,39,0.05)] to-[var(--color-bg-surface)]',
+      shimmer: true
     },
     basic: {
-      border: 'border-gray-600',
-      badge: 'bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500',
-      badgeText: 'text-white',
-      glow: 'shadow-[0_0_15px_rgba(100,100,100,0.3)]',
-      cardGradient: 'from-gray-700/20 to-gray-600/20',
-      blurColor: 'bg-gray-500',
-      cardBg: 'bg-gradient-to-br from-[#1a1a1a] via-[#1f1f1f] to-[#1a1a1a]'
+      border: 'border-[var(--border-subtle)]',
+      badge: 'bg-[var(--tier-basic)]',
+      badgeText: 'text-[var(--color-text-primary)]',
+      glow: 'shadow-[var(--shadow-sm)]',
+      cardGradient: 'from-[var(--tier-basic)]/10 to-[var(--tier-basic)]/5',
+      blurColor: 'bg-[var(--tier-basic)]',
+      cardBg: 'bg-[var(--color-bg-surface)]',
+      shimmer: false
     }
   };
 
@@ -214,9 +219,9 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
             )}
           </div>
 
-          {/* Content - Dark luxury theme */}
+          {/* Content - Cosmic Penthouse luxury theme */}
           <div className="p-5 space-y-3 flex-1 flex flex-col">
-            <h3 className="font-extrabold text-xl text-center text-white leading-tight drop-shadow-lg">
+            <h3 className="font-bold text-xl text-center text-[var(--color-text-primary)] leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {barosan.nume}
             </h3>
 
@@ -225,12 +230,12 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
               <BadgeDisplay barosan={barosan} totalBarosani={totalBarosani} maxDisplay={4} size="sm" />
             </div>
 
-            <p className="text-sm text-gray-300 text-center italic leading-relaxed min-h-[40px] flex items-center justify-center">
-              "{barosan.motto}"
+            <p className="text-motto text-sm text-center leading-relaxed min-h-[40px] flex items-center justify-center" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic', color: 'var(--color-text-secondary)' }}>
+              „{barosan.motto}"
             </p>
 
-            <div className="flex items-center justify-center text-xs font-semibold text-gray-400 pt-1">
-              <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
+            <div className="flex items-center justify-center text-xs font-medium text-[var(--color-text-tertiary)] pt-1">
+              <div className="bg-[var(--color-bg-elevated)] border border-[var(--border-subtle)] px-3 py-1.5 rounded-full">
                 <span>Barosan din {formattedDate}</span>
               </div>
             </div>

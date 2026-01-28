@@ -487,15 +487,15 @@ export default function StarryBackground() {
     const animate = () => {
       time += 0.016;
 
-      // Deep space gradient background
+      // Deep space gradient background - Cosmic Penthouse palette
       const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
-      bgGradient.addColorStop(0, '#020205');
-      bgGradient.addColorStop(0.2, '#050510');
-      bgGradient.addColorStop(0.4, '#080815');
-      bgGradient.addColorStop(0.5, '#0a0a18');
-      bgGradient.addColorStop(0.6, '#080815');
-      bgGradient.addColorStop(0.8, '#050510');
-      bgGradient.addColorStop(1, '#020205');
+      bgGradient.addColorStop(0, '#050508');      // --color-bg-void
+      bgGradient.addColorStop(0.15, '#0A0A0F');   // --color-bg-space
+      bgGradient.addColorStop(0.3, '#0d0d15');
+      bgGradient.addColorStop(0.5, '#12121A');    // --color-bg-elevated with purple tint
+      bgGradient.addColorStop(0.7, '#0d0d15');
+      bgGradient.addColorStop(0.85, '#0A0A0F');
+      bgGradient.addColorStop(1, '#050508');
       ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, width, height);
 

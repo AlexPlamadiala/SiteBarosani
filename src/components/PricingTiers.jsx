@@ -105,39 +105,41 @@ export default function PricingTiers() {
     }, 100);
   };
 
+  // Cosmic Penthouse Design System - Tier configurations
   const tiers = [
-    { id: 'suprem', name: 'SUPREM', icon: '👑', price: 'de la 50 RON/h', color: 'from-purple-500 to-pink-500', borderColor: 'border-purple-500' },
-    { id: 'platinum', name: 'PLATINUM', icon: '💎', price: '100 RON', color: 'from-[#E5E4E2] to-[#BCC6CC]', borderColor: 'border-gray-300', textDark: true },
-    { id: 'gold', name: 'GOLD', icon: '🏆', price: '50 RON', color: 'from-[#D4AF37] to-[#FFD700]', borderColor: 'border-yellow-500', textDark: true },
-    { id: 'basic', name: 'BASIC', icon: '⭐', price: '20 RON', color: 'from-gray-500 to-gray-600', borderColor: 'border-gray-400' }
+    { id: 'suprem', name: 'SUPREM', icon: '👑', price: 'de la 50 RON/h', color: 'from-[var(--purple-primary)] via-[var(--gold-primary)] to-[var(--purple-primary)]', borderColor: 'border-[var(--purple-primary)]', gradient: 'var(--gradient-suprem)' },
+    { id: 'platinum', name: 'PLATINA', icon: '💎', price: '100 RON/lună', color: 'from-[var(--platinum-400)] to-[var(--platinum-300)]', borderColor: 'border-[var(--platinum-400)]', textDark: true, gradient: 'var(--gradient-platinum)' },
+    { id: 'gold', name: 'GOLD', icon: '🏆', price: '50 RON/lună', color: 'from-[var(--gold-dark)] via-[var(--gold-primary)] to-[var(--gold-light)]', borderColor: 'border-[var(--gold-primary)]', textDark: true, gradient: 'var(--gradient-gold)' },
+    { id: 'basic', name: 'BASIC', icon: '⭐', price: '20 RON/lună', color: 'from-[var(--tier-basic)] to-[#707080]', borderColor: 'border-[var(--border-default)]', gradient: 'linear-gradient(135deg, #505060, #707080)' }
   ];
 
   const hourPresets = [1, 6, 12, 24, 48];
 
   return (
     <div className="space-y-6">
-      {/* Tier Selection Tabs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Tier Selection Tabs - Cosmic Penthouse Style */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {tiers.map((tier) => (
           <button
             key={tier.id}
             onClick={() => handleSelectTier(tier.id)}
-            className={`relative p-4 rounded-2xl border-2 transition-all ${
+            className={`relative p-5 rounded-xl border-2 transition-all duration-300 ${
               selectedTier === tier.id
-                ? `${tier.borderColor} bg-gradient-to-br ${tier.color} scale-105 shadow-lg`
-                : 'border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30'
+                ? `${tier.borderColor} bg-gradient-to-br ${tier.color} scale-[1.02] shadow-lg`
+                : 'border-[var(--border-subtle)] bg-[var(--color-bg-surface)] hover:bg-[var(--color-bg-surface-hover)] hover:border-[var(--border-default)]'
             }`}
+            style={selectedTier === tier.id ? { boxShadow: tier.id === 'suprem' ? 'var(--shadow-glow-purple), var(--shadow-glow-gold)' : tier.id === 'gold' ? 'var(--shadow-glow-gold)' : 'var(--shadow-md)' } : {}}
           >
             {selectedTier === tier.id && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">✓</span>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-[var(--color-success)] rounded-full flex items-center justify-center shadow-md">
+                <span className="text-white text-xs font-bold">✓</span>
               </div>
             )}
-            <div className="text-3xl mb-2">{tier.icon}</div>
-            <div className={`font-bold text-sm ${selectedTier === tier.id && tier.textDark ? 'text-[#1a365d]' : 'text-white'}`}>
+            <div className="text-3xl mb-3">{tier.icon}</div>
+            <div className={`font-bold text-sm tracking-wide ${selectedTier === tier.id && tier.textDark ? 'text-[var(--color-text-inverse)]' : 'text-[var(--color-text-primary)]'}`}>
               {tier.name}
             </div>
-            <div className={`text-xs mt-1 ${selectedTier === tier.id && tier.textDark ? 'text-[#1a365d]/70' : 'text-white/60'}`}>
+            <div className={`text-xs mt-1 font-medium ${selectedTier === tier.id && tier.textDark ? 'text-[var(--color-text-inverse)]/70' : 'text-[var(--color-text-secondary)]'}`}>
               {tier.price}
             </div>
           </button>
@@ -147,18 +149,18 @@ export default function PricingTiers() {
       {/* Selected Tier Details */}
       {selectedTier && (
         <div className="mt-8">
-          {/* SUPREM Details */}
+          {/* SUPREM Details - Cosmic Penthouse Style */}
           {selectedTier === 'suprem' && (
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-lg opacity-30"></div>
-              <div className="relative bg-[#111] rounded-2xl p-6 border border-purple-500/30">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="absolute -inset-1 bg-[var(--gradient-suprem)] rounded-2xl blur-lg opacity-30"></div>
+              <div className="relative bg-[var(--color-bg-elevated)] rounded-xl p-6 border-2 border-[var(--purple-primary)]/40">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-[var(--gradient-suprem)] flex items-center justify-center shadow-[var(--shadow-glow-purple)]">
                     <span className="text-2xl">👑</span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">Barosanul Suprem</h3>
-                    <p className="text-purple-300/80 text-sm">Pagină dedicată exclusivă</p>
+                    <h3 className="text-xl font-bold text-[var(--color-text-primary)]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Barosanul Suprem</h3>
+                    <p className="text-[var(--purple-300)] text-sm">Supremația se plătește. Pe oră.</p>
                   </div>
                 </div>
 

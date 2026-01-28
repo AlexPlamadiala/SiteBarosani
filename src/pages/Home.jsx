@@ -191,24 +191,24 @@ export default function Home() {
               </div>
             </FadeIn>
 
-            {/* Main Title */}
+            {/* Main Title - Playfair Display */}
             <FadeIn delay={0.1}>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
-                <span className="text-white">REGISTRUL</span>
-                <br />
-                <span className="text-gold-shimmer">OFICIAL</span>
-                <br />
-                <span className="text-white">AL BAROSANILOR</span>
+              <div className="text-[var(--color-text-secondary)] text-sm md:text-base font-semibold tracking-[0.2em] uppercase mb-4">
+                Registrul Oficial
+              </div>
+              <h1 className="mb-8 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-[var(--color-text-primary)]">AL</span>
+                <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-gradient-gold">BAROSANILOR</span>
               </h1>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-                Singura institutie acreditata pentru certificarea oficiala a barosanilor din Romania
+              <p className="text-lg md:text-xl text-[var(--color-text-secondary)] mb-10 max-w-2xl mx-auto leading-relaxed">
+                Unde statutul devine legendă. Certifică-ți măreția. Oficial.
               </p>
             </FadeIn>
 
-            {/* BAROSANUL SUPREM - FEATURED SECTION */}
+            {/* BAROSANUL SUPREM - FEATURED SECTION - Cosmic Penthouse Style */}
             <FadeIn delay={0.3}>
               {supremBarosan && !supremAvailable ? (
                 <Link to="/barosanul-suprem" className="block group mb-12">
@@ -217,31 +217,38 @@ export default function Home() {
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {/* Animated Glow */}
+                    {/* Animated Glow - Purple + Gold */}
                     <motion.div
-                      className="absolute -inset-2 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] rounded-3xl blur-xl"
-                      animate={{
-                        opacity: [0.4, 0.7, 0.4],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute -inset-2 bg-[var(--gradient-suprem)] rounded-3xl blur-xl"
+                      animate={{ opacity: [0.3, 0.6, 0.3] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
                     />
 
-                    <div className="relative bg-gradient-to-br from-[#1a1a1a] via-purple-900/30 to-[#1a1a1a] rounded-2xl p-6 border-2 border-[#D4AF37]/50 group-hover:border-[#D4AF37] transition-all">
-                      <div className="flex items-center gap-6">
-                        {/* Photo */}
+                    <div className="relative glass-purple rounded-2xl p-6 md:p-8 border-2 border-[var(--purple-primary)]/50 group-hover:border-[var(--gold-primary)] transition-all shadow-[var(--shadow-glow-purple),var(--shadow-glow-gold)]">
+                      {/* Suprem Badge */}
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                        <div className="badge badge-suprem px-4 py-1.5 text-xs shadow-lg">
+                          ✦ BAROSANUL SUPREM ✦
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-6 pt-2">
+                        {/* Photo with Suprem Avatar Style */}
                         <div className="relative flex-shrink-0">
                           <motion.div
-                            className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-[#D4AF37] overflow-hidden bg-gradient-to-br from-[#9333EA] to-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.5)]"
-                            whileHover={{ scale: 1.1 }}
+                            className="avatar avatar-suprem w-24 h-24 md:w-32 md:h-32 overflow-hidden"
+                            animate={{ boxShadow: ['0 0 30px rgba(147,51,234,0.4)', '0 0 50px rgba(201,162,39,0.4)', '0 0 30px rgba(147,51,234,0.4)'] }}
+                            transition={{ duration: 3, repeat: Infinity }}
+                            whileHover={{ scale: 1.05 }}
                           >
                             {supremBarosan.poza ? (
                               <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-5xl">👑</div>
+                              <div className="w-full h-full flex items-center justify-center text-5xl bg-[var(--gradient-suprem)]">👑</div>
                             )}
                           </motion.div>
                           <motion.div
-                            className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-full flex items-center justify-center text-xl shadow-lg"
+                            className="absolute -top-2 -right-2 w-10 h-10 bg-[var(--gradient-gold)] rounded-full flex items-center justify-center text-xl shadow-lg"
                             animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                           >
@@ -251,23 +258,19 @@ export default function Home() {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0 text-left">
-                          <div className="inline-block bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%] animate-gradient text-white text-xs font-bold px-3 py-1 rounded-full mb-2 shadow-lg">
-                            BAROSANUL SUPREM ACTIV
-                          </div>
-                          <h3 className="text-2xl md:text-3xl font-black text-white truncate group-hover:text-[#D4AF37] transition-colors">
+                          <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] truncate group-hover:text-gradient-gold transition-colors" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                             {supremBarosan.nume}
                           </h3>
                           {supremBarosan.motto && (
-                            <p className="text-gray-400 italic text-base mt-1 truncate">"{supremBarosan.motto}"</p>
+                            <p className="text-motto text-[var(--color-text-secondary)] text-base mt-2 truncate" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
+                              „{supremBarosan.motto}"
+                            </p>
                           )}
-                          <div className="mt-3 flex items-center gap-2 text-[#D4AF37] text-sm font-semibold">
-                            <span>Vezi profilul</span>
-                            <motion.span
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{ duration: 1, repeat: Infinity }}
-                            >
-                              →
-                            </motion.span>
+                          <div className="mt-4 flex items-center gap-3">
+                            <span className="btn-secondary text-sm py-2 px-4 inline-flex items-center gap-2">
+                              <span>Vezi profilul</span>
+                              <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>→</motion.span>
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -280,22 +283,22 @@ export default function Home() {
                     className="relative max-w-xl mx-auto"
                     whileHover={{ scale: 1.02 }}
                   >
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#9333EA] to-[#D4AF37] rounded-2xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                    <div className="relative bg-gradient-to-br from-[#1a1a1a] to-purple-900/20 rounded-xl p-5 border border-[#D4AF37]/40 group-hover:border-[#D4AF37]/60 transition-all">
+                    <div className="absolute -inset-1 bg-[var(--gradient-suprem)] rounded-2xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                    <div className="relative glass-purple rounded-xl p-6 border border-[var(--gold-primary)]/40 group-hover:border-[var(--gold-primary)]/60 transition-all">
                       <div className="text-center">
                         <motion.div
-                          className="text-5xl mb-2"
+                          className="text-5xl mb-3"
                           animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
                           transition={{ duration: 2, repeat: Infinity }}
                         >
                           👑
                         </motion.div>
-                        <div className="text-xl font-black text-gold-shimmer">
-                          POZITIA SUPREM E LIBERA!
+                        <div className="text-xl font-bold text-gradient-gold" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                          Poziția Suprem e liberă!
                         </div>
-                        <p className="text-gray-400 text-sm mt-1">Devino cel mai baros dintre barosani</p>
-                        <div className="mt-3 inline-flex items-center gap-2 text-green-400 text-sm font-bold">
-                          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        <p className="text-[var(--color-text-secondary)] text-sm mt-2">Devino cel mai baros dintre barosani</p>
+                        <div className="mt-4 inline-flex items-center gap-2 text-[var(--color-success)] text-sm font-semibold">
+                          <span className="w-2 h-2 bg-[var(--color-success)] rounded-full animate-pulse"></span>
                           Disponibil acum →
                         </div>
                       </div>
@@ -385,18 +388,21 @@ export default function Home() {
       {/* Luxury Divider */}
       <div className="divider-luxury h-px" />
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-black/40 backdrop-blur-sm relative overflow-hidden">
+      {/* Features Section - Cosmic Penthouse Style */}
+      <section className="py-24 px-4 bg-[var(--color-bg-space)]/60 backdrop-blur-sm relative overflow-hidden">
 
         <div className="container mx-auto max-w-5xl relative z-10">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-black text-center mb-4">
-              <span className="text-white">De Ce </span>
-              <span className="text-gold-shimmer">Registrul Oficial?</span>
-            </h2>
-            <p className="text-gray-400 text-center mb-12 max-w-xl mx-auto">
-              Beneficii exclusive pentru barosani verificati oficial
-            </p>
+            <div className="text-center mb-12">
+              <span className="text-overline text-[var(--gold-primary)] mb-4 block">Beneficii Exclusive</span>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                <span className="text-[var(--color-text-primary)]">De Ce </span>
+                <span className="text-gradient-gold">Registrul Oficial?</span>
+              </h2>
+              <p className="text-[var(--color-text-secondary)] max-w-xl mx-auto">
+                Beneficii exclusive pentru barosani verificați oficial
+              </p>
+            </div>
           </FadeIn>
 
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6" staggerDelay={0.15}>
@@ -471,15 +477,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tier Comparison */}
-      <section className="py-20 px-4 bg-black/30 relative overflow-hidden">
+      {/* Tier Comparison - Cosmic Penthouse Style */}
+      <section className="py-24 px-4 bg-[var(--color-bg-void)]/50 relative overflow-hidden">
 
         <div className="container mx-auto max-w-5xl relative z-10">
           <FadeIn>
-            <h2 className="text-3xl md:text-5xl font-black text-center mb-4 text-white">
-              Alege-ti Nivelul
-            </h2>
-            <p className="text-center text-gray-400 mb-12">Fiecare tier ofera beneficii unice</p>
+            <div className="text-center mb-12">
+              <span className="text-overline text-[var(--gold-primary)] mb-4 block">Planuri & Prețuri</span>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-[var(--color-text-primary)]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Alege-ți Destinul
+              </h2>
+              <p className="text-[var(--color-text-secondary)]">Fiecare tier oferă beneficii unice</p>
+            </div>
           </FadeIn>
 
           <StaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4" staggerDelay={0.1}>
@@ -565,8 +574,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-24 px-4 bg-black/50 backdrop-blur-sm relative overflow-hidden">
+      {/* Final CTA - Cosmic Penthouse Style */}
+      <section className="py-24 px-4 bg-[var(--color-bg-space)]/70 backdrop-blur-sm relative overflow-hidden">
 
         <div className="relative z-10 container mx-auto text-center max-w-2xl">
           <FadeIn>
@@ -580,11 +589,11 @@ export default function Home() {
             >
               👑
             </motion.div>
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-              Gata Sa Devii <span className="text-gold-shimmer">Barosan Oficial</span>?
+            <h2 className="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-6" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Gata să devii <span className="text-gradient-gold">Barosan Oficial</span>?
             </h2>
-            <p className="text-gray-400 mb-10 text-lg">
-              Alatura-te celor <span className="text-[#D4AF37] font-bold tabular-nums">{animatedTotal}</span> barosani verificati si primeste certificatul tau oficial
+            <p className="text-[var(--color-text-secondary)] mb-10 text-lg">
+              Alătură-te celor <span className="text-[var(--gold-primary)] font-bold tabular-nums">{animatedTotal}</span> barosani verificați și primește certificatul tău oficial
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.div whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }}>
