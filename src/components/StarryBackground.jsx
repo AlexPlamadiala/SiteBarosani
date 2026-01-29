@@ -35,60 +35,78 @@ function Meteorite({ supremName, onComplete }) {
       onAnimationComplete={onComplete}
     >
       <div className="relative">
-        {/* Long fire trail */}
-        <div className="absolute -left-48 top-1/2 -translate-y-1/2 w-56 h-10">
-          <div className="absolute inset-0 bg-gradient-to-l from-orange-500 via-yellow-400 to-transparent blur-md opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-l from-red-600 via-orange-500 to-transparent blur-xl opacity-50" />
-          <div className="absolute top-2 bottom-2 left-0 right-8 bg-gradient-to-l from-white via-yellow-200 to-transparent blur-sm opacity-90" />
-        </div>
-
-        {/* Spark particles */}
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-yellow-300 rounded-full"
+        {/* Meteorite image with glow and subtle animation */}
+        <motion.div
+          className="relative"
+          style={{
+            filter: 'drop-shadow(0 0 30px rgba(255, 165, 0, 0.6)) drop-shadow(0 0 60px rgba(255, 100, 0, 0.3))',
+          }}
+        >
+          <motion.img
+            src="/meteorite.png"
+            alt="Meteorite"
+            className="w-28 h-28 object-contain pointer-events-none"
             style={{
-              left: -30 - i * 12,
-              top: Math.sin(i * 0.7) * 15,
+              transform: 'rotate(-45deg)',
             }}
             animate={{
-              opacity: [1, 0.5, 0],
-              scale: [1, 0.5, 0],
-              y: [0, (i % 2 === 0 ? -1 : 1) * 25],
+              scale: [1, 1.05, 1],
+              filter: [
+                'brightness(1) contrast(1.1)',
+                'brightness(1.2) contrast(1.2)',
+                'brightness(1) contrast(1.1)',
+              ],
             }}
             transition={{
-              duration: 0.8,
+              duration: 2,
               repeat: Infinity,
-              delay: i * 0.08,
+              ease: 'easeInOut',
             }}
           />
-        ))}
-
-        {/* Meteorite rock */}
-        <motion.div
-          className="relative w-14 h-12 rounded-[40%]"
-          style={{
-            background: 'radial-gradient(ellipse at 25% 25%, #9a8478 0%, #6d5a4a 30%, #4a3d32 60%, #2a2420 100%)',
-            boxShadow: '0 0 40px rgba(255, 165, 0, 0.7), 0 0 80px rgba(255, 100, 0, 0.4), inset -4px -4px 12px rgba(0,0,0,0.6)',
-          }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-        >
-          <div className="absolute top-1 left-2 w-3 h-2 rounded-full bg-black/30" />
-          <div className="absolute top-5 left-7 w-2 h-2 rounded-full bg-black/25" />
-          <div className="absolute top-3 left-0 w-2 h-1 rounded-full bg-black/20" />
-          <div className="absolute top-7 left-4 w-1.5 h-1.5 rounded-full bg-black/30" />
-          <div
-            className="absolute inset-0 rounded-[40%]"
+          {/* Additional glow pulse behind the image */}
+          <motion.div
+            className="absolute inset-0 rounded-full"
             style={{
-              background: 'linear-gradient(120deg, transparent 40%, rgba(255, 180, 80, 0.4) 70%, rgba(255, 120, 50, 0.7) 100%)',
+              background: 'radial-gradient(circle, rgba(255, 165, 0, 0.4) 0%, rgba(255, 100, 0, 0.2) 40%, transparent 70%)',
+            }}
+            animate={{
+              opacity: [0.5, 0.8, 0.5],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
             }}
           />
         </motion.div>
 
+        {/* Spark particles trailing behind */}
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1.5 h-1.5 bg-yellow-400 rounded-full"
+            style={{
+              left: -20 - i * 14,
+              top: 50 + Math.sin(i * 0.9) * 18,
+              boxShadow: '0 0 6px rgba(255, 200, 50, 0.8)',
+            }}
+            animate={{
+              opacity: [1, 0.4, 0],
+              scale: [1, 0.6, 0],
+              y: [0, (i % 2 === 0 ? -1 : 1) * 20],
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              delay: i * 0.1,
+            }}
+          />
+        ))}
+
         {/* Banner/Pin */}
         <motion.div
-          className="absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap"
+          className="absolute -top-20 left-1/2 -translate-x-1/2 whitespace-nowrap"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1, duration: 0.4 }}
