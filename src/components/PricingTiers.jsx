@@ -285,28 +285,28 @@ export default function PricingTiers() {
 
           {/* PLATINUM Details */}
           {selectedTier === 'platinum' && (
-            <div className="bg-[#111] rounded-2xl p-6 border border-gray-300/30">
+            <div className="bg-[#0f0f12] rounded-2xl p-6 border-2 border-[#A0A0B5]/30">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#E5E4E2] to-[#BCC6CC] flex items-center justify-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#E5E4E2] via-[#BCC6CC] to-[#A0A0B5] flex items-center justify-center shadow-[0_0_20px_rgba(160,160,181,0.3)]">
                   <span className="text-2xl">💎</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Platinum</h3>
-                  <p className="text-gray-400 text-sm">Card premium cu link personal</p>
+                  <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Platinum</h3>
+                  <p className="text-[#A0A0B0] text-sm">Card premium cu link personal</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <div className="text-3xl font-black text-gray-300">100 RON</div>
-                  <div className="text-xs text-gray-500">pe lună</div>
+                  <div className="text-3xl font-black text-[#E5E4E2]">100 RON</div>
+                  <div className="text-xs text-[#A0A0B0]">pe lună</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mb-6">
                 {['Toate beneficiile Gold', 'Card mare cu glow', 'Link personal', 'Certificat exclusiv', 'Top în registru', 'Badge animat'].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
-                    <span className="text-gray-400">✓</span> {f}
+                    <span className="text-[#A0A0B5]">✓</span> {f}
                   </div>
                 ))}
               </div>
-              <button onClick={() => scrollToForm('platinum')} className="w-full bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('platinum')} className="w-full bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#0A0A0F] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all shadow-lg">
                 Continuă cu Platinum 💎
               </button>
             </div>
@@ -314,28 +314,28 @@ export default function PricingTiers() {
 
           {/* GOLD Details */}
           {selectedTier === 'gold' && (
-            <div className="bg-[#111] rounded-2xl p-6 border border-yellow-500/30">
+            <div className="bg-[#0f0f12] rounded-2xl p-6 border-2 border-[#D4AF37]/30">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#FFD700] flex items-center justify-center">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.3)]">
                   <span className="text-2xl">🏆</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Gold</h3>
-                  <p className="text-yellow-500/70 text-sm">Cel mai popular pachet</p>
+                  <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Gold</h3>
+                  <p className="text-[#D4AF37]/70 text-sm">Cel mai popular pachet</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <div className="text-3xl font-black text-yellow-400">50 RON</div>
-                  <div className="text-xs text-gray-500">pe lună</div>
+                  <div className="text-3xl font-black text-[#D4AF37]">50 RON</div>
+                  <div className="text-xs text-[#A0A0B0]">pe lună</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mb-6">
                 {['Toate beneficiile Basic', 'Border auriu', 'Prioritate în grid', 'Badge Gold', 'Suport premium'].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
-                    <span className="text-yellow-500">✓</span> {f}
+                    <span className="text-[#D4AF37]">✓</span> {f}
                   </div>
                 ))}
               </div>
-              <button onClick={() => scrollToForm('gold')} className="w-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('gold')} className="w-full bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700] text-[#0A0A0F] py-3 rounded-xl font-bold hover:scale-[1.02] transition-all shadow-lg shadow-[#D4AF37]/20">
                 Continuă cu Gold 🏆
               </button>
             </div>
@@ -343,28 +343,28 @@ export default function PricingTiers() {
 
           {/* BASIC Details */}
           {selectedTier === 'basic' && (
-            <div className="bg-[#111] rounded-2xl p-6 border border-white/10">
+            <div className="bg-[#0f0f12] rounded-2xl p-6 border-2 border-[#3a3a45]">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-xl bg-[#505060] flex items-center justify-center">
                   <span className="text-2xl">⭐</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">Basic</h3>
-                  <p className="text-gray-400 text-sm">Începe ca barosan oficial</p>
+                  <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Basic</h3>
+                  <p className="text-[#A0A0B0] text-sm">Începe ca barosan oficial</p>
                 </div>
                 <div className="ml-auto text-right">
-                  <div className="text-3xl font-black text-gray-400">20 RON</div>
-                  <div className="text-xs text-gray-500">pe lună</div>
+                  <div className="text-3xl font-black text-white/70">20 RON</div>
+                  <div className="text-xs text-[#A0A0B0]">pe lună</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 mb-6">
                 {['În Registrul Oficial', 'Certificat digital', 'Nume personalizat', 'Motto personal'].map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-white/70 text-sm">
-                    <span className="text-gray-500">✓</span> {f}
+                    <span className="text-white/40">✓</span> {f}
                   </div>
                 ))}
               </div>
-              <button onClick={() => scrollToForm('basic')} className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-all">
+              <button onClick={() => scrollToForm('basic')} className="w-full bg-[#505060] text-white py-3 rounded-xl font-bold hover:scale-[1.02] hover:bg-[#606070] transition-all">
                 Continuă cu Basic ⭐
               </button>
             </div>

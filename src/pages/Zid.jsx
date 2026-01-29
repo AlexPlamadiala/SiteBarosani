@@ -301,36 +301,36 @@ export default function Zid() {
         </div>
       )}
 
-      {/* Filter Bar - Sticky on scroll (top matches header height: 72px mobile, 88px desktop) */}
-      <div className="sticky top-16 md:top-20 z-40 bg-black/90 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20">
+      {/* Filter Bar - Sticky on scroll */}
+      <div className="sticky top-16 md:top-20 z-40 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-[#D4AF37]/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="container mx-auto px-4">
-          {/* Tier Tabs - Main element */}
+          {/* Tier Tabs */}
           <div className="flex items-center justify-between py-3">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all duration-300 ${
                     activeTab === tab.id
-                      ? tab.id === 'suprem' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30' :
-                        tab.id === 'platinum' ? 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#1a365d] shadow-lg' :
-                        tab.id === 'gold' ? 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] shadow-lg shadow-yellow-500/30' :
-                        tab.id === 'basic' ? 'bg-gray-500 text-white shadow-lg' :
-                        'bg-white text-[#1a365d] shadow-lg'
-                      : 'bg-white/10 text-white/80 hover:bg-white/20'
+                      ? tab.id === 'suprem' ? 'bg-gradient-to-r from-[#9333EA] to-[#ec4899] text-white shadow-lg shadow-purple-500/30 border border-purple-400/30' :
+                        tab.id === 'platinum' ? 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC] text-[#0A0A0F] shadow-lg border border-white/20' :
+                        tab.id === 'gold' ? 'bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700] text-[#0A0A0F] shadow-lg shadow-[#D4AF37]/30 border border-[#D4AF37]/30' :
+                        tab.id === 'basic' ? 'bg-[#505060] text-white shadow-lg border border-[#505060]/50' :
+                        'bg-white text-[#0A0A0F] shadow-lg border border-white/20'
+                      : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10 hover:border-white/20'
                   }`}
                 >
                   <span className="text-base">{tab.icon}</span>
                   <span>{tab.label}</span>
                   <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-black/10' : 'bg-white/10'
+                    activeTab === tab.id ? 'bg-black/15' : 'bg-white/10'
                   }`}>{tab.count}</span>
                 </button>
               ))}
             </div>
 
-            {/* Search only */}
+            {/* Search */}
             <div className="flex items-center gap-2 flex-shrink-0 ml-2">
               <div className="relative">
                 <input
@@ -338,9 +338,9 @@ export default function Zid() {
                   placeholder="Caută..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-32 sm:w-44 px-3 py-2 pl-8 text-sm rounded-full bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:bg-white/20 focus:border-white/40"
+                  className="w-32 sm:w-44 px-3 py-2 pl-8 text-sm rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:bg-white/10 focus:border-[#D4AF37]/40 focus:ring-1 focus:ring-[#D4AF37]/20 transition-all"
                 />
-                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -348,12 +348,12 @@ export default function Zid() {
           </div>
         </div>
 
-        {/* Results count - inside sticky container */}
+        {/* Results count */}
         {(searchTerm || activeTab !== 'all') && (
-          <div className="bg-white/5 py-1.5 px-4 text-center text-xs text-white/50 border-t border-white/5">
+          <div className="bg-white/[0.03] py-1.5 px-4 text-center text-xs text-white/40 border-t border-white/5">
             {filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)} rezultat{(filteredBarosani.length + ((activeTab === 'suprem' || activeTab === 'all') && activeSuprem && !searchTerm ? 1 : 0)) !== 1 ? 'e' : ''}
             {searchTerm && (
-              <button onClick={() => setSearchTerm('')} className="ml-2 text-purple-400 hover:underline">
+              <button onClick={() => setSearchTerm('')} className="ml-2 text-[#D4AF37] hover:text-[#FFD700] transition-colors">
                 Șterge căutarea
               </button>
             )}
@@ -361,9 +361,9 @@ export default function Zid() {
         )}
       </div>
 
-      {/* Active Suprem Banner - Prominent version */}
+      {/* Active Suprem Banner */}
       {activeSuprem && (activeTab === 'all' || activeTab === 'suprem') && !searchTerm && (
-        <section className="py-4 px-4 bg-gradient-to-r from-purple-900/40 via-[#0a0a0a] to-pink-900/40 border-b border-purple-500/30">
+        <section className="py-5 px-4 bg-gradient-to-r from-[#1a1025]/80 via-[#0f0f12] to-[#12101a]/80 border-b border-[#9333EA]/20">
           <div className="container mx-auto max-w-3xl">
             <div
               onClick={() => navigate('/barosanul-suprem')}
@@ -374,36 +374,38 @@ export default function Zid() {
             >
               <div className="relative">
                 {/* Glow */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#9333EA] to-[#D4AF37] rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
 
-                <div className="relative bg-gradient-to-br from-purple-900/70 to-pink-900/70 rounded-xl p-4 md:p-5 border border-purple-500/40 group-hover:border-purple-400/60 transition-all">
-                  <div className="flex items-center gap-4">
+                <div className="relative bg-gradient-to-br from-[#1a1025] via-[#0f0f12] to-[#12101a] rounded-2xl p-5 md:p-6 border-2 border-[#9333EA]/40 group-hover:border-[#D4AF37]/60 transition-all duration-300 shadow-[0_0_30px_rgba(147,51,234,0.2)] group-hover:shadow-[0_0_50px_rgba(147,51,234,0.4),0_0_30px_rgba(212,175,55,0.3)]">
+                  <div className="flex items-center gap-5">
                     {/* Photo */}
                     <div className="relative flex-shrink-0">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-3 border-purple-400 overflow-hidden bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-500/30 group-hover:scale-105 transition-transform">
+                      <div className="w-18 h-18 md:w-22 md:h-22 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-[0_0_25px_rgba(147,51,234,0.4)]" style={{ width: '5rem', height: '5rem', border: '3px solid transparent', background: 'linear-gradient(#0f0f12, #0f0f12) padding-box, linear-gradient(135deg, #9333EA, #D4AF37, #9333EA) border-box' }}>
                         {activeSuprem.poza ? (
                           <img src={activeSuprem.poza} alt={activeSuprem.nume} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-3xl">👑</div>
+                          <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-[#9333EA] to-[#D4AF37]">👑</div>
                         )}
                       </div>
-                      <div className="absolute -top-1 -right-1 w-7 h-7 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm animate-pulse shadow-lg">👑</div>
+                      <div className="absolute -top-1 -right-1 w-8 h-8 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center text-sm shadow-[0_0_15px_rgba(212,175,55,0.5)]">👑</div>
                     </div>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
-                        👑 BAROSANUL SUPREM ACTIV
+                      <div className="inline-block bg-gradient-to-r from-[#9333EA] to-[#ec4899] text-white text-[10px] font-bold px-3 py-1 rounded-full mb-1.5 tracking-wider">
+                        ✦ BAROSANUL SUPREM ACTIV ✦
                       </div>
-                      <h3 className="text-xl md:text-2xl font-black text-white truncate group-hover:text-purple-200 transition-colors">
+                      <h3 className="text-xl md:text-2xl font-bold text-white truncate group-hover:text-[#D4AF37] transition-colors duration-300" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                         {activeSuprem.nume}
                       </h3>
                       {activeSuprem.motto && (
-                        <p className="text-white/60 italic text-sm truncate hidden sm:block">"{activeSuprem.motto}"</p>
+                        <p className="text-[#A0A0B0] italic text-sm truncate hidden sm:block mt-0.5" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                          „{activeSuprem.motto}"
+                        </p>
                       )}
-                      <div className="flex items-center gap-3 mt-1 flex-wrap">
-                        <span className="text-xs text-white/50">
-                          ⏱️ Expiră: <span className="text-purple-300 font-semibold">
+                      <div className="flex items-center gap-3 mt-2 flex-wrap">
+                        <span className="text-xs text-white/40">
+                          ⏱️ Expiră: <span className="text-[#D4AF37] font-semibold">
                             {new Date(activeSuprem.dataExpirare).toLocaleString('ro-RO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </span>
@@ -412,7 +414,7 @@ export default function Zid() {
                             href={activeSuprem.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-purple-300 hover:text-purple-200 text-xs"
+                            className="text-[#9333EA] hover:text-[#D4AF37] text-xs transition-colors"
                             onClick={(e) => e.stopPropagation()}
                           >
                             🔗 Link
@@ -425,11 +427,11 @@ export default function Zid() {
                     <div className="flex flex-col gap-2 flex-shrink-0">
                       <button
                         onClick={(e) => { e.stopPropagation(); handleViewCertificate({ ...activeSuprem, tier: 'suprem', dataInregistrare: activeSuprem.dataStart }); }}
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-lg"
+                        className="bg-gradient-to-r from-[#9333EA] to-[#ec4899] text-white px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 transition-transform shadow-lg shadow-purple-500/20 border border-purple-400/30"
                       >
                         📜 Certificat
                       </button>
-                      <span className="text-purple-300 text-xs font-semibold text-center group-hover:translate-x-1 transition-transform">
+                      <span className="text-[#D4AF37] text-xs font-semibold text-center group-hover:translate-x-1 transition-transform">
                         Profil →
                       </span>
                     </div>
@@ -498,17 +500,20 @@ export default function Zid() {
         </div>
       </section>
 
-      {/* Compact CTA */}
-      <section className="py-8 bg-gradient-to-r from-purple-900/30 to-pink-900/30 border-t border-white/10">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-lg mb-4 text-white/80">
-            <span className="font-bold text-white">Vrei să apari în registru?</span> Certificare instant!
+      {/* CTA Section */}
+      <section className="py-10 relative overflow-hidden border-t border-[#D4AF37]/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1a1025]/50 via-[#0f0f12] to-[#12101a]/50"></div>
+        <div className="relative z-10 container mx-auto px-4 text-center">
+          <p className="text-lg mb-5 text-white/70" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            <span className="font-bold text-white">Vrei să apari în registru?</span> Certificare instant.
           </p>
           <a
             href="/cum-devin-barosan"
-            className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform shadow-lg"
+            className="relative inline-block overflow-hidden px-8 py-3 rounded-xl font-bold shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all hover:scale-105"
           >
-            Devino Barosan 🚀
+            <span className="absolute inset-0 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]" />
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700" />
+            <span className="relative text-[#0a0a0a] font-bold">Devino Barosan</span>
           </a>
         </div>
       </section>

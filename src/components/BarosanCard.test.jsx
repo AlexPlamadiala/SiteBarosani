@@ -39,7 +39,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={mockBarosan} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('"Viața e frumoasă!"')).toBeInTheDocument()
+      expect(screen.getByText('„Viața e frumoasă!"')).toBeInTheDocument()
     })
 
     it('should render certificate button', () => {
@@ -267,7 +267,7 @@ describe('BarosanCard', () => {
         <BarosanCard barosan={barosanEmptyMotto} onViewCertificate={mockOnViewCertificate} />
       )
 
-      expect(screen.getByText('""')).toBeInTheDocument()
+      expect(screen.getByText('„"')).toBeInTheDocument()
     })
   })
 })
