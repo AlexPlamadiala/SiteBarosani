@@ -27,10 +27,10 @@ export default function Footer() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-full blur-lg opacity-50"></div>
                 <motion.div
-                  className="relative w-14 h-14 bg-gradient-to-br from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+                  className="relative w-14 h-14 rounded-full overflow-hidden shadow-[0_0_20px_rgba(212,175,55,0.3)]"
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
-                  <span className="text-2xl">👑</span>
+                  <img src="/Panda.jpg" alt="Logo" className="w-full h-full object-cover" />
                 </motion.div>
               </div>
               <div>

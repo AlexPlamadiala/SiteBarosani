@@ -107,7 +107,7 @@ export default function PricingTiers() {
 
   // Cosmic Penthouse Design System - Tier configurations
   const tiers = [
-    { id: 'suprem', name: 'SUPREM', icon: '👑', price: 'de la 50 RON/h', color: 'from-[var(--purple-primary)] via-[var(--gold-primary)] to-[var(--purple-primary)]', borderColor: 'border-[var(--purple-primary)]', gradient: 'var(--gradient-suprem)' },
+    { id: 'suprem', name: 'SUPREM', icon: null, iconImg: '/Crown.png', price: 'de la 50 RON/h', color: 'from-[var(--purple-primary)] via-[var(--gold-primary)] to-[var(--purple-primary)]', borderColor: 'border-[var(--purple-primary)]', gradient: 'var(--gradient-suprem)' },
     { id: 'platinum', name: 'PLATINA', icon: '💎', price: '100 RON/lună', color: 'from-[var(--platinum-400)] to-[var(--platinum-300)]', borderColor: 'border-[var(--platinum-400)]', textDark: true, gradient: 'var(--gradient-platinum)' },
     { id: 'gold', name: 'GOLD', icon: '🏆', price: '50 RON/lună', color: 'from-[var(--gold-dark)] via-[var(--gold-primary)] to-[var(--gold-light)]', borderColor: 'border-[var(--gold-primary)]', textDark: true, gradient: 'var(--gradient-gold)' },
     { id: 'basic', name: 'BASIC', icon: '⭐', price: '20 RON/lună', color: 'from-[var(--tier-basic)] to-[#707080]', borderColor: 'border-[var(--border-default)]', gradient: 'linear-gradient(135deg, #505060, #707080)' }
@@ -135,7 +135,7 @@ export default function PricingTiers() {
                 <span className="text-white text-xs font-bold">✓</span>
               </div>
             )}
-            <div className="text-3xl mb-3">{tier.icon}</div>
+            <div className="text-3xl mb-3">{tier.iconImg ? <img src={tier.iconImg} alt="" className="w-8 h-8 object-contain" /> : tier.icon}</div>
             <div className={`font-bold text-sm tracking-wide ${selectedTier === tier.id && tier.textDark ? 'text-[var(--color-text-inverse)]' : 'text-[var(--color-text-primary)]'}`}>
               {tier.name}
             </div>
@@ -156,7 +156,7 @@ export default function PricingTiers() {
               <div className="relative bg-[var(--color-bg-elevated)] rounded-xl p-6 border-2 border-[var(--purple-primary)]/40">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-14 h-14 rounded-xl bg-[var(--gradient-suprem)] flex items-center justify-center shadow-[var(--shadow-glow-purple)]">
-                    <span className="text-2xl">👑</span>
+                    <img src="/Crown.png" alt="Crown" className="w-7 h-7 object-contain" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-[var(--color-text-primary)]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Barosanul Suprem</h3>
@@ -277,7 +277,7 @@ export default function PricingTiers() {
                   onClick={() => scrollToForm('suprem', supremHours)}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-bold hover:scale-[1.02] transition-all"
                 >
-                  Continuă cu {supremHours}h 👑
+                  Continuă cu {supremHours}h
                 </button>
               </div>
             </div>

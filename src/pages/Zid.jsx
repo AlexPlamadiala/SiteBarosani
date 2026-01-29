@@ -278,7 +278,7 @@ export default function Zid() {
 
   const tabs = [
     { id: 'all', label: 'Toți', icon: '🎯', count: tierCounts.all, color: 'from-[#1a365d] to-[#2d5986]' },
-    { id: 'suprem', label: 'Suprem', icon: '👑', count: tierCounts.suprem, color: 'from-purple-500 to-pink-500' },
+    { id: 'suprem', label: 'Suprem', icon: null, iconImg: '/Crown.png', count: tierCounts.suprem, color: 'from-purple-500 to-pink-500' },
     { id: 'platinum', label: 'Platinum', icon: '💎', count: tierCounts.platinum, color: 'from-[#E5E4E2] to-[#BCC6CC]', textColor: 'text-[#1a365d]' },
     { id: 'gold', label: 'Gold', icon: '🏆', count: tierCounts.gold, color: 'from-[#D4AF37] to-[#FFD700]', textColor: 'text-[#1a365d]' },
     { id: 'basic', label: 'Basic', icon: '⭐', count: tierCounts.basic, color: 'from-gray-400 to-gray-500' }
@@ -321,7 +321,7 @@ export default function Zid() {
                       : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/10 hover:border-white/20'
                   }`}
                 >
-                  <span className="text-base">{tab.icon}</span>
+                  {tab.iconImg ? <img src={tab.iconImg} alt="" className="w-5 h-5 object-contain" /> : <span className="text-base">{tab.icon}</span>}
                   <span>{tab.label}</span>
                   <span className={`text-xs px-1.5 py-0.5 rounded-full ${
                     activeTab === tab.id ? 'bg-black/15' : 'bg-white/10'
@@ -384,10 +384,10 @@ export default function Zid() {
                         {activeSuprem.poza ? (
                           <img src={activeSuprem.poza} alt={activeSuprem.nume} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-[#9333EA] to-[#D4AF37]">👑</div>
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#9333EA] to-[#D4AF37]"><img src="/Crown.png" alt="Crown" className="w-8 h-8 object-contain" /></div>
                         )}
                       </div>
-                      <div className="absolute -top-1 -right-1 w-8 h-8 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center text-sm shadow-[0_0_15px_rgba(212,175,55,0.5)]">👑</div>
+                      <div className="absolute -top-1 -right-1 w-8 h-8 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.5)]"><img src="/Crown.png" alt="Crown" className="w-5 h-5 object-contain" /></div>
                     </div>
 
                     {/* Info */}

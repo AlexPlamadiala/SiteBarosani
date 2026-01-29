@@ -654,7 +654,7 @@ export default function ApplicationForm() {
                       </div>
                     )}
                     <span className="text-2xl mb-1">
-                      {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : '👑'}
+                      {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : tier === 'platinum' ? '💎' : <img src="/Crown.png" alt="Crown" className="w-7 h-7 object-contain mx-auto" />}
                     </span>
                     <span className={`font-bold uppercase text-xs ${
                       !canSelect
@@ -682,7 +682,7 @@ export default function ApplicationForm() {
             {formData.tier === 'suprem' && (
               <div className="mt-4 p-5 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border-2 border-purple-500/50">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-2xl">👑</span>
+                  <img src="/Crown.png" alt="Crown" className="w-7 h-7 object-contain" />
                   <h4 className="text-lg font-bold text-white">Alege numărul de ore</h4>
                 </div>
 

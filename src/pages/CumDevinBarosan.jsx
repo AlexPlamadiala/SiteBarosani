@@ -26,7 +26,7 @@ export default function CumDevinBarosan() {
           <div className="relative inline-flex items-center justify-center w-20 h-20 mb-8">
             <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-2xl blur-lg opacity-50"></div>
             <div className="relative w-full h-full bg-gradient-to-br from-[#9333EA] via-[#D4AF37] to-[#9333EA] rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(147,51,234,0.4)]">
-              <span className="text-4xl">👑</span>
+              <img src="/Crown.png" alt="Crown" className="w-10 h-10 object-contain" />
             </div>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>

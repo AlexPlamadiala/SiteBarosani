@@ -43,7 +43,7 @@ export default function Leaderboard({ barosani }) {
   const getTierBadge = (tier) => {
     switch (tier) {
       case 'suprem':
-        return { emoji: '👑', color: 'from-purple-500 to-pink-500', text: 'text-white' };
+        return { emoji: null, emojiImg: '/Crown.png', color: 'from-purple-500 to-pink-500', text: 'text-white' };
       case 'platinum':
         return { emoji: '💎', color: 'from-[#E5E4E2] to-[#BCC6CC]', text: 'text-[#1a365d]' };
       case 'gold':
@@ -142,7 +142,7 @@ export default function Leaderboard({ barosani }) {
                     <h4 className={`font-bold truncate ${isPodium ? 'text-lg text-[#1a365d]' : 'text-sm text-gray-800'}`}>
                       {barosan.nume}
                     </h4>
-                    <span className="text-sm">{badge.emoji}</span>
+                    {badge.emojiImg ? <img src={badge.emojiImg} alt="" className="w-5 h-5 object-contain" /> : <span className="text-sm">{badge.emoji}</span>}
                   </div>
                   <p className="text-xs text-gray-500 truncate italic">"{barosan.motto}"</p>
                 </div>

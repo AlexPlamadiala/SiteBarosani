@@ -43,7 +43,7 @@ function Meteorite({ supremName, onComplete }) {
           }}
         >
           <motion.img
-            src="/meteorite.png"
+            src="/Meteor.jpg"
             alt="Meteorite"
             className="w-28 h-28 object-contain pointer-events-none"
             style={{
@@ -115,7 +115,7 @@ function Meteorite({ supremName, onComplete }) {
           <div className="relative px-4 py-2.5 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] rounded-xl shadow-xl shadow-purple-500/40 border border-white/20">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer rounded-xl" />
             <div className="flex items-center gap-2">
-              <span className="text-xl">👑</span>
+              <img src="/Crown.png" alt="Crown" className="w-6 h-6 object-contain" />
               <div className="text-center">
                 <div className="text-[10px] font-bold text-white/90 tracking-widest">BAROSANUL SUPREM</div>
                 <div className="text-base font-black text-white truncate max-w-[160px]">

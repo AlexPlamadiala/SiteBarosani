@@ -68,8 +68,8 @@ export default function Header() {
             >
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37] to-[#9333EA] rounded-full blur-md opacity-60 group-hover:opacity-100 transition-opacity" />
-              <div className="relative w-full h-full bg-gradient-to-br from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-xl md:text-2xl">👑</span>
+              <div className="relative w-full h-full rounded-full overflow-hidden shadow-lg">
+                <img src="/Panda.jpg" alt="Logo" className="w-full h-full object-cover" />
               </div>
             </motion.div>
             <div className="hidden sm:block">

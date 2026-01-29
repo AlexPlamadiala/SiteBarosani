@@ -153,14 +153,14 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             <motion.div
-              className="text-7xl mb-4"
+              className="mb-4"
               animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, 10, -10, 0],
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              👑
+              <img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" />
             </motion.div>
             <p className="text-gold-shimmer text-xl font-bold">Se incarca...</p>
           </motion.div>
@@ -263,15 +263,15 @@ export default function Home() {
                             {supremBarosan.poza ? (
                               <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-[#9333EA] to-[#D4AF37]">👑</div>
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#9333EA] to-[#D4AF37]"><img src="/Crown.png" alt="Crown" className="w-12 h-12 object-contain" /></div>
                             )}
                           </motion.div>
                           <motion.div
-                            className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(212,175,55,0.5)]"
+                            className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.5)]"
                             animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                           >
-                            👑
+                            <img src="/Crown.png" alt="Crown" className="w-7 h-7 object-contain" />
                           </motion.div>
                         </div>
 
@@ -341,7 +341,7 @@ export default function Home() {
                           }}
                           transition={{ duration: 2.5, repeat: Infinity }}
                         >
-                          👑
+                          <img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain" />
                         </motion.div>
                         <motion.div
                           className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent"
@@ -562,7 +562,7 @@ export default function Home() {
                   style={{ backgroundSize: '200% 200%' }}
                 />
                 <div className="relative bg-black/80 backdrop-blur-sm rounded-2xl p-5 border border-[#9333EA]/50 h-full">
-                  <div className="text-4xl mb-3">👑</div>
+                  <div className="mb-3"><img src="/Crown.png" alt="Crown" className="w-10 h-10 object-contain" /></div>
                   <h3 className="text-white font-bold mb-1">Suprem</h3>
                   <p className="text-[#D4AF37] text-xs mb-3 font-semibold">De la 50 RON/ora</p>
                   <ul className="text-gray-400 text-xs space-y-1.5">
@@ -647,7 +647,7 @@ export default function Home() {
               }}
               transition={{ duration: 3, repeat: Infinity }}
             >
-              👑
+              <img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" />
             </motion.div>
             <h2 className="text-3xl md:text-5xl font-bold text-[var(--color-text-primary)] mb-6" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               Gata să devii <span className="text-gradient-gold">Barosan Oficial</span>?

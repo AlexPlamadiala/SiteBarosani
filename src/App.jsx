@@ -87,7 +87,7 @@ function PageLoader() {
             ease: "easeInOut",
           }}
         >
-          👑
+          <img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" />
         </motion.div>
         <motion.p
           className="text-yellow-400 font-bold"

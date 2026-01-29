@@ -31,7 +31,7 @@ export default function RecentActivity({ barosani }) {
 
   const getTierEmoji = (tier) => {
     switch (tier) {
-      case 'suprem': return '👑';
+      case 'suprem': return '🏅';
       case 'platinum': return '💎';
       case 'gold': return '🏆';
       default: return '⭐';

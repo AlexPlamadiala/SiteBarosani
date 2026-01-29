@@ -133,7 +133,7 @@ export default function BarosanulSuprem() {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl animate-bounce mb-2">👑</div>
+          <div className="animate-bounce mb-2"><img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" /></div>
           <p className="text-yellow-400 text-lg font-bold animate-pulse">Se încarcă...</p>
         </div>
       </div>
@@ -168,7 +168,7 @@ export default function BarosanulSuprem() {
         </div>
 
         {/* Floating emojis - smaller and repositioned */}
-        <div className="absolute top-2 left-4 text-3xl animate-bounce">👑</div>
+        <div className="absolute top-2 left-4 animate-bounce"><img src="/Crown.png" alt="Crown" className="w-8 h-8 object-contain" /></div>
         <div className="absolute top-2 right-4 text-3xl animate-bounce" style={{ animationDelay: '0.5s' }}>💎</div>
         <div className="absolute top-1/4 left-2 text-2xl animate-pulse">✨</div>
         <div className="absolute top-1/4 right-2 text-2xl animate-pulse" style={{ animationDelay: '0.3s' }}>✨</div>
@@ -180,7 +180,7 @@ export default function BarosanulSuprem() {
         <div className="text-center mb-3">
           <h1 className="text-2xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 animate-pulse"
               style={{ textShadow: '0 0 40px rgba(255,215,0,0.5)' }}>
-            👑 BAROSANUL SUPREM 👑
+            BAROSANUL SUPREM
           </h1>
           <p className="text-sm md:text-base text-yellow-200 font-bold">
             🔥 CEL MAI TARE BAROSAN DIN UNIVERS 🔥
@@ -205,13 +205,13 @@ export default function BarosanulSuprem() {
                       alt={supremeBarosan.nume}
                       className="relative w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
                     />
-                    <div className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-2xl shadow-lg animate-bounce">
-                      👑
+                    <div className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                      <img src="/Crown.png" alt="Crown" className="w-7 h-7 object-contain" />
                     </div>
                   </div>
                 ) : (
                   <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center text-7xl animate-pulse border-4 border-yellow-300 flex-shrink-0 shadow-2xl">
-                    {isAvailable ? '❓' : '👑'}
+                    {isAvailable ? '❓' : <img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain" />}
                   </div>
                 )}
 

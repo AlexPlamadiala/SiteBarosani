@@ -324,7 +324,7 @@ export default function Upgrade() {
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent animate-pulse"></div>
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">👑</span>
+                    <img src="/Crown.png" alt="Crown" className="w-8 h-8 object-contain" />
                     <div>
                       <h3 className="font-bold text-white text-lg">SUPREM</h3>
                       <p className="text-white/80 text-sm">Titlul suprem temporar!</p>

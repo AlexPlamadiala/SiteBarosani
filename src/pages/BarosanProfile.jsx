@@ -51,7 +51,8 @@ export default function BarosanProfile() {
   const tierConfig = {
     suprem: {
       label: 'SUPREM',
-      emoji: '👑',
+      emoji: null,
+      emojiImg: '/Crown.png',
       gradient: 'from-purple-500 to-pink-500',
       bgGradient: 'from-purple-900/50 to-pink-900/50',
       border: 'border-purple-500',
@@ -87,7 +88,7 @@ export default function BarosanProfile() {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl animate-bounce mb-4">👑</div>
+          <div className="animate-bounce mb-4"><img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" /></div>
           <p className="text-yellow-400 font-bold animate-pulse">Se incarca...</p>
         </div>
       </div>
@@ -150,7 +151,7 @@ export default function BarosanProfile() {
               {/* Tier Badge Header */}
               <div className={`bg-gradient-to-r ${config.gradient} py-3 px-6 text-center`}>
                 <span className="text-white font-black text-lg tracking-wider">
-                  {config.emoji} {config.label} {config.emoji}
+                  {config.emojiImg ? <><img src={config.emojiImg} alt="" className="w-6 h-6 object-contain inline" /> {config.label} <img src={config.emojiImg} alt="" className="w-6 h-6 object-contain inline" /></> : <>{config.emoji} {config.label} {config.emoji}</>}
                 </span>
               </div>
 

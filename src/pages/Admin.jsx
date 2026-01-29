@@ -293,7 +293,7 @@ export default function Admin() {
 
   // Tier colors and icons
   const tierConfig = {
-    suprem: { color: 'from-purple-500 to-pink-500', icon: '👑', textColor: 'text-purple-400' },
+    suprem: { color: 'from-purple-500 to-pink-500', icon: null, iconImg: '/Crown.png', textColor: 'text-purple-400' },
     platinum: { color: 'from-gray-300 to-gray-400', icon: '💎', textColor: 'text-gray-300' },
     gold: { color: 'from-yellow-400 to-yellow-600', icon: '🏆', textColor: 'text-yellow-400' },
     basic: { color: 'from-blue-400 to-blue-600', icon: '⭐', textColor: 'text-blue-400' }
@@ -495,7 +495,7 @@ export default function Admin() {
                   { tier: 'basic', count: statistics?.basic_count || 0 }
                 ].map(item => (
                   <div key={item.tier} className={`bg-gradient-to-br ${tierConfig[item.tier].color} p-4 rounded-xl text-center`}>
-                    <div className="text-3xl mb-1">{tierConfig[item.tier].icon}</div>
+                    <div className="text-3xl mb-1">{tierConfig[item.tier].iconImg ? <img src={tierConfig[item.tier].iconImg} alt="" className="w-8 h-8 object-contain mx-auto" /> : tierConfig[item.tier].icon}</div>
                     <div className="text-2xl font-black text-white">{item.count}</div>
                     <div className="text-white/80 text-sm uppercase font-bold">{item.tier}</div>
                   </div>
@@ -598,7 +598,7 @@ export default function Admin() {
                         <p className="text-white/50 text-sm">Email: {app.email}</p>
                         <p className="text-white/50 text-sm">Revolut: @{app.revolut_id}</p>
                         {app.tier === 'suprem' && app.suprem_hours && (
-                          <p className="text-purple-400 text-sm font-semibold">👑 Suprem: {app.suprem_hours} ore - {app.suma} RON</p>
+                          <p className="text-purple-400 text-sm font-semibold flex items-center gap-1"><img src="/Crown.png" alt="" className="w-4 h-4 object-contain inline" /> Suprem: {app.suprem_hours} ore - {app.suma} RON</p>
                         )}
                         {app.tier !== 'suprem' && (
                           <p className="text-white/50 text-sm">Sumă: {app.suma} RON</p>
@@ -851,7 +851,7 @@ export default function Admin() {
             {suprem ? (
               <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-2xl p-8 border border-purple-500/30">
                 <div className="flex items-center gap-2 mb-6">
-                  <span className="text-4xl">👑</span>
+                  <img src="/Crown.png" alt="Crown" className="w-10 h-10 object-contain" />
                   <h2 className="text-2xl font-black text-white">Barosanul Suprem Activ</h2>
                 </div>
 
@@ -919,7 +919,7 @@ export default function Admin() {
               </div>
             ) : (
               <div className="bg-white/5 rounded-2xl p-12 border border-white/10 text-center">
-                <div className="text-6xl mb-4">👑</div>
+                <div className="mb-4"><img src="/Crown.png" alt="Crown" className="w-16 h-16 object-contain mx-auto" /></div>
                 <h2 className="text-2xl font-bold text-white mb-2">Locul de Suprem este liber!</h2>
                 <p className="text-white/60">Nu există niciun Barosan Suprem activ în acest moment.</p>
               </div>
