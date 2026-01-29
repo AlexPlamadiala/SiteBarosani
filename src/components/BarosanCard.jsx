@@ -28,47 +28,63 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   // On touch devices, always show button
   const showButton = isTouchDevice || isHovered;
 
-  // Cosmic Penthouse Design System - Tier Colors (using direct colors for instant rendering)
+  // Cosmic Penthouse Design System - Tier Colors with enhanced hover effects
   const tierColors = {
     suprem: {
       border: 'border-[#9333EA]',
+      borderHover: 'group-hover:border-[#D4AF37]',
       badge: 'bg-gradient-to-r from-[#9333EA] via-[#a855f7] to-[#ec4899]',
       badgeText: 'text-white',
       glow: 'shadow-[0_0_40px_rgba(147,51,234,0.4),0_0_20px_rgba(212,175,55,0.3)]',
+      glowHover: 'group-hover:shadow-[0_0_60px_rgba(147,51,234,0.6),0_0_40px_rgba(212,175,55,0.5)]',
       cardGradient: 'from-[#9333EA]/20 to-[#D4AF37]/15',
       blurColor: 'bg-gradient-to-r from-[#9333EA] to-[#D4AF37]',
       cardBg: 'bg-[#0f0f12]',
-      shimmer: true
+      cardBgHover: 'group-hover:bg-gradient-to-br group-hover:from-[#1a1025] group-hover:to-[#0f0f12]',
+      shimmer: true,
+      textHover: 'group-hover:text-[#E8D4A8]'
     },
     platinum: {
       border: 'border-[#A0A0B5]',
+      borderHover: 'group-hover:border-[#D0D0D8]',
       badge: 'bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#A0A0B5]',
       badgeText: 'text-[#0A0A0F]',
       glow: 'shadow-[0_0_30px_rgba(160,160,181,0.3)]',
+      glowHover: 'group-hover:shadow-[0_0_50px_rgba(160,160,181,0.5),0_0_30px_rgba(208,208,216,0.4)]',
       cardGradient: 'from-[#A0A0B5]/15 to-[#8a8a9a]/10',
       blurColor: 'bg-[#A0A0B5]',
       cardBg: 'bg-[#0f0f12]',
-      shimmer: true
+      cardBgHover: 'group-hover:bg-gradient-to-br group-hover:from-[#15151d] group-hover:to-[#0f0f12]',
+      shimmer: true,
+      textHover: 'group-hover:text-[#E5E4E2]'
     },
     gold: {
       border: 'border-[#C9A227]',
+      borderHover: 'group-hover:border-[#FFD700]',
       badge: 'bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]',
       badgeText: 'text-[#0A0A0F]',
       glow: 'shadow-[0_0_25px_rgba(212,175,55,0.4)]',
+      glowHover: 'group-hover:shadow-[0_0_50px_rgba(212,175,55,0.6),0_0_30px_rgba(255,215,0,0.5)]',
       cardGradient: 'from-[#D4AF37]/15 to-[#FFD700]/10',
       blurColor: 'bg-[#D4AF37]',
       cardBg: 'bg-[#0f0f12]',
-      shimmer: true
+      cardBgHover: 'group-hover:bg-gradient-to-br group-hover:from-[#1a1812] group-hover:to-[#0f0f12]',
+      shimmer: true,
+      textHover: 'group-hover:text-[#FFD700]'
     },
     basic: {
       border: 'border-[#3a3a45]',
+      borderHover: 'group-hover:border-[#5a5a65]',
       badge: 'bg-[#505060]',
       badgeText: 'text-[#F5F5F7]',
       glow: 'shadow-sm',
+      glowHover: 'group-hover:shadow-[0_0_20px_rgba(80,80,96,0.4)]',
       cardGradient: 'from-[#505060]/10 to-[#404050]/5',
       blurColor: 'bg-[#505060]',
       cardBg: 'bg-[#0f0f12]',
-      shimmer: false
+      cardBgHover: 'group-hover:bg-gradient-to-br group-hover:from-[#141418] group-hover:to-[#0f0f12]',
+      shimmer: false,
+      textHover: 'group-hover:text-[#F5F5F7]'
     }
   };
 
@@ -118,15 +134,15 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
       {/* Animated glow effect */}
       {(tier === 'suprem' || tier === 'platinum' || tier === 'gold') && (
         <motion.div
-          className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-2xl`}
+          className={`absolute -inset-1 ${colors.blurColor} rounded-3xl blur-2xl pointer-events-none`}
           initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 0.4 : 0.15 }}
+          animate={{ opacity: isHovered ? 0.6 : 0.2 }}
           transition={{ duration: 0.4 }}
         />
       )}
 
       <motion.div
-        className={`relative ${colors.cardBg} rounded-2xl overflow-hidden border-2 ${colors.border} h-full flex flex-col`}
+        className={`relative ${colors.cardBg} ${colors.cardBgHover} rounded-2xl overflow-hidden border-2 ${colors.border} ${colors.borderHover} ${colors.glow} ${colors.glowHover} h-full flex flex-col transition-all duration-300`}
         style={{
           rotateX: isTouchDevice ? 0 : rotateX,
           rotateY: isTouchDevice ? 0 : rotateY,
@@ -135,8 +151,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
         onMouseMove={handleMouseMove}
         onMouseEnter={!isTouchDevice ? handleMouseEnter : undefined}
         onMouseLeave={!isTouchDevice ? handleMouseLeave : undefined}
-        whileHover={!isTouchDevice ? { scale: 1.02 } : {}}
-        transition={{ duration: 0.2 }}
+        whileHover={!isTouchDevice ? { scale: 1.03, y: -8 } : {}}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Shimmer overlay on hover */}
         <motion.div
@@ -220,8 +236,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
 
           {/* Content - Cosmic Penthouse luxury theme */}
-          <div className="p-5 space-y-3 flex-1 flex flex-col bg-[#0f0f12]/90 backdrop-blur-sm">
-            <h3 className="font-bold text-xl text-center text-white leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <div className="p-5 space-y-3 flex-1 flex flex-col bg-[#0f0f12]/90 backdrop-blur-sm transition-colors duration-300">
+            <h3 className={`font-bold text-xl text-center text-white ${colors.textHover} leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] transition-colors duration-300`} style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               {barosan.nume}
             </h3>
 

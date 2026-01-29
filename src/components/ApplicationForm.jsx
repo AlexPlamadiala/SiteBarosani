@@ -505,8 +505,9 @@ export default function ApplicationForm() {
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <div className="relative group">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-yellow-500/20 rounded-2xl blur-xl"></div>
-        <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 md:p-8">
+        {/* Subtle glow effect around the form */}
+        <div className="absolute -inset-1 bg-gradient-to-br from-purple-500/10 to-yellow-500/10 rounded-3xl blur-2xl pointer-events-none"></div>
+        <div className="relative rounded-2xl border border-white/10 p-6 md:p-8">
 
           {/* Progress Bar */}
           <div className="mb-6">

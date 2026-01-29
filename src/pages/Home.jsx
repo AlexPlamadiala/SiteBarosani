@@ -193,11 +193,9 @@ export default function Home() {
 
             {/* Main Title - Playfair Display */}
             <FadeIn delay={0.1}>
-              <div className="text-[var(--color-text-secondary)] text-sm md:text-base font-semibold tracking-[0.2em] uppercase mb-4">
-                Registrul Oficial
-              </div>
               <h1 className="mb-8 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-[var(--color-text-primary)]">AL</span>
+                <span className="block text-3xl md:text-5xl lg:text-6xl font-bold text-gradient-gold tracking-[0.1em] mb-2">REGISTRUL OFICIAL</span>
+                <span className="block text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-secondary)] mb-2">AL</span>
                 <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-gradient-gold">BAROSANILOR</span>
               </h1>
             </FadeIn>
@@ -208,48 +206,77 @@ export default function Home() {
               </p>
             </FadeIn>
 
-            {/* BAROSANUL SUPREM - FEATURED SECTION - Cosmic Penthouse Style */}
+            {/* BAROSANUL SUPREM - FEATURED SECTION - 3D Luxury Style */}
             <FadeIn delay={0.3}>
               {supremBarosan && !supremAvailable ? (
-                <Link to="/barosanul-suprem" className="block group mb-12">
+                <Link to="/barosanul-suprem" className="block group mb-12 perspective-1000">
                   <motion.div
                     className="relative max-w-2xl mx-auto"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.03, rotateX: 2, rotateY: -2 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformStyle: 'preserve-3d' }}
                   >
                     {/* Animated Glow - Purple + Gold */}
                     <motion.div
-                      className="absolute -inset-2 bg-[var(--gradient-suprem)] rounded-3xl blur-xl"
-                      animate={{ opacity: [0.3, 0.6, 0.3] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                      className="absolute -inset-3 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] rounded-3xl blur-xl"
+                      animate={{
+                        opacity: [0.3, 0.6, 0.3],
+                        backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{ backgroundSize: '200% 200%' }}
                     />
 
-                    <div className="relative glass-purple rounded-2xl p-6 md:p-8 border-2 border-[var(--purple-primary)]/50 group-hover:border-[var(--gold-primary)] transition-all shadow-[var(--shadow-glow-purple),var(--shadow-glow-gold)]">
-                      {/* Suprem Badge */}
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <div className="badge badge-suprem px-4 py-1.5 text-xs shadow-lg">
-                          ✦ BAROSANUL SUPREM ✦
-                        </div>
+                    <div className="relative bg-gradient-to-br from-[#1a1025] via-[#0f0f12] to-[#12101a] rounded-2xl p-6 md:p-8 border-2 border-[#9333EA]/50 group-hover:border-[#D4AF37] transition-all duration-300 shadow-[0_0_40px_rgba(147,51,234,0.3),0_0_20px_rgba(201,162,39,0.2)] group-hover:shadow-[0_0_60px_rgba(147,51,234,0.5),0_0_40px_rgba(201,162,39,0.4),0_20px_50px_rgba(0,0,0,0.5)]">
+                      {/* Shimmer overlay */}
+                      <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
+                        <motion.div
+                          className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+                          animate={{ x: ['0%', '300%'] }}
+                          transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                        />
                       </div>
 
-                      <div className="flex items-center gap-6 pt-2">
-                        {/* Photo with Suprem Avatar Style */}
+                      {/* Suprem Badge */}
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                        <motion.div
+                          className="bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] px-6 py-2 rounded-full text-white text-xs font-bold tracking-widest shadow-lg"
+                          animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                          transition={{ duration: 4, repeat: Infinity }}
+                          style={{ backgroundSize: '200% 100%' }}
+                        >
+                          ✦ BAROSANUL SUPREM ✦
+                        </motion.div>
+                      </div>
+
+                      <div className="flex items-center gap-6 pt-4">
+                        {/* Photo with 3D Suprem Avatar Style */}
                         <div className="relative flex-shrink-0">
                           <motion.div
-                            className="avatar avatar-suprem w-24 h-24 md:w-32 md:h-32 overflow-hidden"
-                            animate={{ boxShadow: ['0 0 30px rgba(147,51,234,0.4)', '0 0 50px rgba(201,162,39,0.4)', '0 0 30px rgba(147,51,234,0.4)'] }}
+                            className="relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden"
+                            animate={{
+                              boxShadow: [
+                                '0 0 30px rgba(147,51,234,0.5), 0 0 60px rgba(147,51,234,0.3)',
+                                '0 0 40px rgba(201,162,39,0.5), 0 0 80px rgba(201,162,39,0.3)',
+                                '0 0 30px rgba(147,51,234,0.5), 0 0 60px rgba(147,51,234,0.3)'
+                              ]
+                            }}
                             transition={{ duration: 3, repeat: Infinity }}
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            style={{
+                              border: '3px solid transparent',
+                              background: 'linear-gradient(#0f0f12, #0f0f12) padding-box, linear-gradient(135deg, #9333EA, #D4AF37, #9333EA) border-box'
+                            }}
                           >
                             {supremBarosan.poza ? (
                               <img src={supremBarosan.poza} alt={supremBarosan.nume} className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-5xl bg-[var(--gradient-suprem)]">👑</div>
+                              <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-[#9333EA] to-[#D4AF37]">👑</div>
                             )}
                           </motion.div>
                           <motion.div
-                            className="absolute -top-2 -right-2 w-10 h-10 bg-[var(--gradient-gold)] rounded-full flex items-center justify-center text-xl shadow-lg"
-                            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+                            className="absolute -top-2 -right-2 w-12 h-12 bg-gradient-to-br from-[#B8860B] via-[#D4AF37] to-[#FFD700] rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(212,175,55,0.5)]"
+                            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                           >
                             👑
@@ -258,19 +285,25 @@ export default function Home() {
 
                         {/* Info */}
                         <div className="flex-1 min-w-0 text-left">
-                          <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] truncate group-hover:text-gradient-gold transition-colors" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                          <motion.h3
+                            className="text-2xl md:text-3xl font-bold text-white truncate transition-all duration-300 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-[#D4AF37] group-hover:to-[#FFD700] group-hover:bg-clip-text"
+                            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                          >
                             {supremBarosan.nume}
-                          </h3>
+                          </motion.h3>
                           {supremBarosan.motto && (
-                            <p className="text-motto text-[var(--color-text-secondary)] text-base mt-2 truncate" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
+                            <p className="text-[#A0A0B0] text-base mt-2 truncate" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: 'italic' }}>
                               „{supremBarosan.motto}"
                             </p>
                           )}
                           <div className="mt-4 flex items-center gap-3">
-                            <span className="btn-secondary text-sm py-2 px-4 inline-flex items-center gap-2">
+                            <motion.span
+                              className="bg-gradient-to-r from-[#9333EA]/20 to-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] text-sm py-2 px-5 rounded-xl inline-flex items-center gap-2 font-semibold group-hover:bg-gradient-to-r group-hover:from-[#9333EA]/30 group-hover:to-[#D4AF37]/30 transition-all"
+                              whileHover={{ scale: 1.05 }}
+                            >
                               <span>Vezi profilul</span>
                               <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1, repeat: Infinity }}>→</motion.span>
-                            </span>
+                            </motion.span>
                           </div>
                         </div>
                       </div>
@@ -278,29 +311,64 @@ export default function Home() {
                   </motion.div>
                 </Link>
               ) : (
-                <Link to="/barosanul-suprem" className="block group mb-12">
+                <Link to="/barosanul-suprem" className="block group mb-12 perspective-1000">
                   <motion.div
                     className="relative max-w-xl mx-auto"
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.03, rotateX: 3, rotateY: -3 }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformStyle: 'preserve-3d' }}
                   >
-                    <div className="absolute -inset-1 bg-[var(--gradient-suprem)] rounded-2xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                    <div className="relative glass-purple rounded-xl p-6 border border-[var(--gold-primary)]/40 group-hover:border-[var(--gold-primary)]/60 transition-all">
-                      <div className="text-center">
+                    {/* Animated glow background */}
+                    <motion.div
+                      className="absolute -inset-2 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] rounded-3xl blur-xl"
+                      animate={{
+                        opacity: [0.3, 0.5, 0.3],
+                        backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      style={{ backgroundSize: '200% 200%' }}
+                    />
+
+                    <div className="relative bg-gradient-to-br from-[#1a1025] via-[#0f0f12] to-[#12101a] rounded-2xl p-8 border-2 border-[#9333EA]/40 group-hover:border-[#D4AF37] transition-all duration-300 shadow-[0_0_30px_rgba(147,51,234,0.2)] group-hover:shadow-[0_0_50px_rgba(147,51,234,0.4),0_0_30px_rgba(201,162,39,0.3),0_20px_40px_rgba(0,0,0,0.4)]">
+                      {/* Shimmer effect */}
+                      <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
                         <motion.div
-                          className="text-5xl mb-3"
-                          animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-                          transition={{ duration: 2, repeat: Infinity }}
+                          className="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12"
+                          animate={{ x: ['0%', '300%'] }}
+                          transition={{ duration: 3, repeat: Infinity, repeatDelay: 1 }}
+                        />
+                      </div>
+
+                      <div className="text-center relative">
+                        <motion.div
+                          className="text-6xl mb-4 inline-block"
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            rotate: [0, 10, -10, 0],
+                            filter: ['drop-shadow(0 0 20px rgba(212,175,55,0.5))', 'drop-shadow(0 0 40px rgba(147,51,234,0.5))', 'drop-shadow(0 0 20px rgba(212,175,55,0.5))']
+                          }}
+                          transition={{ duration: 2.5, repeat: Infinity }}
                         >
                           👑
                         </motion.div>
-                        <div className="text-xl font-bold text-gradient-gold" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                        <motion.div
+                          className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent"
+                          style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                        >
                           Poziția Suprem e liberă!
-                        </div>
-                        <p className="text-[var(--color-text-secondary)] text-sm mt-2">Devino cel mai baros dintre barosani</p>
-                        <div className="mt-4 inline-flex items-center gap-2 text-[var(--color-success)] text-sm font-semibold">
-                          <span className="w-2 h-2 bg-[var(--color-success)] rounded-full animate-pulse"></span>
+                        </motion.div>
+                        <p className="text-[#A0A0B0] text-base mt-3">Devino cel mai baros dintre barosani</p>
+                        <motion.div
+                          className="mt-5 inline-flex items-center gap-2 text-[#34D399] text-sm font-bold bg-[#34D399]/10 px-4 py-2 rounded-full border border-[#34D399]/30"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          <motion.span
+                            className="w-2.5 h-2.5 bg-[#34D399] rounded-full"
+                            animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                          />
                           Disponibil acum →
-                        </div>
+                        </motion.div>
                       </div>
                     </div>
                   </motion.div>
