@@ -9,8 +9,9 @@ export default function Leaderboard({ barosani }) {
       let score = 0;
 
       // Tier points
-      if (barosan.tier === 'platinum') score += 1000;
-      else if (barosan.tier === 'gold') score += 500;
+      if (barosan.tier === 'supreme') score += 2000;
+      else if (barosan.tier === 'elite') score += 1000;
+      else if (barosan.tier === 'premium') score += 500;
       else score += 100;
 
       // Seniority bonus (mai vechi = mai multe puncte)
@@ -22,8 +23,8 @@ export default function Leaderboard({ barosani }) {
       // Bonus pentru poza
       if (barosan.poza) score += 50;
 
-      // Bonus pentru link (doar platinum)
-      if (barosan.link && barosan.tier === 'platinum') score += 100;
+      // Bonus pentru link (supreme/elite)
+      if (barosan.link && (barosan.tier === 'supreme' || barosan.tier === 'elite')) score += 100;
 
       // Bonus pentru motto creativ (mai lung = mai creativ)
       if (barosan.motto) score += barosan.motto.length;
@@ -43,12 +44,14 @@ export default function Leaderboard({ barosani }) {
 
   const getTierBadge = (tier) => {
     switch (tier) {
-      case 'platinum':
-        return { emoji: '💎', color: 'from-[#E5E4E2] to-[#BCC6CC]', text: 'text-[#1a365d]' };
-      case 'gold':
-        return { emoji: '🏆', color: 'from-[#D4AF37] to-[#FFD700]', text: 'text-[#1a365d]' };
+      case 'supreme':
+        return { emoji: '👑', color: 'from-[#2A0A4A] to-[#D4AF37]', text: 'text-[#F7F3E8]' };
+      case 'elite':
+        return { emoji: '💎', color: 'from-[#8F98A3] to-[#E5E7EB]', text: 'text-[#0B1220]' };
+      case 'premium':
+        return { emoji: '🥉', color: 'from-[#7A3E12] to-[#CD7F32]', text: 'text-white' };
       default:
-        return { emoji: '⭐', color: 'from-gray-400 to-gray-500', text: 'text-white' };
+        return { emoji: '🛡️', color: 'from-[#4B5563] to-[#9CA3AF]', text: 'text-white' };
     }
   };
 
@@ -150,9 +153,9 @@ export default function Leaderboard({ barosani }) {
         <div className="text-center">
           <a
             href="/cum-devin-barosan"
-            className="inline-block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
+            className="inline-block bg-gradient-to-r from-[#2A0A4A] to-[#D4AF37] text-[#F7F3E8] px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
           >
-            Upgrade la Platinum 💎
+            Upgrade la Supreme 👑
           </a>
         </div>
       </div>

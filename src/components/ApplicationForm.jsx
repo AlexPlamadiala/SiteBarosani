@@ -9,7 +9,7 @@ export default function ApplicationForm() {
     email: '',
     revolutId: '',
     motto: '',
-    tier: 'basic',
+    tier: 'standard',
     poza: '',
     link: ''
   });
@@ -22,9 +22,10 @@ export default function ApplicationForm() {
   const [uploading, setUploading] = useState(false);
 
   const tierPrices = {
-    basic: '20 RON',
-    gold: '50 RON',
-    platinum: '100 RON'
+    standard: '20 RON',
+    premium: '50 RON',
+    elite: '100 RON',
+    supreme: '200 RON'
   };
 
   const generateApplicationCode = () => {
@@ -208,7 +209,7 @@ export default function ApplicationForm() {
       email: '',
       revolutId: '',
       motto: '',
-      tier: 'basic',
+      tier: 'standard',
       poza: '',
       link: ''
     });
@@ -224,7 +225,7 @@ export default function ApplicationForm() {
       email: formData.email.trim(),
       revolutId: formData.revolutId.trim(),
       motto: formData.motto.trim(),
-      tierSelected: formData.tier !== 'basic', // bonus for selecting premium tier
+      tierSelected: formData.tier !== 'standard', // bonus for selecting higher tier
       poza: imagePreview || formData.poza
     };
 
@@ -428,8 +429,8 @@ export default function ApplicationForm() {
             <label className="block text-sm font-bold text-gray-700 mb-3">
               Alege Tier-ul <span className="text-red-500">*</span>
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {['basic', 'gold', 'platinum'].map((tier) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {['standard', 'premium', 'elite', 'supreme'].map((tier) => (
                 <label
                   key={tier}
                   className={`relative flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
@@ -452,7 +453,7 @@ export default function ApplicationForm() {
                     </div>
                   )}
                   <span className="text-3xl mb-2">
-                    {tier === 'basic' ? '⭐' : tier === 'gold' ? '🏆' : '💎'}
+                    {tier === 'standard' ? '🛡️' : tier === 'premium' ? '🥉' : tier === 'elite' ? '💎' : '👑'}
                   </span>
                   <span className="font-bold uppercase text-sm text-[#1a365d]">{tier}</span>
                   <span className="text-xs font-semibold text-gray-600">{tierPrices[tier]}</span>
@@ -532,8 +533,8 @@ export default function ApplicationForm() {
             {errors.poza && <p className="text-red-500 text-sm mt-1">{errors.poza}</p>}
           </div>
 
-          {/* Link (doar pentru Platinum) */}
-          {formData.tier === 'platinum' && (
+          {/* Link (pentru Supreme și Elite) */}
+          {(formData.tier === 'supreme' || formData.tier === 'elite') && (
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Link Personal <span className="text-gray-500 text-xs font-normal">(opțional)</span>

@@ -118,15 +118,17 @@ export default function Home() {
   }, [sseConnected]);
 
   const totalBarosani = barosani.length;
-  const platinumCount = barosani.filter(b => b.tier === 'platinum').length;
-  const goldCount = barosani.filter(b => b.tier === 'gold').length;
-  const basicCount = barosani.filter(b => b.tier === 'basic').length;
+  const supremeCount = barosani.filter(b => b.tier === 'supreme').length;
+  const eliteCount = barosani.filter(b => b.tier === 'elite').length;
+  const premiumCount = barosani.filter(b => b.tier === 'premium').length;
+  const standardCount = barosani.filter(b => b.tier === 'standard').length;
 
   // Animated counters
   const animatedTotal = useCountUp(totalBarosani, 2000);
-  const animatedPlatinum = useCountUp(platinumCount, 2000);
-  const animatedGold = useCountUp(goldCount, 2000);
-  const animatedBasic = useCountUp(basicCount, 2000);
+  const animatedSupreme = useCountUp(supremeCount, 2000);
+  const animatedElite = useCountUp(eliteCount, 2000);
+  const animatedPremium = useCountUp(premiumCount, 2000);
+  const animatedStandard = useCountUp(standardCount, 2000);
 
   // Loading state
   if (loading) {
@@ -187,7 +189,7 @@ export default function Home() {
             <span className="text-5xl">🏆</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold mb-4 text-white">
-            REGISTRUL OFICIAL AL BAROSANILOR
+            Intră în Liga Barosanilor
           </h1>
           <p className="text-base md:text-lg mb-2 max-w-2xl mx-auto opacity-90">
             Singura instituție acreditată pentru certificarea oficială a barosanilor
@@ -212,22 +214,26 @@ export default function Home() {
           </div>
 
           {/* Stats Cards - Compact with Animation */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform col-span-2 lg:col-span-1">
               <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedTotal}</div>
               <div className="text-gray-700 font-semibold text-sm">Barosani Verificați</div>
             </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E4E2] hover:scale-105 transition-transform">
-              <div className="text-4xl font-extrabold text-[#1a365d] tabular-nums">{animatedPlatinum}</div>
-              <div className="text-gray-700 font-semibold text-sm">💎 Platinum</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#2A0A4A] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFF2B2] bg-clip-text text-transparent tabular-nums">{animatedSupreme}</div>
+              <div className="text-gray-700 font-semibold text-sm">👑 Supreme</div>
             </div>
-            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#D4AF37] hover:scale-105 transition-transform">
-              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#D4AF37] to-[#FFD700] bg-clip-text text-transparent tabular-nums">{animatedGold}</div>
-              <div className="text-gray-700 font-semibold text-sm">🏆 Gold</div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#E5E7EB] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold text-[#0B1220] tabular-nums">{animatedElite}</div>
+              <div className="text-gray-700 font-semibold text-sm">💎 Elite</div>
+            </div>
+            <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-[#CD7F32] hover:scale-105 transition-transform">
+              <div className="text-4xl font-extrabold bg-gradient-to-r from-[#CD7F32] to-[#F2C28F] bg-clip-text text-transparent tabular-nums">{animatedPremium}</div>
+              <div className="text-gray-700 font-semibold text-sm">🥉 Premium</div>
             </div>
             <div className="bg-white/95 rounded-xl shadow-lg p-4 border-2 border-gray-300 hover:scale-105 transition-transform">
-              <div className="text-4xl font-extrabold text-gray-600 tabular-nums">{animatedBasic}</div>
-              <div className="text-gray-700 font-semibold text-sm">⭐ Basic</div>
+              <div className="text-4xl font-extrabold text-[#9CA3AF] tabular-nums">{animatedStandard}</div>
+              <div className="text-gray-700 font-semibold text-sm">🛡️ Standard</div>
             </div>
           </div>
         </div>

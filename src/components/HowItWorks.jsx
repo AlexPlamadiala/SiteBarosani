@@ -4,7 +4,7 @@ export default function HowItWorks() {
       number: 1,
       icon: '🎯',
       title: 'Alege Tier-ul',
-      description: 'Selectează pachetul: Basic, Gold sau Platinum'
+      description: 'Selectează pachetul: Standard, Premium, Elite sau Supreme'
     },
     {
       number: 2,

@@ -18,19 +18,26 @@ export const BADGES = {
     description: 'Barosan de peste 30 de zile',
     color: 'from-orange-500 to-red-500'
   },
-  ELITE: {
-    id: 'elite',
+  SUPREME_MEMBER: {
+    id: 'supreme_member',
+    name: 'Supreme',
+    emoji: '👑',
+    description: 'Membru Supreme',
+    color: 'from-[#2A0A4A] to-[#D4AF37]'
+  },
+  ELITE_MEMBER: {
+    id: 'elite_member',
     name: 'Elite',
     emoji: '💎',
-    description: 'Membru Platinum',
-    color: 'from-[#E5E4E2] to-[#BCC6CC]'
+    description: 'Membru Elite',
+    color: 'from-[#8F98A3] to-[#E5E7EB]'
   },
   CHAMPION: {
     id: 'champion',
     name: 'Champion',
-    emoji: '👑',
-    description: 'Membru Gold',
-    color: 'from-[#D4AF37] to-[#FFD700]'
+    emoji: '🥉',
+    description: 'Membru Premium',
+    color: 'from-[#7A3E12] to-[#CD7F32]'
   },
   INFLUENCER: {
     id: 'influencer',
@@ -85,13 +92,18 @@ export function calculateBadges(barosan, totalBarosani = 0) {
     badges.push(BADGES.VETERAN);
   }
 
-  // Elite - Platinum tier
-  if (barosan.tier === 'platinum') {
-    badges.push(BADGES.ELITE);
+  // Supreme Member
+  if (barosan.tier === 'supreme') {
+    badges.push(BADGES.SUPREME_MEMBER);
   }
 
-  // Champion - Gold tier
-  if (barosan.tier === 'gold') {
+  // Elite Member
+  if (barosan.tier === 'elite') {
+    badges.push(BADGES.ELITE_MEMBER);
+  }
+
+  // Champion - Premium tier
+  if (barosan.tier === 'premium') {
     badges.push(BADGES.CHAMPION);
   }
 

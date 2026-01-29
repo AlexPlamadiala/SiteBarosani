@@ -22,36 +22,45 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
   }, []);
 
   const tierColors = {
-    platinum: {
-      border: 'border-[#BCC6CC]',
-      badge: 'bg-gradient-to-r from-[#E5E4E2] to-[#BCC6CC]',
-      badgeText: 'text-[#1a365d]',
-      glow: 'shadow-[0_0_20px_rgba(188,198,204,0.6)]',
-      cardGradient: 'from-[#E5E4E2]/10 to-[#BCC6CC]/10',
-      blurColor: 'bg-[#BCC6CC]'
-    },
-    gold: {
+    supreme: {
       border: 'border-[#D4AF37]',
-      badge: 'bg-gradient-to-r from-[#D4AF37] to-[#FFD700]',
-      badgeText: 'text-[#1a365d]',
-      glow: 'shadow-[0_0_20px_rgba(212,175,55,0.5)]',
-      cardGradient: 'from-[#D4AF37]/10 to-[#FFD700]/10',
+      badge: 'bg-gradient-to-r from-[#2A0A4A] via-[#D4AF37] to-[#FFF2B2]',
+      badgeText: 'text-[#F7F3E8]',
+      glow: 'shadow-[0_0_25px_rgba(212,175,55,0.7)]',
+      cardGradient: 'from-[#2A0A4A]/10 to-[#D4AF37]/10',
       blurColor: 'bg-[#D4AF37]'
     },
-    basic: {
-      border: 'border-gray-300',
-      badge: 'bg-gradient-to-r from-gray-400 to-gray-500',
+    elite: {
+      border: 'border-[#E5E7EB]',
+      badge: 'bg-gradient-to-r from-[#8F98A3] via-[#E5E7EB] to-[#FFFFFF]',
+      badgeText: 'text-[#0B1220]',
+      glow: 'shadow-[0_0_20px_rgba(229,231,235,0.6)]',
+      cardGradient: 'from-[#E5E7EB]/10 to-[#BFC5CE]/10',
+      blurColor: 'bg-[#BFC5CE]'
+    },
+    premium: {
+      border: 'border-[#CD7F32]',
+      badge: 'bg-gradient-to-r from-[#7A3E12] via-[#CD7F32] to-[#F2C28F]',
+      badgeText: 'text-white',
+      glow: 'shadow-[0_0_20px_rgba(205,127,50,0.5)]',
+      cardGradient: 'from-[#CD7F32]/10 to-[#F2C28F]/10',
+      blurColor: 'bg-[#CD7F32]'
+    },
+    standard: {
+      border: 'border-[#9CA3AF]',
+      badge: 'bg-gradient-to-r from-[#4B5563] to-[#9CA3AF]',
       badgeText: 'text-white',
       glow: '',
       cardGradient: 'from-gray-100 to-gray-200',
-      blurColor: 'bg-gray-400'
+      blurColor: 'bg-[#9CA3AF]'
     }
   };
 
   const tierLabels = {
-    platinum: '💎 PLATINUM',
-    gold: '🏆 GOLD',
-    basic: '⭐ BASIC'
+    supreme: '👑 SUPREME',
+    elite: '💎 ELITE',
+    premium: '🥉 PREMIUM',
+    standard: '🛡️ STANDARD'
   };
 
   const colors = tierColors[barosan.tier];
@@ -88,8 +97,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
 
   return (
     <div className="group relative">
-      {/* Glow Effect - Always visible for platinum/gold */}
-      {(barosan.tier === 'platinum' || barosan.tier === 'gold') && (
+      {/* Glow Effect - Always visible for supreme/elite/premium */}
+      {(barosan.tier === 'supreme' || barosan.tier === 'elite' || barosan.tier === 'premium') && (
         <div className={`absolute inset-0 ${colors.blurColor} rounded-2xl blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300`}></div>
       )}
 
@@ -169,8 +178,8 @@ export default function BarosanCard({ barosan, onViewCertificate, totalBarosani 
           </div>
         </div>
 
-        {/* Link for Platinum - Enhanced */}
-        {barosan.tier === 'platinum' && barosan.link && (
+        {/* Link for Supreme/Elite - Enhanced */}
+        {(barosan.tier === 'supreme' || barosan.tier === 'elite') && barosan.link && (
           <div className="pt-2 text-center">
             <a
               href={barosan.link}

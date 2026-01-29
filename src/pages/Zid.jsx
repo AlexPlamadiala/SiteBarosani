@@ -168,8 +168,8 @@ export default function Zid() {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'tier':
-          // Platinum > Gold > Basic
-          const tierOrder = { platinum: 1, gold: 2, basic: 3 };
+          // Supreme > Elite > Premium > Standard
+          const tierOrder = { supreme: 1, elite: 2, premium: 3, standard: 4 };
           return tierOrder[a.tier] - tierOrder[b.tier];
 
         case 'date-desc':
@@ -199,9 +199,10 @@ export default function Zid() {
   // Organizăm barosanii filtrați pe tier-uri
   const barosaniByTier = useMemo(() => {
     return {
-      platinum: filteredBarosani.filter(b => b.tier === 'platinum'),
-      gold: filteredBarosani.filter(b => b.tier === 'gold'),
-      basic: filteredBarosani.filter(b => b.tier === 'basic')
+      supreme: filteredBarosani.filter(b => b.tier === 'supreme'),
+      elite: filteredBarosani.filter(b => b.tier === 'elite'),
+      premium: filteredBarosani.filter(b => b.tier === 'premium'),
+      standard: filteredBarosani.filter(b => b.tier === 'standard')
     };
   }, [filteredBarosani]);
 
@@ -341,9 +342,10 @@ export default function Zid() {
                     className="px-4 py-3 rounded-xl bg-white text-gray-800 border-2 border-transparent focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 transition-all cursor-pointer font-semibold text-sm md:text-base shadow-lg"
                   >
                     <option value="all">🎯 Toate Tier-urile</option>
-                    <option value="platinum">💎 Doar Platinum</option>
-                    <option value="gold">🏆 Doar Gold</option>
-                    <option value="basic">⭐ Doar Basic</option>
+                    <option value="supreme">👑 Doar Supreme</option>
+                    <option value="elite">💎 Doar Elite</option>
+                    <option value="premium">🥉 Doar Premium</option>
+                    <option value="standard">🛡️ Doar Standard</option>
                   </select>
 
                   {/* Sort */}
@@ -377,70 +379,68 @@ export default function Zid() {
 
           {/* Quick Links - Modern Pills */}
           <div className="flex flex-wrap gap-3 justify-center">
-            {barosaniByTier.platinum.length > 0 && (
+            {barosaniByTier.supreme.length > 0 && (
               <button
-                onClick={() => scrollToZone('platinum-zone')}
-                className="group relative overflow-hidden bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#E5E4E2] text-[#1a365d] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
+                onClick={() => scrollToZone('supreme-zone')}
+                className="group relative overflow-hidden bg-gradient-to-r from-[#2A0A4A] via-[#D4AF37] to-[#FFF2B2] text-[#F7F3E8] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
               >
-                <span className="relative z-10">💎 Zona Platinum ({barosaniByTier.platinum.length})</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span className="relative z-10">👑 Zona Supreme ({barosaniByTier.supreme.length})</span>
               </button>
             )}
-            {barosaniByTier.gold.length > 0 && (
+            {barosaniByTier.elite.length > 0 && (
               <button
-                onClick={() => scrollToZone('gold-zone')}
-                className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
+                onClick={() => scrollToZone('elite-zone')}
+                className="group relative overflow-hidden bg-gradient-to-r from-[#8F98A3] via-[#E5E7EB] to-[#FFFFFF] text-[#0B1220] px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
               >
-                🏆 Zona Gold ({barosaniByTier.gold.length})
+                <span className="relative z-10">💎 Zona Elite ({barosaniByTier.elite.length})</span>
               </button>
             )}
-            {barosaniByTier.basic.length > 0 && (
+            {barosaniByTier.premium.length > 0 && (
               <button
-                onClick={() => scrollToZone('basic-zone')}
-                className="bg-gradient-to-r from-gray-400 to-gray-500 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
+                onClick={() => scrollToZone('premium-zone')}
+                className="bg-gradient-to-r from-[#7A3E12] via-[#CD7F32] to-[#F2C28F] text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
               >
-                ⭐ Zona Basic ({barosaniByTier.basic.length})
+                🥉 Zona Premium ({barosaniByTier.premium.length})
+              </button>
+            )}
+            {barosaniByTier.standard.length > 0 && (
+              <button
+                onClick={() => scrollToZone('standard-zone')}
+                className="bg-gradient-to-r from-[#4B5563] to-[#9CA3AF] text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all shadow-xl hover:shadow-2xl"
+              >
+                🛡️ Zona Standard ({barosaniByTier.standard.length})
               </button>
             )}
           </div>
         </div>
       </section>
 
-      {/* Platinum Zone - Most Prominent */}
-      {barosaniByTier.platinum.length > 0 && (
-        <section id="platinum-zone" className="py-12 md:py-16 px-4 scroll-mt-24 relative overflow-hidden">
-          {/* Background gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent pointer-events-none"></div>
+      {/* Supreme Zone - Top Tier */}
+      {barosaniByTier.supreme.length > 0 && (
+        <section id="supreme-zone" className="py-12 md:py-16 px-4 scroll-mt-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#2A0A4A]/5 via-transparent to-transparent pointer-events-none"></div>
 
           <div className="container mx-auto relative z-10">
             <div className="text-center mb-12">
               <div className="inline-block relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] blur-2xl opacity-30 animate-pulse"></div>
-                <div className="relative bg-gradient-to-r from-[#E5E4E2] via-[#BCC6CC] to-[#E5E4E2] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-white">
-                  <h2 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5986]">
-                    💎 ZONA PLATINUM 💎
+                <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37] to-[#FFF2B2] blur-2xl opacity-40 animate-pulse"></div>
+                <div className="relative bg-gradient-to-r from-[#2A0A4A] via-[#D4AF37] to-[#FFF2B2] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#D4AF37]">
+                  <h2 className="text-3xl md:text-5xl font-extrabold text-[#F7F3E8] drop-shadow-lg">
+                    👑 ZONA SUPREME 👑
                   </h2>
                 </div>
               </div>
               <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
-                Elita absolută. Carduri mari, glow auriu, link personal.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.platinum.length} membr{barosaniByTier.platinum.length === 1 ? 'u' : 'i'} Platinum</span>
+                Vârful absolut. Glow intens, design exclusiv, link personal.
+                <span className="block mt-2 text-[#2A0A4A] font-bold">{barosaniByTier.supreme.length} membr{barosaniByTier.supreme.length === 1 ? 'u' : 'i'} Supreme</span>
               </p>
             </div>
 
             <div className="flex justify-center">
-              <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.platinum.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+                {barosaniByTier.supreme.map((barosan) => (
+                  <div key={barosan.id} className="w-full">
+                    <BarosanCard barosan={barosan} onViewCertificate={handleViewCertificate} />
                   </div>
                 ))}
               </div>
@@ -449,43 +449,34 @@ export default function Zid() {
         </section>
       )}
 
-      {/* Gold Zone - Medium Prominence */}
-      {barosaniByTier.gold.length > 0 && (
-        <section id="gold-zone" className="py-12 md:py-16 px-4 bg-gradient-to-br from-white via-[#FFF9E6] to-white scroll-mt-24 relative overflow-hidden">
-          {/* Background pattern */}
+      {/* Elite Zone */}
+      {barosaniByTier.elite.length > 0 && (
+        <section id="elite-zone" className="py-12 md:py-16 px-4 bg-gradient-to-br from-white via-[#E5E7EB]/20 to-white scroll-mt-24 relative overflow-hidden">
           <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#D4AF37] rounded-full blur-3xl"></div>
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#7AA2FF] rounded-full blur-3xl"></div>
           </div>
 
           <div className="container mx-auto relative z-10">
             <div className="text-center mb-12">
               <div className="inline-block relative">
-                <div className="absolute inset-0 bg-[#D4AF37] blur-xl opacity-40"></div>
-                <div className="relative bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#FFD700]">
-                  <h2 className="text-2xl md:text-4xl font-extrabold text-white drop-shadow-lg">
-                    🏆 ZONA GOLD 🏆
+                <div className="absolute inset-0 bg-[#BFC5CE] blur-xl opacity-40"></div>
+                <div className="relative bg-gradient-to-r from-[#8F98A3] via-[#E5E7EB] to-[#FFFFFF] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#E5E7EB]">
+                  <h2 className="text-3xl md:text-5xl font-extrabold text-[#0B1220]">
+                    💎 ZONA ELITE 💎
                   </h2>
                 </div>
               </div>
               <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
-                Membrii Gold. Border auriu, prioritate în grid.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.gold.length} membr{barosaniByTier.gold.length === 1 ? 'u' : 'i'} Gold</span>
+                Elita platinată. Card mare cu efect glow, link personal.
+                <span className="block mt-2 text-[#0B1220] font-bold">{barosaniByTier.elite.length} membr{barosaniByTier.elite.length === 1 ? 'u' : 'i'} Elite</span>
               </p>
             </div>
 
             <div className="flex justify-center">
-              <div
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.gold.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+                {barosaniByTier.elite.map((barosan) => (
+                  <div key={barosan.id} className="w-full">
+                    <BarosanCard barosan={barosan} onViewCertificate={handleViewCertificate} />
                   </div>
                 ))}
               </div>
@@ -494,38 +485,66 @@ export default function Zid() {
         </section>
       )}
 
-      {/* Basic Zone - Standard Size */}
-      {barosaniByTier.basic.length > 0 && (
-        <section id="basic-zone" className="py-12 md:py-16 px-4 bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] scroll-mt-24">
+      {/* Premium Zone */}
+      {barosaniByTier.premium.length > 0 && (
+        <section id="premium-zone" className="py-12 md:py-16 px-4 bg-gradient-to-br from-white via-[#F2C28F]/10 to-white scroll-mt-24 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#CD7F32] rounded-full blur-3xl"></div>
+          </div>
+
+          <div className="container mx-auto relative z-10">
+            <div className="text-center mb-12">
+              <div className="inline-block relative">
+                <div className="absolute inset-0 bg-[#CD7F32] blur-xl opacity-30"></div>
+                <div className="relative bg-gradient-to-r from-[#7A3E12] via-[#CD7F32] to-[#F2C28F] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#CD7F32]">
+                  <h2 className="text-2xl md:text-4xl font-extrabold text-white drop-shadow-lg">
+                    🥉 ZONA PREMIUM 🥉
+                  </h2>
+                </div>
+              </div>
+              <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
+                Membrii Premium. Border bronz, prioritate în grid.
+                <span className="block mt-2 text-[#7A3E12] font-bold">{barosaniByTier.premium.length} membr{barosaniByTier.premium.length === 1 ? 'u' : 'i'} Premium</span>
+              </p>
+            </div>
+
+            <div className="flex justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full max-w-7xl">
+                {barosaniByTier.premium.map((barosan) => (
+                  <div key={barosan.id} className="w-full">
+                    <BarosanCard barosan={barosan} onViewCertificate={handleViewCertificate} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Standard Zone */}
+      {barosaniByTier.standard.length > 0 && (
+        <section id="standard-zone" className="py-12 md:py-16 px-4 bg-gradient-to-b from-[#F5E6D3] to-[#E8D5B7] scroll-mt-24">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <div className="inline-block relative">
-                <div className="absolute inset-0 bg-gray-500 blur-lg opacity-20"></div>
-                <div className="relative bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400 px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-gray-300">
+                <div className="absolute inset-0 bg-[#9CA3AF] blur-lg opacity-20"></div>
+                <div className="relative bg-gradient-to-r from-[#4B5563] via-[#9CA3AF] to-[#E5E7EB] px-8 py-4 rounded-2xl shadow-2xl mb-4 border-2 border-[#9CA3AF]">
                   <h2 className="text-xl md:text-3xl font-extrabold text-white drop-shadow-md">
-                    ⭐ ZONA BASIC ⭐
+                    🛡️ ZONA STANDARD 🛡️
                   </h2>
                 </div>
               </div>
               <p className="text-gray-700 text-lg max-w-2xl mx-auto font-medium">
                 Barosani verificați oficial. Fundația comunității.
-                <span className="block mt-2 text-[#1a365d] font-bold">{barosaniByTier.basic.length} membr{barosaniByTier.basic.length === 1 ? 'u' : 'i'} Basic</span>
+                <span className="block mt-2 text-[#111827] font-bold">{barosaniByTier.standard.length} membr{barosaniByTier.standard.length === 1 ? 'u' : 'i'} Standard</span>
               </p>
             </div>
 
             <div className="flex justify-center">
-              <div
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 w-full max-w-7xl"
-              >
-                {barosaniByTier.basic.map((barosan) => (
-                  <div
-                    key={barosan.id}
-                    className="w-full"
-                  >
-                    <BarosanCard
-                      barosan={barosan}
-                      onViewCertificate={handleViewCertificate}
-                    />
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 w-full max-w-7xl">
+                {barosaniByTier.standard.map((barosan) => (
+                  <div key={barosan.id} className="w-full">
+                    <BarosanCard barosan={barosan} onViewCertificate={handleViewCertificate} />
                   </div>
                 ))}
               </div>

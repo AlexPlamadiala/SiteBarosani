@@ -12,12 +12,14 @@ export default function CertificateGenerator({ barosan, onClose }) {
 
   // Confetti effect when certificate opens
   useEffect(() => {
-    // Gold confetti for platinum/gold tiers, regular for basic
-    const colors = barosan.tier === 'platinum'
-      ? ['#E5E4E2', '#BCC6CC', '#D4AF37', '#FFD700']
-      : barosan.tier === 'gold'
-      ? ['#D4AF37', '#FFD700', '#FFA500']
-      : ['#4169E1', '#FFD700', '#00CED1'];
+    // Confetti colors per tier
+    const colors = barosan.tier === 'supreme'
+      ? ['#2A0A4A', '#D4AF37', '#FFF2B2', '#FFD700']
+      : barosan.tier === 'elite'
+      ? ['#E5E7EB', '#BFC5CE', '#7AA2FF', '#FFFFFF']
+      : barosan.tier === 'premium'
+      ? ['#CD7F32', '#F2C28F', '#FFB457', '#7A3E12']
+      : ['#9CA3AF', '#4B5563', '#E5E7EB', '#A7B0C0'];
 
     // Fire confetti burst
     const duration = 3000;
@@ -56,9 +58,10 @@ export default function CertificateGenerator({ barosan, onClose }) {
   }, [barosan.tier]);
 
   const tierLabels = {
-    platinum: 'PLATINUM',
-    gold: 'GOLD',
-    basic: 'BASIC'
+    supreme: 'SUPREME',
+    elite: 'ELITE',
+    premium: 'PREMIUM',
+    standard: 'STANDARD'
   };
 
   // Generate certificate as Canvas (template-based approach)

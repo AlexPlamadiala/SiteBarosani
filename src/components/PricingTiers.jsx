@@ -1,11 +1,11 @@
 export default function PricingTiers() {
   const tiers = [
     {
-      name: 'BASIC',
+      name: 'STANDARD',
       price: '20 RON',
-      icon: '⭐',
-      gradient: 'from-gray-400 to-gray-500',
-      borderColor: 'border-gray-300',
+      icon: '🛡️',
+      gradient: 'from-[#4B5563] to-[#9CA3AF]',
+      borderColor: 'border-[#9CA3AF]',
       features: [
         'Apariție în Registrul Oficial',
         'Certificat digital descărcabil',
@@ -15,44 +15,60 @@ export default function PricingTiers() {
       popular: false
     },
     {
-      name: 'GOLD',
+      name: 'PREMIUM',
       price: '50 RON',
-      icon: '🏆',
-      gradient: 'from-[#D4AF37] to-[#FFD700]',
-      borderColor: 'border-[#D4AF37]',
+      icon: '🥉',
+      gradient: 'from-[#7A3E12] via-[#CD7F32] to-[#F2C28F]',
+      borderColor: 'border-[#CD7F32]',
       features: [
-        'Toate beneficiile BASIC',
-        'Border auriu pe card',
-        'Prioritate în grid (apar mai sus)',
-        'Badge Gold pe certificat',
-        'Suport premium'
+        'Toate beneficiile STANDARD',
+        'Border bronz pe card',
+        'Prioritate în grid',
+        'Badge Premium pe certificat',
+        'Suport dedicat'
+      ],
+      popular: false
+    },
+    {
+      name: 'ELITE',
+      price: '100 RON',
+      icon: '💎',
+      gradient: 'from-[#8F98A3] via-[#E5E7EB] to-[#FFFFFF]',
+      borderColor: 'border-[#E5E7EB]',
+      textDark: true,
+      features: [
+        'Toate beneficiile PREMIUM',
+        'Card mai mare cu efect glow',
+        'Link personal pe card (Instagram/TikTok)',
+        'Certificat Elite exclusiv',
+        'Poziționare prioritară în registru'
       ],
       popular: true
     },
     {
-      name: 'PLATINUM',
-      price: '100 RON',
-      icon: '💎',
-      gradient: 'from-[#E5E4E2] to-[#BCC6CC]',
-      borderColor: 'border-[#BCC6CC]',
+      name: 'SUPREME',
+      price: '200 RON',
+      icon: '👑',
+      gradient: 'from-[#2A0A4A] via-[#D4AF37] to-[#FFF2B2]',
+      borderColor: 'border-[#D4AF37]',
       features: [
-        'Toate beneficiile GOLD',
-        'Card mai mare cu efect glow',
-        'Link personal pe card (Instagram/TikTok)',
-        'Certificat Platinum exclusiv',
-        'Poziționare top în registru',
-        'Badge animat pe certificat'
+        'Toate beneficiile ELITE',
+        'Card cel mai mare cu glow intens',
+        'Poziționare TOP în registru',
+        'Certificat Supreme cu design exclusiv',
+        'Badge animat pe certificat',
+        'Link personal + badge special'
       ],
       popular: false
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
       {tiers.map((tier) => (
         <div
           key={tier.name}
-          className={`group relative ${tier.popular ? 'md:scale-105' : ''}`}
+          className={`group relative ${tier.popular ? 'sm:scale-105 z-10' : ''}`}
         >
           {/* Glow Effect */}
           <div className={`absolute inset-0 bg-gradient-to-r ${tier.gradient} rounded-2xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity`}></div>
@@ -61,14 +77,14 @@ export default function PricingTiers() {
             {/* Popular Badge */}
             {tier.popular && (
               <div className="absolute top-0 right-0 z-10">
-                <div className="bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-4 py-2 rounded-bl-2xl font-bold text-xs uppercase shadow-lg">
-                  ⭐ CEL MAI POPULAR
+                <div className="bg-gradient-to-r from-[#7AA2FF] to-[#E5E7EB] text-[#0B1220] px-4 py-2 rounded-bl-2xl font-bold text-xs uppercase shadow-lg">
+                  💎 CEL MAI POPULAR
                 </div>
               </div>
             )}
 
             {/* Header */}
-            <div className={`bg-gradient-to-br ${tier.gradient} text-white p-6 text-center`}>
+            <div className={`bg-gradient-to-br ${tier.gradient} ${tier.textDark ? 'text-[#0B1220]' : 'text-white'} p-6 text-center`}>
               <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-3 shadow-lg">
                 <span className="text-4xl">{tier.icon}</span>
               </div>
@@ -102,9 +118,9 @@ export default function PricingTiers() {
 
               <a
                 href="/cum-devin-barosan"
-                className={`block text-center bg-gradient-to-r ${tier.gradient} text-white px-6 py-3 rounded-xl font-bold text-base hover:scale-105 transition-transform shadow-lg`}
+                className={`block text-center bg-gradient-to-r ${tier.gradient} ${tier.textDark ? 'text-[#0B1220]' : 'text-white'} px-6 py-3 rounded-xl font-bold text-base hover:scale-105 transition-transform shadow-lg`}
               >
-                Devino Barosan {tier.name} 🚀
+                Devino {tier.name} 🚀
               </a>
             </div>
           </div>

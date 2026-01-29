@@ -5,9 +5,9 @@ import CertificateGenerator from './CertificateGenerator';
 export default function BarosanGrid({ barosani }) {
   const [selectedBarosan, setSelectedBarosan] = useState(null);
 
-  // Sort barosani: Platinum > Gold > Basic
+  // Sort barosani: Supreme > Elite > Premium > Standard
   const sortedBarosani = useMemo(() => {
-    const tierOrder = { platinum: 1, gold: 2, basic: 3 };
+    const tierOrder = { supreme: 1, elite: 2, premium: 3, standard: 4 };
     return [...barosani].sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
   }, [barosani]);
 
