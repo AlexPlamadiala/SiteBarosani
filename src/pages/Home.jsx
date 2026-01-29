@@ -183,14 +183,6 @@ export default function Home() {
 
         <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
           <div className="text-center max-w-4xl mx-auto">
-            {/* Badge */}
-            <FadeIn delay={0}>
-              <div className="inline-flex items-center gap-2 glass-gold px-5 py-2.5 rounded-full mb-8">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                <span className="text-[#D4AF37] text-sm font-semibold">{animatedTotal} barosani activi</span>
-              </div>
-            </FadeIn>
-
             {/* Main Title - Playfair Display */}
             <FadeIn delay={0.1}>
               <h1 className="mb-8 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>

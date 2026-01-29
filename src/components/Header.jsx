@@ -83,50 +83,48 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2" role="navigation" aria-label="Navigare principala">
+          <nav className="hidden md:flex items-center gap-2 lg:gap-3" role="navigation" aria-label="Navigare principala">
             {navItems.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className={`
-                  relative px-4 py-2 text-sm font-semibold rounded-lg
+                  relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
+                  border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                  backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                  hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
                   transition-all duration-300 ease-out
-                  hover:text-[#D4AF37] hover:bg-white/5
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-                  ${location.pathname === item.to ? 'text-[#D4AF37]' : 'text-white/80'}
+                  ${location.pathname === item.to ? 'border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : ''}
                 `}
               >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 <motion.span
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="block"
+                  className={`relative block ${location.pathname === item.to ? 'text-[#D4AF37]' : 'text-[#D4AF37]/80 group-hover:text-[#D4AF37]'} transition-colors duration-300`}
                 >
                   {item.label}
                 </motion.span>
-                {location.pathname === item.to && (
-                  <motion.div
-                    className="absolute bottom-0 left-1/2 w-1 h-1 bg-[#D4AF37] rounded-full"
-                    layoutId="activeIndicator"
-                    initial={{ x: '-50%' }}
-                    animate={{ x: '-50%' }}
-                  />
-                )}
               </Link>
             ))}
 
-            {/* Suprem Button */}
+            {/* Suprem Button - Purple/Mauve */}
             <Link
               to="/barosanul-suprem"
-              className="relative ml-2 px-4 py-2 text-sm font-bold rounded-lg overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+              className={`
+                relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
+                border border-[#9333EA]/40 bg-gradient-to-b from-[#1a1025]/80 via-[#0f0f12]/90 to-[#12101a]/80
+                backdrop-blur-sm shadow-[0_0_15px_rgba(147,51,234,0.15)]
+                hover:border-[#9333EA]/70 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]
+                transition-all duration-300 ease-out
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400
+                ${location.pathname === '/barosanul-suprem' ? 'border-[#9333EA]/70 shadow-[0_0_20px_rgba(147,51,234,0.3)]' : ''}
+              `}
             >
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#9333EA]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%]"
-                animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-              />
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-              <motion.span
-                className="relative text-white"
+                className={`relative block ${location.pathname === '/barosanul-suprem' ? 'text-[#B388FF]' : 'text-[#B388FF]/80 group-hover:text-[#B388FF]'} transition-colors duration-300`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -134,15 +132,22 @@ export default function Header() {
               </motion.span>
             </Link>
 
-            {/* Inscrie-te Button - CTA */}
+            {/* Inscrie-te Button - Same glass style, gold */}
             <Link
               to="/cum-devin-barosan"
-              className="relative ml-2 px-5 py-2.5 rounded-lg font-bold text-sm overflow-hidden group shadow-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.5)] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+              className={`
+                relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
+                border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
+                transition-all duration-300 ease-out
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
+                ${location.pathname === '/cum-devin-barosan' ? 'border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : ''}
+              `}
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700]" />
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <motion.span
-                className="relative text-black font-bold"
+                className={`relative block ${location.pathname === '/cum-devin-barosan' ? 'text-[#D4AF37]' : 'text-[#D4AF37]/80 group-hover:text-[#D4AF37]'} transition-colors duration-300`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -222,11 +227,13 @@ export default function Header() {
                       to={item.to}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`
-                        block w-full px-4 py-3 text-base font-semibold rounded-lg
-                        transition-all duration-200
-                        hover:bg-white/5 hover:text-[#D4AF37]
+                        block w-full px-4 py-3 text-base font-bold rounded-xl
+                        border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                        backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                        transition-all duration-300
+                        hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-                        ${location.pathname === item.to ? 'text-[#D4AF37] bg-white/5' : 'text-white/80'}
+                        ${location.pathname === item.to ? 'text-[#D4AF37] border-[#D4AF37]/70' : 'text-[#D4AF37]/80'}
                       `}
                     >
                       {item.label}
@@ -242,10 +249,17 @@ export default function Header() {
                   <Link
                     to="/barosanul-suprem"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full px-4 py-3 text-base font-bold text-center text-white rounded-lg relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+                    className={`
+                      block w-full px-4 py-3 text-base font-bold rounded-xl
+                      border border-[#9333EA]/40 bg-gradient-to-b from-[#1a1025]/80 via-[#0f0f12]/90 to-[#12101a]/80
+                      backdrop-blur-sm shadow-[0_0_15px_rgba(147,51,234,0.15)]
+                      transition-all duration-300
+                      hover:border-[#9333EA]/70 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400
+                      ${location.pathname === '/barosanul-suprem' ? 'text-[#B388FF] border-[#9333EA]/70' : 'text-[#B388FF]/80'}
+                    `}
                   >
-                    <span className="absolute inset-0 bg-gradient-to-r from-[#9333EA] via-[#D4AF37] to-[#9333EA] bg-[length:200%_100%] animate-gradient" />
-                    <span className="relative">Barosanul Suprem</span>
+                    Barosanul Suprem
                   </Link>
                 </motion.div>
 
@@ -257,7 +271,15 @@ export default function Header() {
                   <Link
                     to="/cum-devin-barosan"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full px-4 py-3 text-base font-bold text-center bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#FFD700] text-black rounded-lg shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
+                    className={`
+                      block w-full px-4 py-3 text-base font-bold rounded-xl
+                      border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                      backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                      transition-all duration-300
+                      hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
+                      ${location.pathname === '/cum-devin-barosan' ? 'text-[#D4AF37] border-[#D4AF37]/70' : 'text-[#D4AF37]/80'}
+                    `}
                   >
                     Inscrie-te Acum
                   </Link>
