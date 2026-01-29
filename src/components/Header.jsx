@@ -73,10 +73,10 @@ export default function Header() {
               </div>
             </motion.div>
             <div className="hidden sm:block">
-              <div className="text-xs md:text-sm font-bold text-white/90 tracking-wider">
+              <div className="text-xs md:text-sm font-bold text-[#D4AF37] tracking-wider">
                 REGISTRUL OFICIAL
               </div>
-              <div className="text-xs md:text-sm font-bold bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] bg-clip-text text-transparent">
+              <div className="text-xs md:text-sm font-bold text-[#D4AF37]">
                 AL BAROSANILOR
               </div>
             </div>
@@ -90,12 +90,12 @@ export default function Header() {
                 to={item.to}
                 className={`
                   relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
-                  border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
-                  backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                  bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                  backdrop-blur-sm
                   hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
                   transition-all duration-300 ease-out
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-                  ${location.pathname === item.to ? 'border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : ''}
+                  ${location.pathname === item.to ? 'border border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : 'border border-transparent'}
                 `}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
@@ -114,12 +114,12 @@ export default function Header() {
               to="/barosanul-suprem"
               className={`
                 relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
-                border border-[#9333EA]/40 bg-gradient-to-b from-[#1a1025]/80 via-[#0f0f12]/90 to-[#12101a]/80
-                backdrop-blur-sm shadow-[0_0_15px_rgba(147,51,234,0.15)]
+                bg-gradient-to-b from-[#1a1025]/80 via-[#0f0f12]/90 to-[#12101a]/80
+                backdrop-blur-sm
                 hover:border-[#9333EA]/70 hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]
                 transition-all duration-300 ease-out
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400
-                ${location.pathname === '/barosanul-suprem' ? 'border-[#9333EA]/70 shadow-[0_0_20px_rgba(147,51,234,0.3)]' : ''}
+                ${location.pathname === '/barosanul-suprem' ? 'border border-[#9333EA]/70 shadow-[0_0_20px_rgba(147,51,234,0.3)]' : 'border border-transparent'}
               `}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-[#9333EA]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
@@ -137,12 +137,12 @@ export default function Header() {
               to="/cum-devin-barosan"
               className={`
                 relative px-5 py-2 text-sm font-bold rounded-xl overflow-hidden group
-                border border-[#D4AF37]/40 bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
-                backdrop-blur-sm shadow-[0_0_15px_rgba(212,175,55,0.1)]
+                bg-gradient-to-b from-[#1a1708]/80 via-[#0f0f12]/90 to-[#12110a]/80
+                backdrop-blur-sm
                 hover:border-[#D4AF37]/70 hover:shadow-[0_0_20px_rgba(212,175,55,0.25)]
                 transition-all duration-300 ease-out
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]
-                ${location.pathname === '/cum-devin-barosan' ? 'border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : ''}
+                ${location.pathname === '/cum-devin-barosan' ? 'border border-[#D4AF37]/70 shadow-[0_0_20px_rgba(212,175,55,0.25)]' : 'border border-transparent'}
               `}
             >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />

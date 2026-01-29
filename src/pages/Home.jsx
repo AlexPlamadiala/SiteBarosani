@@ -172,7 +172,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Luxury Dark */}
-      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center">
         {/* Subtle overlay for better text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50">
           {/* Decorative circles */}
@@ -181,14 +181,14 @@ export default function Home() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] border border-[#D4AF37]/10 rounded-full"></div>
         </div>
 
-        <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
+        <div className="relative z-10 container mx-auto px-4 py-8 md:py-14">
           <div className="text-center max-w-4xl mx-auto">
             {/* Main Title - Playfair Display */}
             <FadeIn delay={0.1}>
               <h1 className="mb-8 leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                <span className="block text-3xl md:text-5xl lg:text-6xl font-bold text-gradient-gold tracking-[0.1em] mb-2">REGISTRUL OFICIAL</span>
-                <span className="block text-2xl md:text-3xl lg:text-4xl font-bold text-[var(--color-text-secondary)] mb-2">AL</span>
-                <span className="block text-5xl md:text-7xl lg:text-8xl font-bold text-gradient-gold">BAROSANILOR</span>
+                <span className="block text-3xl md:text-5xl lg:text-6xl font-bold tracking-[0.1em] mb-2" style={{ color: '#D4AF37', textShadow: '0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3)' }}>REGISTRUL OFICIAL</span>
+                <span className="block text-3xl md:text-5xl lg:text-6xl font-bold tracking-[0.1em] mb-2" style={{ color: '#D4AF37', textShadow: '0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.3)' }}>AL</span>
+                <span className="block text-5xl md:text-7xl lg:text-8xl font-bold" style={{ color: '#D4AF37', textShadow: '0 0 30px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.4)' }}>BAROSANILOR</span>
               </h1>
             </FadeIn>
 
