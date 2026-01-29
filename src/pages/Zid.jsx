@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import BarosanCard from '../components/BarosanCard';
 import CertificateGenerator from '../components/CertificateGenerator';
 import SkeletonCard from '../components/SkeletonCard';
@@ -572,15 +572,15 @@ export default function Zid() {
             Alege tier-ul tău și fă parte din comunitatea oficială de barosani verificați.
             Certificare instant, vizibilitate garantată în Registrul Oficial!
           </p>
-          <a
-            href="/cum-devin-barosan"
+          <Link
+            to="/cum-devin-barosan"
             className="group relative inline-block"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#D4AF37] rounded-2xl blur-lg group-hover:blur-xl transition-all opacity-75"></div>
             <span className="relative block bg-gradient-to-r from-[#D4AF37] to-[#FFD700] text-[#1a365d] px-10 py-4 rounded-2xl font-extrabold text-lg hover:scale-105 transition-transform shadow-2xl">
               Devino Barosan Acum 🚀
             </span>
-          </a>
+          </Link>
         </div>
       </section>
 

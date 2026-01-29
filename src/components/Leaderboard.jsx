@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Leaderboard({ barosani }) {
   const [topBarosani, setTopBarosani] = useState([]);
@@ -151,12 +152,12 @@ export default function Leaderboard({ barosani }) {
           Vrei să ajungi în Top 10?
         </p>
         <div className="text-center">
-          <a
-            href="/cum-devin-barosan"
+          <Link
+            to="/cum-devin-barosan"
             className="inline-block bg-gradient-to-r from-[#2A0A4A] to-[#D4AF37] text-[#F7F3E8] px-6 py-2 rounded-lg font-bold text-sm hover:scale-105 transition-transform shadow-md"
           >
             Upgrade la Supreme 👑
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function PricingTiers() {
   const tiers = [
     {
@@ -116,12 +118,12 @@ export default function PricingTiers() {
                 ))}
               </ul>
 
-              <a
-                href="/cum-devin-barosan"
+              <Link
+                to="/cum-devin-barosan"
                 className={`block text-center bg-gradient-to-r ${tier.gradient} ${tier.textDark ? 'text-[#0B1220]' : 'text-white'} px-6 py-3 rounded-xl font-bold text-base hover:scale-105 transition-transform shadow-lg`}
               >
                 Devino {tier.name} 🚀
-              </a>
+              </Link>
             </div>
           </div>
         </div>
